@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.modules.system.mapper.SysLogMapper">
+
+    <!-- 查询日志列表 -->
+    <select id="findList" resultType="com.modules.system.entity.SysLog">
+        select * from sys_log a
+        WHERE a.del_flag != '1'
+        <if test="description != null and description != ''">
+            AND a.description like CONCAT('%', #{description}, '%') ,
+        </if>
+        <if test="username != null and username != ''">
+            AND a.username like CONCAT('%', #{username}, '%') ,
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND a.start_time gte #{startTime} ,
+        </if>
+        <if test="spendTime != null and spendTime != ''">
+            AND a.spend_time like CONCAT('%', #{spendTime}, '%') ,
+        </if>
+        <if test="basePath != null and basePath != ''">
+            AND a.base_path like CONCAT('%', #{basePath}, '%') ,
+        </if>
+        <if test="uri != null and uri != ''">
+            AND a.uri like CONCAT('%', #{uri}, '%') ,
+        </if>
+        <if test="url != null and url != ''">
+            AND a.url like CONCAT('%', #{url}, '%') ,
+        </if>
+        <if test="method != null and method != ''">
+            AND a.method like CONCAT('%', #{method}, '%') ,
+        </if>
+        <if test="parameter != null and parameter != ''">
+            AND a.parameter like CONCAT('%', #{parameter}, '%') ,
+        </if>
+        <if test="userAgent != null and userAgent != ''">
+            AND a.user_agent like CONCAT('%', #{userAgent}, '%') ,
+        </if>
+        <if test="ip != null and ip != ''">
+            AND a.ip like CONCAT('%', #{ip}, '%') ,
+        </if>
+        <if test="result != null and result != ''">
+            AND a.result like CONCAT('%', #{result}, '%') ,
+        </if>
+        <if test="permissions != null and permissions != ''">
+            AND a.permissions like CONCAT('%', #{permissions}, '%')
+        </if>
+        ORDER BY a.create_date
+    </select>
+
+    <!-- 保存日志 -->
+    <insert id="insert" parameterType="com.modules.system.entity.SysLog">
+		insert into sys_log
+		(
+			id, 
+			description, 
+			username, 
+			start_time, 
+			spend_time, 
+			base_path, 
+			uri, 
+			url, 
+			method, 
+			parameter, 
+			user_agent, 
+			ip, 
+			result, 
+			permissions,
+			create_date,
+			create_by,
+			update_by,
+			update_date,
+			del_flag
+		) values (
+			#{id}, 
+			#{description}, 
+			#{username}, 
+			#{startTime}, 
+			#{spendTime}, 
+			#{basePath}, 
+			#{uri}, 
+			#{url}, 
+			#{method}, 
+			#{parameter}, 
+			#{userAgent}, 
+			#{ip}, 
+			#{result}, 
+			#{permissions},
+			#{createDate},
+			#{createBy},
+			#{updateBy},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+
+    <!-- 更新日志 -->
+    <update id="update" parameterType="com.modules.system.entity.SysLog">
+        update sys_log
+        <set>
+            <if test="description != null">description = #{description},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="spendTime != null">spend_time = #{spendTime},</if>
+            <if test="basePath != null">base_path = #{basePath},</if>
+            <if test="uri != null">uri = #{uri},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="method != null">method = #{method},</if>
+            <if test="parameter != null">parameter = #{parameter},</if>
+            <if test="userAgent != null">user_agent = #{userAgent},</if>
+            <if test="ip != null">ip = #{ip},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="permissions != null">permissions = #{permissions}</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 删除日志 -->
+    <update id="deleteById">
+       delete from sys_log where id = #{value}
+    </update>
+
+</mapper>

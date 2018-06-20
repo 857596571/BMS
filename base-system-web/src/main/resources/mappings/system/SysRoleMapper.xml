@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.modules.system.mapper.SysRoleMapper">
+
+    <!-- 通用sql -->
+    <sql id="selectColumns">
+        SELECT
+            (select GROUP_CONCAT(m.menu_id) from sys_role_menu m where m.role_id = a.id) menuIds,
+            (select GROUP_CONCAT(d.org_id) from sys_role_org d where d.role_id = a.id) orgIds,
+            (select GROUP_CONCAT(r.user_id) from sys_user_role r where r.role_id = a.id) userIds,
+            a.*
+        FROM sys_role a
+    </sql>
+
+    <!-- 查询用户角色列表 -->
+    <select id="findListByUserId" resultType="com.modules.system.entity.SysRole">
+        <include refid="selectColumns"/>
+        LEFT JOIN sys_user_role ur ON ur.role_id = a.id
+        WHERE a.del_flag = '0'
+        AND a.state = '1'
+        AND ur.user_id = #{userId}
+        ORDER BY a.create_date
+    </select>
+
+    <!-- 查询角色列表 -->
+    <select id="findList" resultType="com.modules.system.entity.SysRole">
+        <include refid="selectColumns"/>
+        WHERE a.del_flag = '0'
+        <if test="name != null and name != ''">
+            AND a.name like CONCAT('%', #{name}, '%')
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND a.remarks like CONCAT('%', #{remarks}, '%')
+        </if>
+        ORDER BY a.create_date
+    </select>
+
+    <!-- 验证角色编码唯一 -->
+    <select id="isCodeExists" resultType="int">
+       select count(1) from sys_role a where a.code = #{code}
+       <if test="id != null and id != ''">
+           and a.id != #{id}
+       </if>
+    </select>
+
+    <!-- 插入角色 -->
+    <insert id="insert">
+        INSERT INTO sys_role (
+            id,
+            name,
+            code,
+            state,
+            type,
+            data_scope,
+            level,
+            create_date,
+            update_date,
+            remarks
+        ) VALUES (
+            #{id},
+            #{name},
+            #{code},
+            #{state},
+            #{roleType},
+            #{dataScope},
+            #{level},
+            #{createDate},
+            #{updateDate},
+            #{remarks}
+        )
+    </insert>
+
+    <!-- 更新角色 -->
+    <update id="update">
+        UPDATE sys_role
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="dataScope != null and dataScope != ''">data_scope = #{dataScope},</if>
+            <if test="level != null and level != ''">level = #{level},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除角色 -->
+    <update id="deleteById">
+        UPDATE sys_role
+        SET del_flag = '1'
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteRoleMenu">
+        DELETE FROM sys_role_menu
+        WHERE role_id = #{id}
+    </delete>
+
+    <delete id="deleteRoleOrg">
+        DELETE FROM sys_role_org
+        WHERE role_id = #{id}
+    </delete>
+
+    <delete id="deleteRoleUser">
+        DELETE FROM sys_user_role
+        WHERE role_id = #{id}
+        <if test="userId != null and userId != ''">
+           and user_id = #{userId}
+        </if>
+    </delete>
+
+    <insert id="assignRole">
+        INSERT INTO sys_user_role(role_id, user_id) values (#{id}, #{userId})
+    </insert>
+
+    <insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu(role_id, menu_id)
+        <foreach collection="menus" item="menu" separator=" union all ">
+            SELECT #{id}, #{menu.id} FROM dual
+        </foreach>
+    </insert>
+
+    <insert id="insertRoleOrg">
+        INSERT INTO sys_role_org(role_id, org_id)
+        <foreach collection="orgs" item="org" separator=" union all ">
+            SELECT #{id}, #{org.id} FROM dual
+        </foreach>
+    </insert>
+
+</mapper>
