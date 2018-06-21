@@ -4,6 +4,7 @@
 本项目基于前后端分离方案提供了中小型管理系统的基础现实，其中包括机构管理、角色管理、人员管理、菜单管理、字典管理的基础支持，使用本项目可以快速搭建基于springboot后端+ant design pro前端的项目，并且无需关心基础功能现实快速开发的目的。
 
 #### 软件架构
+spring+springboot+mybatis+react+antdesign+es6
 
 - 前端基于蚂蚁金服的react框架界面组件 ant design pro；参考文档：
 1. ant design：https://ant.design/docs/react/introduce-cn；
@@ -26,12 +27,18 @@
 - 后端
 1. 安装IDEA开发环境，配置maven；
 2. 部署方式和普通maven web工程一致，如需以spring boot jar方式部署，请自行去除相关依赖；
-3. **本工程推荐使用IDEA集成开发环境进行开发**；
+3. **本工程推荐使用IDEA集成开发环境进行编码；**
 
 #### 使用说明
 
-- 前端
-- 后端
+- 前端开发请先阅读ant design pro的文档，文档地址：https://pro.ant.design/docs/getting-started-cn；
+
+- 后端现有模块说明：
+1. base：总工程
+1. base-common：公共基类、工具等
+1. base-system：系统管理
+1. base-quartz：任务调度模块-暂为实现；
+
 
 #### 参与贡献
 
