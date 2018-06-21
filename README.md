@@ -35,10 +35,22 @@ spring+springboot+mybatis+react+antdesign+es6
 
 - 后端现有模块说明：
 1. base：总工程
-1. base-common：公共基类、工具等
-1. base-system：系统管理
-1. base-quartz：任务调度模块-暂为实现；
+2. base-code-gen：基础代码生成工具
+3. base-common：公共基类、工具等
+> 1. base-common-api：基类支持
+> 2. base-common-redis：redis支持
+> 3. base-common-security：登录、权限支持
+> 4. base-common-service：接口基类支持
+> 5. base-common-upload：上传支持
+> 6. base-common-utils：工具支持
+> 7. base-common-web：web支持
+> 8. base-common-msg：消息队列支持-暂未实现
+4. base-system-web：系统管理
+5. base-system-ui：系统管理界面
+6. base-quartz-web：任务调度模块-暂未实现
+- 如果开发新模块可以在base-common总模块中选择具体的模块依赖    
 
+#### 常见问题
 
 #### 参与贡献
 
