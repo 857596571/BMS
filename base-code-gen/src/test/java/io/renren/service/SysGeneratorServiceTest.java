@@ -1,6 +1,6 @@
 package io.renren.service;
 
-import com.codegen.service.SysGeneratorService;
+import com.base.codegen.service.SysGeneratorService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -22,9 +22,9 @@ public class SysGeneratorServiceTest {
 	@Autowired
 	private SysGeneratorService sysGeneratorService;
 	//zip输出路径
-	String zipPath = "C://jeedcpcode//code.zip";
+	String zipPath = "/WORKSPACE/code.zip";
 	//表名
-	String[] tableNames = new String[] {"interface"};
+	String[] tableNames = new String[] {"sys_user"};
 	@Test
 	public void testGeneratorCode() throws IOException {
 		byte[] data = sysGeneratorService.generatorCode(tableNames);
@@ -39,7 +39,7 @@ public class SysGeneratorServiceTest {
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(zipPath));
 		ZipEntry entry;
 		while((entry = zip.getNextEntry()) != null) {
-			file = new File("C://jeedcpcode//" + entry.getName());
+			file = new File("/WORKSPACE/" + entry.getName());
 			if(!file.getParentFile().exists()){
 				file.getParentFile().mkdirs();
 			}
