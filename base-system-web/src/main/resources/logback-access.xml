@@ -6,7 +6,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/Users/xmh/work/TempData/logs/admin-web-access.log </file>
+        <file>/Users/xiongmenghui/work/TempData/logs/admin-web-access.log </file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/data/logs/admin-web-access.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
