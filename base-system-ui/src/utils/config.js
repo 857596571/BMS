@@ -5,12 +5,12 @@ module.exports = {
   logoText: '基础框架管理系统',
   iconFontCSS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.css',
   iconFontJS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.js',
-  baseURL: 'http://127.0.0.1:8888/api',
+  baseURL: 'http://127.0.0.1:8089/api',
   //公共分页信息
   pagination: {
     showSizeChanger: true,
     showQuickJumper: true,
-    showTotal: (total,range) => `显示第 ${range[0]} 到第 ${range[1]} 条记录，总共 ${total} 条记录`,
+    showTotal: (total, range) => `显示第 ${range[0]} 到第 ${range[1]} 条记录，总共 ${total} 条记录`,
     current: 1,
     total: 0,
     pageSize: 20,
@@ -27,5 +27,5 @@ module.exports = {
     autoHideHeader: false, // 下滑时是否隐藏头部
     fixSiderbar: false, // 是否固定工作条
     colorWeak: 'close', //色弱模式[open:打开，close:关闭]
-  }
-}
+  },
+};

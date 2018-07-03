@@ -3,6 +3,7 @@ import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 import store from '../index';
 import config from "../utils/config";
+import { stringify } from 'qs';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -70,6 +71,9 @@ export default function request(urlPrefix, options) {
   let url = urlPrefix;
   if(url) {
     url = config.baseURL + url;
+    if(newOptions.method === 'GET') {
+      url = `${url}?${stringify(newOptions.body)}`;
+    }
   }
 
   const authorization = localStorage.getItem('Authorization');
