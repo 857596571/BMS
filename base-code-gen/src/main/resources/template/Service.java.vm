@@ -1,10 +1,7 @@
-package ${package}.service;
+package ${package}.modules.${module}.service;
 
-import ${package}.${classname}.api.entity.${className};
-import com.github.pagehelper.PageInfo;
-import  ${package}.common.api.Paging;
-import java.util.List;
-import java.util.Map;
+import com.common.service.BaseService;
+import ${package}.modules.${module}.entity.${className};
 
 /**
  * ${comments}
@@ -13,26 +10,6 @@ import java.util.Map;
  * @email ${email}
  * @date ${datetime}
  */
-public interface ${className}Service {
+public interface ${className}Service extends BaseService<${className}> {
 
-    ${className} queryObject(${pk.attrType} ${pk.attrname});
-
-    List<${className}> queryList(Map<String, Object> map);
-
-    PageInfo<${className}> findPage(Paging page, ${className} ${classname});
-
-    /**
-     * 查询${comments}列表
-     *
-     * @param page  分页信息
-     * @param query 查询条件
-     * @return 用户 page info
-     */
-    PageInfo<${className}> queryPage(Paging page, Map<String, Object> query);
-
-    ${className} save(${className} ${classname});
-
-    void deleteById(${pk.attrType} ${pk.attrname});
-
-    void delete(${className} ${classname});
 }

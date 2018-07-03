@@ -1,40 +1,28 @@
-(function () {
-    'use strict';
+import request from '../utils/request';
 
-    angular.module('app')
-        .service('${className}Service',${className}Service);
+/**
+ * 列表查询
+ */
+export async function queryList(params) {
+    return request('/${pathName}/list', {
+        method: 'GET'
+        body: params,
+    });
+}
 
-   ${className}Service.$inject = ['$http', '$q', 'APP_CONST'];
-    function ${className}Service(http, $q, APP_CONST) {
+/**
+ * 保存
+ */
+export async function saveInfo(params) {
+    return request('/${pathName}/save', {
+        method: 'POST'
+        body: params,
+    });
+}
 
-        this.list = function list(params) {
-            var d = $q.defer();
-			http.get(APP_CONST.PROPERTY.API_URL+  '/${pathName}/list', {
-		    	params: params
-			})
-            .success(function (data) {
-                d.resolve(data);
-            })
-                .error(function () {
-                    d.reject();
-                });
-
-            return d.promise;
-        };
-
-        this.getById = function getById(id) {
-            var d = $q.defer();
-
-            http.get(APP_CONST.PROPERTY.API_URL + '/${pathName}/' + id)
-            .success(function (data) {
-                d.resolve(data);
-            })
-                .error(function () {
-                    d.reject();
-                });
-
-            return d.promise;
-        };
-
-    }
-})();
+/**
+ * 删除
+ */
+export async function deleteInfo(id) {
+    return request(`/${pathName}/delete/`);
+}

@@ -1,11 +1,12 @@
-package ${package}.controller;
+package ${package}.modules.${module}.controller;
 
 import java.util.List;
 import java.util.Map;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.github.pagehelper.PageInfo;
-import ${package}.common.web.controller.BaseController;
-import ${package}.common.api.Paging;
+import com.common.api.Paging;
+import com.common.utils.http.ResponseMessage;
+import com.common.utils.http.Result;
+import com.common.web.controller.BaseController;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import io.swagger.annotations.*;
-import ${package}.${classname}.api.entity.${className};
-import ${package}.${classname}.api.service.${className}Service;
+import ${package}.modules.${module}.entity.${className};
+import ${package}.modules.${module}.service.${className}Service;
 
 
 
@@ -54,8 +55,8 @@ public class ${className}Controller extends BaseController {
     })
 	@GetMapping("/list")
 	@PreAuthorize("hasAuthority('${pathName}:list')")
-	public PageInfo<${className}> list(Paging page, Map<String, Object> query){
-        return ${classname}Service.queryPage(page, query);
+	public ResponseMessage<PageInfo<${className}>> list(Paging page, Map<String, Object> query){
+        return Result.success(${classname}Service.findPage(page, query));
 	}
 	
 	
@@ -75,8 +76,8 @@ public class ${className}Controller extends BaseController {
     })
 	@GetMapping("/info/{${pk.attrname}}")
 	@PreAuthorize("hasAuthority('${pathName}:info')")
-	public ${className} info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
-        return ${classname}Service.queryObject(${pk.attrname});
+	public ResponseMessage<${className}> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+        return Result.success(${classname}Service.get(${pk.attrname}));
 	}
 	
 	/**
@@ -92,8 +93,8 @@ public class ${className}Controller extends BaseController {
     )
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('${pathName}:save')")
-	public ${className} save(@RequestBody ${className} ${classname}){
-        return	${classname}Service.save(${classname});
+	public ResponseMessage<${className}> save(@RequestBody ${className} ${classname}){
+        return	Result.success(${classname}Service.save(${classname}));
 	}
 	
 	/**
@@ -107,11 +108,11 @@ public class ${className}Controller extends BaseController {
             @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
-	@DeleteMapping("/delete")
+	@DeleteMapping("/delete/{${pk.attrname}}")
 	@PreAuthorize("hasAuthority('${pathName}:delete')")
-	public ResponseEntity delete(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+	public ResponseMessage delete(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
 		${classname}Service.deleteById(${pk.attrname});
-        return new ResponseEntity(HttpStatus.OK);
+        return Result.success();
 	}
 	
 }

@@ -1,0 +1,3 @@
+'/${module}/${classname}': {
+    component: dynamicWrapper(app, ['${module}/${classname}'], () => import('../routes/${module}/${className}')),
+},

@@ -1,103 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="${package}.${classname}.mapper.${className}Mapper">
+<mapper namespace="${package}.modules.${module}.mapper.${className}Mapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="${package}.${classname}.api.entity.${className}" id="${classname}Map">
-#foreach($column in $columns)
+    <resultMap type="${package}.modules.${module}.entity.${className}" id="${classname}Map">
+		#foreach($column in $columns)
         <result property="${column.attrname}" column="${column.columnName}"/>
-#end
+		#end
     </resultMap>
 
-	<select id="get" resultType="${package}.${classname}.api.entity.${className}">
+    <!-- 通过ID获取单个${comments}信息 -->
+	<select id="get" resultType="${package}.modules.${module}.entity.${className}">
 		select * from ${tableName} where ${pk.columnName} = #{value}
 	</select>
 
-    <!-- 分页查询用户信息 -->
-    <select id="findList" resultType="${package}.${classname}.api.entity.${className}">
-        select * from ${tableName} a
-        WHERE a.del_flag = '0'
+    <!-- 分页查询${comments}信息 -->
+    <select id="findList" resultType="${package}.modules.${module}.entity.${className}">
+        select * from ${tableName} t
+        WHERE t.del_flag = '0'
 		#foreach($column in $columns)
 			#if($column.columnName != $pk.columnName&&
 				$column.columnName != 'create_date'&&$column.columnName !='create_by'&&$column.columnName !='remarks'
 			&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
-                <if test="$column.attrname != null and $column.attrname != ''">
-                    AND a.$column.columnName like CONCAT('%', #{$column.attrname}, '%')	#if($velocityCount != $columns.size()), #end
-                </if>
+		<if test="$column.attrname != null and $column.attrname != ''">
+			AND t.$column.columnName like CONCAT('%', #{$column.attrname}, '%')
+		</if>
 			#end
 		#end
-        ORDER BY a.create_date
+        ORDER BY a.create_date desc
     </select>
 
-    <!-- 查询全部用户 -->
-    <select id="findAllList" resultType="${package}.${classname}.api.entity.${className}">
-       select * from ${tableName} a
-        WHERE a.del_flag = '0'
-        ORDER BY a.create_date
-    </select>
-
-	<select id="queryList" resultType="${package}.${classname}.api.entity.${className}">
-        select * from ${tableName} a
-        WHERE a.del_flag = '0'
-		#foreach($column in $columns)
-			#if($column.columnName != $pk.columnName&&
-				$column.columnName != 'create_date'&&$column.columnName !='create_by'&&$column.columnName !='remarks'
-			&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
-                <if test="$column.attrname != null and $column.attrname != ''">
-                    AND a.$column.columnName like CONCAT('%', #{$column.attrname}, '%')	#if($velocityCount != $columns.size()), #end
-                </if>
+    <!-- 保存${comments} -->
+	<insert id="insert" parameterType="${package}.modules.${module}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+		insert into ${tableName} (
+			#foreach($column in $columns)
+			#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			$column.columnName#if($velocityCount != $columns.size()), #end
 			#end
-		#end
-        ORDER BY a.create_date
-	</select>
-	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from ${tableName} 
-	</select>
-	 
-	<insert id="insert" parameterType="${package}.${classname}.api.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
-		insert into ${tableName}
-		(
-#foreach($column in $columns)
-#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
-			`$column.columnName`#if($velocityCount != $columns.size()), #end
-
-#end			
-#end
-		)
-		values
-		(
-#foreach($column in $columns)
-#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			#end
+		) values (
+			#foreach($column in $columns)
+			#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
 			#{$column.attrname}#if($velocityCount != $columns.size()), #end
-
-#end			
-#end
+			#end
+			#end
 		)
 	</insert>
-	 
-	<update id="update" parameterType="${package}.${classname}.api.entity.${className}">
+
+    <!-- 更新${comments} -->
+	<update id="update" parameterType="${package}.modules.${module}.entity.${className}">
 		update ${tableName} 
 		<set>
-#foreach($column in $columns)
-#if($column.columnName != $pk.columnName)
-			<if test="$column.attrname != null">`$column.columnName` = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
-#end
-#end
+		#foreach($column in $columns)
+		#if($column.columnName != $pk.columnName)
+			<if test="$column.attrname != null">$column.columnName = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
+		#end
+		#end
 		</set>
 		where ${pk.columnName} = #{${pk.attrname}}
 	</update>
-	
+
+    <!-- 根据主键ID删除${comments} -->
 	<delete id="delete">
 		delete from ${tableName} where ${pk.columnName} = #{value}
 	</delete>
-    <!-- 删除用户 -->
+
+    <!-- 根据主键ID删除${comments}（逻辑删除） -->
     <update id="deleteById">
         UPDATE ${tableName}
         SET del_flag = '1'
         WHERE id = #{id}
     </update>
+
+    <!-- 根据主键ID批量删除${comments} -->
 	<delete id="deleteBatch">
 		delete from ${tableName} where ${pk.columnName} in 
 		<foreach item="${pk.attrname}" collection="array" open="(" separator="," close=")">

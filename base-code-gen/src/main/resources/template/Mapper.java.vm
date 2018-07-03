@@ -1,8 +1,9 @@
-package ${package}.mapper;
+package ${package}.modules.${module}.mapper;
 
-import ${package}.${classname}.api.entity.${className};
-import ${package}.common.service.dao.CrudDao;
+import com.common.mapper.BaseMapper;
+import ${package}.modules.${module}.entity.${className};
 import org.apache.ibatis.annotations.Mapper;
+
 /**
  * ${comments}
  * 
@@ -11,6 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date ${datetime}
  */
 @Mapper
-public interface ${className}Mapper extends CrudDao<${className}> {
+public interface ${className}Mapper extends BaseMapper<${className}> {
 	
 }
