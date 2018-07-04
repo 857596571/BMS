@@ -1,4 +1,5 @@
-import { getOrgList, isCodeExists } from '../../services/system';
+import * as system from '../../services/system';
+import { message } from 'antd';
 
 export default {
   namespace: 'sysOrg',
@@ -8,8 +9,8 @@ export default {
   },
   effects: {
     *getList({ payload }, { call, put }) {
-      const {data, ok} = yield call(getOrgList, payload);
-      if(ok) {
+      const { data, ok } = yield call(system.getOrgList, payload);
+      if (ok) {
         yield put({
           type: 'save',
           payload: {
@@ -19,31 +20,52 @@ export default {
       }
     },
     *isCodeExists({ payload }, { call, put }) {
-      const {data, ok} = yield call(isCodeExists, payload);
-      if(ok) {
+      const { data, ok } = yield call(system.isOrgCodeExists, payload);
+      if (ok) {
         yield put({
           type: 'setCodeExists',
           payload: {
-            codeExists: data
+            codeExists: data,
           },
         });
       }
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
+      const { data, ok } = yield call(system.saveOrg, payload);
+      if (ok) {
+        yield put({
+          type: 'save',
+          payload: data,
+        });
+        if (typeof callback === 'function') {
+          callback();
+        }
+        message.success('保存成功');
+      } else {
+        message.error('保存失败');
+      }
     },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
+    *updateSorts({ payload, callback }, { call, put }) {
+      const { ok } = yield call(system.updateOrgSorts, payload);
+      if (ok) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+        message.success('更新排序成功');
+      } else {
+        message.error('更新排序失败');
+      }
+    },
+    *deleteById({ payload, callback }, { call, put }) {
+      const { ok } = yield call(system.deleteOrgById, payload);
+      if (ok) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+        message.success('删除成功');
+      } else {
+        message.error('删除失败');
+      }
     },
   },
 

@@ -17,6 +17,7 @@ import {
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
+import * as system from '../../services/system';
 
 import styles from './OrgList.less';
 
@@ -34,21 +35,38 @@ const formItemLayout = {
 const stateMap = ['error', 'success'];
 const state = ['停用', '启用'];
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, item, codeExists, handleAdd, handleModalVisible, dispatch } = props;
+  const {
+    visible,
+    form,
+    itemType,
+    item,
+    codeExists,
+    handleAdd,
+    handleModalVisible,
+    dispatch,
+  } = props;
+
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      handleAdd(fieldsValue);
+      handleAdd({ ...fieldsValue, parentId: item.parentId || 0 });
     });
   };
+
+  const modalProps = {
+    title: '新建',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  if (itemType === 'create') modalProps.title = '新建';
+  if (itemType === 'update') modalProps.title = '修改';
+  if (itemType === 'sub') modalProps.title = '新建子机构';
+
   return (
-    <Modal
-      title="新建"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
+    <Modal {...modalProps}>
       <Row>
         <Col span={12}>
           <FormItem label="父部门：" hasFeedback {...formItemLayout}>
@@ -65,7 +83,7 @@ const CreateForm = Form.create()(props => {
                   message: '请选择部门类型',
                 },
               ],
-            })(<Dict code={12} />)}
+            })(<Dict code={1} />)}
           </FormItem>
         </Col>
       </Row>
@@ -91,16 +109,15 @@ const CreateForm = Form.create()(props => {
                 {
                   required: true,
                   message: '请输入机构编码',
-                  validator(rule, value, callback) {
-                    dispatch({
-                      type: 'sysOrg/isCodeExists',
-                      payload: {
-                        code: value,
-                        id: item.id,
-                      },
+                },
+                {
+                  async validator(rule, value, callback) {
+                    const data = await system.isOrgCodeExists({
+                      code: value,
+                      id: item.id,
                     });
-                    if (codeExists) callback(true);
-                    else callback(false);
+                    if (data.data) callback('该机构编码已存在');
+                    callback();
                   },
                 },
               ],
@@ -132,7 +149,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入机构顺序',
                 },
               ],
-            })(<InputNumber min={0} />)}
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
           </FormItem>
         </Col>
       </Row>
@@ -162,41 +179,84 @@ const CreateForm = Form.create()(props => {
 export default class OrgList extends PureComponent {
   state = {
     modalVisible: false,
+    itemType: 'create',
     item: {},
+    tempSorts: {},
   };
 
   componentDidMount() {
+    this.initQuery();
+  }
+
+  initQuery() {
     const { dispatch } = this.props;
     dispatch({
       type: 'sysOrg/getList',
     });
   }
 
-  handleModalVisible = (flag, item) => {
-    if (!item || !flag) item = {};
+  handleModalVisible = (flag, itemType, item) => {
+    if (itemType === 'create') item = {};
+    if (itemType === 'sub')
+      item = {
+        parentId: item.id,
+        parentName: item.name,
+      };
+    if (!flag) item = {};
     this.setState({
-      modalVisible: !!flag,
+      modalVisible: flag,
+      itemType: itemType,
       item,
     });
   };
 
   handleAdd = fields => {
     this.props.dispatch({
-      type: 'org/add',
+      type: 'sysOrg/add',
       payload: {
         ...fields,
       },
+      callback: () => this.initQuery(),
     });
-
-    message.success('添加成功');
     this.setState({
       modalVisible: false,
     });
   };
 
+  handleChangeSort(val, record) {
+    let tempSorts = this.state.tempSorts;
+    tempSorts[record.id.toString()] = { id: record.id, sort: val };
+    if ((val || 0) === (record.sort || 0)) delete tempSorts[record.id];
+    this.setState({ tempSorts: Object.assign({}, tempSorts) });
+  }
+
+  handleUpdateSorts() {
+    let sorts = [];
+    const { tempSorts } = this.state;
+    Object.keys(tempSorts).map(key => {
+      sorts.push(tempSorts[key]);
+    });
+    this.props.dispatch({
+      type: 'sysOrg/updateSorts',
+      payload: sorts,
+      callback: () => {
+        this.initQuery();
+        this.setState({ tempSorts: {} });
+      },
+    });
+  }
+
+  handleDeleteById(id) {
+    this.props.dispatch({
+      type: 'sysOrg/deleteById',
+      id,
+      callback: this.initQuery,
+    });
+  }
+
   render() {
     const { sysOrg: { list, codeExists }, loading } = this.props;
-    const { modalVisible, item } = this.state;
+    const { modalVisible, itemType, item, tempSorts } = this.state;
 
     const columns = [
       {
@@ -205,24 +265,26 @@ export default class OrgList extends PureComponent {
         dataIndex: 'name',
       },
       {
-        title: '类型',
-        dataIndex: 'type',
-        render(val) {
-          return <Dict code={12} codeValue={val} info={true} />;
-        },
+        title: '级别',
+        key: 'levelDesc',
+        dataIndex: 'levelDesc',
       },
       {
-        title: '状态',
-        key: 'state',
-        dataIndex: 'state',
-        render(val) {
-          return <Badge status={stateMap[val]} text={state[val]} />;
-        },
+        title: '类型',
+        key: 'typeDesc',
+        dataIndex: 'typeDesc',
       },
       {
         title: '排序',
         key: 'sort',
         dataIndex: 'sort',
+        render: (val, record) => (
+          <InputNumber
+            min={0}
+            defaultValue={val}
+            onChange={v => this.handleChangeSort(v, record)}
+          />
+        ),
       },
       {
         title: '备注',
@@ -234,27 +296,24 @@ export default class OrgList extends PureComponent {
         width: 240,
         render: (val, record) => (
           <Fragment>
-            <a href="javascript: void(0)" onClick={() => this.handleModalVisible(true, record)}>
-              修改
-            </a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
             <Divider type="vertical" />
-            <a href="">启用</a>
+            <a onClick={() => this.handleDeleteById(record.id)}>删除</a>
             <Divider type="vertical" />
-            <a href="">删除</a>
-            <Divider type="vertical" />
-            <a href="">新建子机构</a>
+            <a onClick={() => this.handleModalVisible(true, 'sub', record)}>新建子机构</a>
           </Fragment>
         ),
       },
     ];
 
-    const parentMethods = {
-      item: item,
-      codeExists: codeExists,
-      modalVisible: modalVisible,
+    const createModalProps = {
+      item,
+      itemType,
+      codeExists,
+      visible: modalVisible,
       dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
+      handleModalVisible: () => this.handleModalVisible(false),
     };
 
     return (
@@ -262,9 +321,14 @@ export default class OrgList extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
                 新建
               </Button>
+              {Object.keys(tempSorts).length > 0 && (
+                <Button type="primary" onClick={() => this.handleUpdateSorts()}>
+                  更新排序
+                </Button>
+              )}
             </div>
             <Table
               loading={loading}
@@ -275,7 +339,7 @@ export default class OrgList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} />
+        <CreateForm {...createModalProps} />
       </PageHeaderLayout>
     );
   }

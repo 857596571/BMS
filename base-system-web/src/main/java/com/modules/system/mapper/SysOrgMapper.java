@@ -24,7 +24,7 @@ public interface SysOrgMapper extends BaseMapper<SysOrg> {
      * @param org
      * @return
      */
-    int getLRNum(SysOrg org);
+    Integer getLRNum(SysOrg org);
 
     /**
      * 更新左值

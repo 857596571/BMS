@@ -71,9 +71,9 @@ export default function request(urlPrefix, options) {
   let url = urlPrefix;
   if(url) {
     url = config.baseURL + url;
-    if(newOptions.method === 'GET') {
-      url = `${url}?${stringify(newOptions.body)}`;
-    }
+    // if(newOptions.method === 'GET') {
+    //   url = `${url}?${stringify(newOptions.body)}`;
+    // }
   }
 
   const authorization = localStorage.getItem('Authorization');

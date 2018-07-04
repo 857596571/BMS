@@ -3,6 +3,7 @@ package com.modules.system.service.impl;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.common.api.Paging;
 import com.github.pagehelper.PageHelper;
@@ -161,14 +162,6 @@ public class SystemServiceImpl implements SystemService {
         dictCache.clear();
     }
 
-    @Override
-    public List<SysMenu> findMenuList(String userId) {
-        List<SysMenu> resultList = new ArrayList<>();
-        //按父子顺序排列菜单列表
-        MenuUtils.sortList(resultList, getMenuListByUserId(userId), "0");
-        return resultList;
-    }
-
     /**
      * 获得用户菜单列表，超级管理员可以查看所有菜单
      * @param userId 用户ID
@@ -183,6 +176,14 @@ public class SystemServiceImpl implements SystemService {
             menuList = sysMenuMapper.findListByUserId(userId);
         }
         return menuList;
+    }
+
+    @Override
+    public List<SysMenu> findMenuList(String userId) {
+        List<SysMenu> resultList = new ArrayList<>();
+        //按父子顺序排列菜单列表
+        MenuUtils.sortList(resultList, getMenuListByUserId(userId), "0");
+        return resultList;
     }
 
     @Override
@@ -241,7 +242,8 @@ public class SystemServiceImpl implements SystemService {
     @Transactional
     public SysOrg saveOrg(SysOrg org) {
         if(org.getIsNewRecord()) {
-            int rightNum = sysOrgMapper.getLRNum(org);
+            Integer rightNum = sysOrgMapper.getLRNum(org);
+            rightNum = rightNum != null ? rightNum : 0;
             org.setLeftNum(rightNum + 1);
             org.setRightNum(rightNum + 2);
             if(rightNum != 0 && org.getParentId() != 0) {

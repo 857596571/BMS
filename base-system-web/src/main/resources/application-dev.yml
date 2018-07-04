@@ -2,9 +2,9 @@ spring:
   # DataSource Config
   datasource:
     write:
-      url: jdbc:mysql://localhost:3306/jeedcpv2?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      url: jdbc:mysql://47.95.252.122:3306/xxjq?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: root
-      password: 123456
+      password: changxin100@2017
       driver-class-name: com.mysql.jdbc.Driver
       max-active: 20
       initial-size: 1
@@ -23,9 +23,9 @@ spring:
       # 合并多个DruidDataSource的监控数据
       #spring.datasource.useGlobalDataSourceStat=true
     read:
-      url: jdbc:mysql://localhost:3306/jeedcpv2?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      url: jdbc:mysql://47.95.252.122:3306/xxjq?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: root
-      password: 123456
+      password: changxin100@2017
       driver-class-name: com.mysql.jdbc.Driver
       max-active: 20
       initial-size: 1
@@ -62,18 +62,19 @@ spring:
       max-file-size: 5Mb # Max file size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
       max-request-size: 50Mb # Max request size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
 
-server:
-  port: 8090
-  tomcat:
-    accesslog:
-      debug: true #请求响应数据调试
+#自定义属性配置
+commonYml:
+  yml:
+    #权限配置
+    security:
+      jwt:
+        secret: k09BQnaF
+        expiration: 604800 #7Days
+    #上传配置
+    upload:
+      #Disk upload
+      work-folder-name: /Users/dcp/files #文件存储路径
+      access-url: http://127.0.0.1:8090 #文件访问地址，可使用反向代理
+    #初始密码
+    initialPassword: 123456
 
-security:
-  jwt:
-    secret: k09BQnaF
-    expiration: 604800 #7Days
-
-upload:
-  #Disk upload
-  work-folder-name: /Users/dcp/files #文件存储路径
-  access-url: http://127.0.0.1:8090 #文件访问地址，可使用反向代理

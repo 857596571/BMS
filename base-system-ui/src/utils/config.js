@@ -5,7 +5,7 @@ module.exports = {
   logoText: '基础框架管理系统',
   iconFontCSS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.css',
   iconFontJS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.js',
-  baseURL: 'http://127.0.0.1:8089/api',
+  baseURL: 'http://127.0.0.1:8080/api',
   //公共分页信息
   pagination: {
     showSizeChanger: true,

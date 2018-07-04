@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Spin } from 'antd';
 import { connect } from 'dva';
-import { enquireScreen, unenquireScreen } from 'enquire-js'
+import { enquireScreen, unenquireScreen } from 'enquire-js';
 import { isUrl } from '../utils/utils';
 
 import BasicLayout from './BasicLayout';
@@ -10,24 +10,27 @@ import BasicLayout from './BasicLayout';
  */
 
 const getMenuData = (data, parentPath = '/', parentAuthority) => {
-  return data && data.map(item => {
-    let { href } = item;
-    if (!isUrl(href)) {
-      href = parentPath + item.href;
-    }
-    const result = {
-      ...item,
-      path: href,
-      authority: item.authority || parentAuthority,
-    };
-    if (item.children) {
-      result.children = getMenuData(item.children, `${parentPath}${item.href}/`, item.authority);
-    }
-    return result;
-  });
-}
+  return (
+    data &&
+    data.map(item => {
+      let { href } = item;
+      if (!isUrl(href)) {
+        href = parentPath + item.href;
+      }
+      const result = {
+        ...item,
+        path: href,
+        authority: item.authority || parentAuthority,
+      };
+      if (item.children) {
+        result.children = getMenuData(item.children, `${parentPath}${item.href}/`, item.authority);
+      }
+      return result;
+    })
+  );
+};
 
-const getRedirectData = (menuData) => {
+const getRedirectData = menuData => {
   const redirectData = [];
   const getRedirect = item => {
     if (item && item.children) {
@@ -73,7 +76,8 @@ class LoadingPage extends PureComponent {
   }
   render() {
     const { currentUser } = this.props;
-    const redirectData = currentUser.menus ? getRedirectData(getMenuData(currentUser.menus)) : [];
+    const redirectData =
+      currentUser && currentUser.menus ? getRedirectData(getMenuData(currentUser.menus)) : [];
     if (this.state.loading) {
       return (
         <div
@@ -91,12 +95,15 @@ class LoadingPage extends PureComponent {
     }
     return (
       <div>
-        {currentUser.menus && <BasicLayout
-          isMobile={this.state.isMobile}
-          menuData={getMenuData(currentUser.menus)}
-          redirectData={redirectData}
-          {...this.props}
-        />}
+        {currentUser &&
+          currentUser.menus && (
+            <BasicLayout
+              isMobile={this.state.isMobile}
+              menuData={getMenuData(currentUser.menus)}
+              redirectData={redirectData}
+              {...this.props}
+            />
+          )}
       </div>
     );
   }

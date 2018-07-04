@@ -32,9 +32,25 @@ public class SysOrg extends DataTreeEntity {
      */
     private Integer state;
     /**
+     * 状态描述
+     */
+    private String stateDesc;
+    /**
      * 类型
      */
     private Integer type;
+    /**
+     * 类型描述
+     */
+    private String typeDesc;
+    /**
+     * 级别
+     */
+    private Integer level;
+    /**
+     * 级别描述
+     */
+    private String levelDesc;
     /**
      * 子节点
      */
@@ -80,12 +96,44 @@ public class SysOrg extends DataTreeEntity {
         this.state = state;
     }
 
+    public String getStateDesc() {
+        return stateDesc;
+    }
+
+    public void setStateDesc(String stateDesc) {
+        this.stateDesc = stateDesc;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getTypeDesc() {
+        return typeDesc;
+    }
+
+    public void setTypeDesc(String typeDesc) {
+        this.typeDesc = typeDesc;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public String getLevelDesc() {
+        return levelDesc;
+    }
+
+    public void setLevelDesc(String levelDesc) {
+        this.levelDesc = levelDesc;
     }
 
     public List<SysOrg> getChildren() {
