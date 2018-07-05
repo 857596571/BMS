@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Tabs } from 'antd';
+import {Tabs} from 'antd';
 
 const { TabPane } = Tabs;
 

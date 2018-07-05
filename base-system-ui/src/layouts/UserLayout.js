@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
-import { Link, Redirect, Switch, Route } from 'dva/router';
+import React, {Fragment} from 'react';
+import {Link, Redirect, Route, Switch} from 'dva/router';
 import DocumentTitle from 'react-document-title';
-import { Icon } from 'antd';
+import {Icon} from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
-import { getRoutes } from '../utils/utils';
-import { name, copyrightText, logoSrc, logoText } from '../utils/config';
+import {getRoutes} from '../utils/utils';
+import {copyrightText, logoSrc, logoText, name} from '../utils/config';
 
 const copyright = (
   <Fragment>

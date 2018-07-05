@@ -5,7 +5,7 @@
 
     <!-- 机构编码是否唯一 -->
     <select id="isCodeExists" resultType="int">
-        select count(1) from sys_org d where d.code = #{code}
+        select count(1) from sys_org d where d.del_flag = '0' and d.code = #{code}
         <if test="id != null and id != ''">
             and d.id != #{id}
         </if>
@@ -26,7 +26,7 @@
     <!-- 查询左右值 -->
     <select id="getLRNum" resultType="int">
         select a.right_num from sys_org a
-        where a.parent_id = #{parentId}
+        where a.id = #{parentId}
         ORDER BY a.right_num desc
         limit 1
     </select>
@@ -64,6 +64,7 @@
 			name,
 			name_py,
 			type,
+			level,
 			state,
 			sort,
 			del_flag,
@@ -77,6 +78,7 @@
 			#{name},
 			#{namePy},
 			#{type},
+			#{level},
 			#{state},
 			#{sort},
 			#{delFlag},
@@ -95,6 +97,7 @@
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="namePy != null and namePy != ''">name_py = #{namePy},</if>
             <if test="type != null">type = #{type},</if>
+            <if test="level != null">level = #{level},</if>
             <if test="state != null">state = #{state},</if>
             <if test="sort != null">sort = #{sort},</if>
             <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
@@ -107,7 +110,7 @@
     <update id="deleteById">
         UPDATE sys_org
         SET del_flag = '1'
-        WHERE left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+        WHERE id = #{id}
     </update>
 
 </mapper>

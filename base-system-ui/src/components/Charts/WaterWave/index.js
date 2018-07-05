@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import autoHeight from '../autoHeight';
 import styles from './index.less';
 

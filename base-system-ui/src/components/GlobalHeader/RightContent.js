@@ -1,9 +1,7 @@
-import React, { PureComponent } from 'react';
-import { Spin, Tag, Menu, Icon, Dropdown, Avatar, Tooltip } from 'antd';
+import React, {PureComponent} from 'react';
+import {Avatar, Dropdown, Icon, Menu, Spin, Tag, Tooltip} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
-import NoticeIcon from '../NoticeIcon';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 import headIcon from '../../assets/head.png'
 

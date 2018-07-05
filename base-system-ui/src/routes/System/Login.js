@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Checkbox, Alert } from 'antd';
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import {Alert, Checkbox} from 'antd';
 import Login from '../../components/Login';
 import styles from './Login.less';
 

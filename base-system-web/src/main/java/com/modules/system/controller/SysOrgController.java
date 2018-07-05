@@ -64,12 +64,12 @@ public class SysOrgController extends BaseController {
 
 	/**
 	 * 删除机构
-	 * @param org
+	 * @param id
 	 * @return
 	 */
-	@DeleteMapping(value = "/deleteById")
-	public ResponseMessage<SysOrg> delete(SysOrg org){
-		systemService.deleteOrgById(org);
+	@DeleteMapping(value = "/delete/{id}")
+	public ResponseMessage delete(@PathVariable("id") String id) {
+		systemService.deleteOrgById(id);
 		return Result.success();
 	}
 

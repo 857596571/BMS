@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
-import { Layout, Menu, Icon } from 'antd';
-import { Link } from 'dva/router';
+import React, {PureComponent} from 'react';
+import {Icon, Layout, Menu} from 'antd';
+import {Link} from 'dva/router';
 import styles from './index.less';
-import BaseMenu, { getMenuMatches } from './BaseMenu';
-import { urlToList } from '../_utils/pathTools';
-import { name, logoText } from '../../utils/config';
+import BaseMenu, {getMenuMatches} from './BaseMenu';
+import {urlToList} from '../_utils/pathTools';
+import {logoText, name} from '../../utils/config';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -37,11 +37,12 @@ const getIcon = icon => {
 };
 
 export default class SiderMenu extends PureComponent {
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      openKeys: getDefaultCollapsedSubMenus(nextProps),
-    };
-  }
+  // static getDerivedStateFromProps(nextProps) {
+  //   console.log(getDefaultCollapsedSubMenus(nextProps), '00')
+  //   return {
+  //     openKeys: getDefaultCollapsedSubMenus(nextProps),
+  //   };
+  // }
   constructor(props) {
     super(props);
     this.state = {
@@ -126,7 +127,7 @@ export default class SiderMenu extends PureComponent {
     const lastOpenKey = openKeys[openKeys.length - 1];
     const moreThanOne = openKeys.filter(openKey => this.isMainMenu(openKey)).length > 1;
     this.setState({
-      openKeys: moreThanOne ? [lastOpenKey] : [...openKeys],
+      openKeys: [lastOpenKey],
     });
   };
   render() {
@@ -154,7 +155,6 @@ export default class SiderMenu extends PureComponent {
           key="Menu"
           mode="inline"
           handleOpenChange={this.handleOpenChange}
-          onOpenChange={this.handleOpenChange}
           style={{ padding: '16px 0', width: '100%' }}
           {...defaultProps}
         />

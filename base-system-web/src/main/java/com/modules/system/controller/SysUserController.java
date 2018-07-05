@@ -139,7 +139,7 @@ public class SysUserController extends BaseController {
      * @param id
      * @return
      */
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public ResponseMessage delete(@PathVariable("id") String id) {
         systemService.deleteUserById(id);
         return Result.success();

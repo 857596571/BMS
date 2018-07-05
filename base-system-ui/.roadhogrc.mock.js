@@ -1,12 +1,11 @@
 import mockjs from 'mockjs';
-import { getRule, postRule } from './mock/rule';
-import { getActivities, getNotice, getFakeList, postFakeList } from './mock/api';
-import { getFakeChartData } from './mock/chart';
-import { getProfileBasicData } from './mock/profile';
-import { getProfileAdvancedData } from './mock/profile';
-import { getNotices } from './mock/notices';
-import { format, delay } from 'roadhog-api-doc';
-import { getProvince, getCity, getArea } from './mock/geographic/geographic';
+import {getRule, postRule} from './mock/rule';
+import {getActivities, getFakeList, getNotice, postFakeList} from './mock/api';
+import {getFakeChartData} from './mock/chart';
+import {getProfileAdvancedData, getProfileBasicData} from './mock/profile';
+import {getNotices} from './mock/notices';
+import {delay, format} from 'roadhog-api-doc';
+import {getArea, getCity, getProvince} from './mock/geographic/geographic';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';

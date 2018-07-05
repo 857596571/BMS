@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 export interface IDictProps {
   code?: React.ReactNode | string;
   type?: React.ReactNode | string;

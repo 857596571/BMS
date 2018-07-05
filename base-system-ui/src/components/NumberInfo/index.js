@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'antd';
+import {Icon} from 'antd';
 import classNames from 'classnames';
 import styles from './index.less';
 

@@ -1,9 +1,9 @@
-import React, { PureComponent, createElement } from 'react';
+import React, {createElement, PureComponent} from 'react';
 import pathToRegexp from 'path-to-regexp';
-import { Breadcrumb, Tabs } from 'antd';
+import {Breadcrumb, Tabs} from 'antd';
 import classNames from 'classnames';
 import styles from './index.less';
-import { urlToList } from '../_utils/pathTools';
+import {urlToList} from '../_utils/pathTools';
 
 const { TabPane } = Tabs;
 export function getBreadcrumb(breadcrumbNameMap, url) {

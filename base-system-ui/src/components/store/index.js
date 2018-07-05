@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, {PropTypes} from 'react';
 import store from 'store';
 import expire from 'store/plugins/expire'
 

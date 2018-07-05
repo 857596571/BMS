@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
-import { Layout, Icon } from 'antd';
+import React, {Fragment} from 'react';
+import {Icon, Layout} from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
-import { copyrightText } from '../utils/config';
+import {copyrightText} from '../utils/config';
 
 const { Footer } = Layout;
 const FooterView = () => (

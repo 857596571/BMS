@@ -1,6 +1,6 @@
-import React, { PureComponent, createElement } from 'react';
+import React, {createElement, PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
+import {Button} from 'antd';
 import styles from './index.less';
 
 // TODO: 添加逻辑

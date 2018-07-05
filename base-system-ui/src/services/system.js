@@ -1,4 +1,4 @@
-import { stringify } from 'qs';
+import {stringify} from 'qs';
 import request from '../utils/request';
 
 export async function userLogin(params) {
@@ -35,7 +35,9 @@ export async function updateOrgSorts(params) {
 }
 
 export async function deleteOrgById(id) {
-  return request(`/sys/org/deleteOrgById/${id}`);
+  return request(`/sys/org/delete/${id}`, {
+    method: 'DELETE'
+  });
 }
 
 export async function getListByParentCode(params) {

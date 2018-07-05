@@ -23,17 +23,25 @@
 			AND a.level = #{level}
 		</if>
 		<if test="code != null and code != ''">
-			AND a.parent_id = (select t.id from sys_dict t where a.del_flag = '0' and t.code = #{code})
+			AND a.parent_id = (select t.id from sys_dict t where t.del_flag = '0' and t.code = #{code})
 		</if>
 		ORDER BY a.level, a.sort
     </select>
 
 	<!-- 判断字典编码是否唯一 -->
 	<select id="isCodeExists" resultType="int">
-		select count(1) from sys_dict d where d.code = #{code}
+		select count(1) from sys_dict d where d.del_flag = '0' and d.code = #{code}
 		<if test="id != null and id != ''">
 			and d.id != #{id}
 		</if>
+	</select>
+
+	<!-- 根据父编码查询Map结构的一级子字典，map key为code -->
+	<select id="findMapByParentCodes" resultType="com.modules.system.entity.SysDict">
+		select t.* from sys_dict t where t.del_flag = '0'
+		and t.parent_id in (select t1.id from sys_dict t1 where t1.del_flag = '0' and t1.code in
+		<foreach collection="array" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+		)
 	</select>
 
 	<!-- 查询左右值 -->

@@ -1,4 +1,4 @@
-import { getLoginUser } from '../../services/system';
+import {getLoginUser} from '../../services/system';
 
 export default {
   namespace: 'sysUser',

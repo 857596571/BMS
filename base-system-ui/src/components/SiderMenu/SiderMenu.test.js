@@ -1,4 +1,4 @@
-import { getMenuMatches } from './BaseMenu';
+import {getMenuMatches} from './BaseMenu';
 
 const menu = ['/dashboard', '/userinfo', '/dashboard/name', '/userinfo/:id', '/userinfo/:id/info'];
 

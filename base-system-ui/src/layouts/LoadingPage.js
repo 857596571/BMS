@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
-import { Spin } from 'antd';
-import { connect } from 'dva';
-import { enquireScreen, unenquireScreen } from 'enquire-js';
-import { isUrl } from '../utils/utils';
+import React, {PureComponent} from 'react';
+import {Spin} from 'antd';
+import {connect} from 'dva';
+import {enquireScreen, unenquireScreen} from 'enquire-js';
+import {isUrl} from '../utils/utils';
 
 import BasicLayout from './BasicLayout';
+
 /**
  * 根据菜单取得重定向地址.
  */
@@ -17,8 +18,10 @@ const getMenuData = (data, parentPath = '/', parentAuthority) => {
       if (!isUrl(href)) {
         href = parentPath + item.href;
       }
+
       const result = {
-        ...item,
+        name: item.name,
+        icon: item.icon,
         path: href,
         authority: item.authority || parentAuthority,
       };

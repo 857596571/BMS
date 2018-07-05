@@ -1,9 +1,9 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
-import { routerRedux } from 'dva/router';
+import {notification} from 'antd';
+import {routerRedux} from 'dva/router';
 import store from '../index';
 import config from "../utils/config";
-import { stringify } from 'qs';
+import {stringify} from 'qs';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -88,9 +88,6 @@ export default function request(urlPrefix, options) {
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
       return response.json();
     })
     .catch(e => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Icon } from 'antd';
+import {Icon, Input} from 'antd';
 import styles from './index.less';
 
 const map = {

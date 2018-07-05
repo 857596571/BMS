@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import classNames from 'classnames';
-import { Tag, Icon } from 'antd';
+import {Icon, Tag} from 'antd';
 
 import styles from './index.less';
 

@@ -1,7 +1,7 @@
-import { routerRedux } from 'dva/router';
-import { userLogin } from '../../services/system';
-import { setAuthority } from '../../utils/authority';
-import { reloadAuthorized } from '../../utils/Authorized';
+import {routerRedux} from 'dva/router';
+import {userLogin} from '../../services/system';
+import {setAuthority} from '../../utils/authority';
+import {reloadAuthorized} from '../../utils/Authorized';
 
 export default {
   namespace: 'sysLogin',

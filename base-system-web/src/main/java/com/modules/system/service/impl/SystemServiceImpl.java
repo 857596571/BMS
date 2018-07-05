@@ -229,8 +229,19 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<SysOrg> findOrgList(SysOrg org) {
-        List<SysOrg> list = sysOrgMapper.findList(org);
-        return OrgUtils.makeTree(list);
+        List<SysOrg> list = OrgUtils.makeTree(sysOrgMapper.findList(org));
+        if(CollUtil.isNotEmpty(list)) {
+            Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"1", "2"});
+            for (SysOrg sysOrg : list) {
+                if(dictMap.get(sysOrg.getLevel()) != null) {
+                    sysOrg.setLevelDesc(dictMap.get(sysOrg.getLevel()).getLabel());
+                }
+                if(dictMap.get(sysOrg.getType()) != null) {
+                    sysOrg.setTypeDesc(dictMap.get(sysOrg.getType()).getLabel());
+                }
+            }
+        }
+        return list;
     }
 
     @Override
@@ -244,8 +255,8 @@ public class SystemServiceImpl implements SystemService {
         if(org.getIsNewRecord()) {
             Integer rightNum = sysOrgMapper.getLRNum(org);
             rightNum = rightNum != null ? rightNum : 0;
-            org.setLeftNum(rightNum + 1);
-            org.setRightNum(rightNum + 2);
+            org.setLeftNum(rightNum );
+            org.setRightNum(rightNum + 1);
             if(rightNum != 0 && org.getParentId() != 0) {
                 //如果不是根节点，才更新左右值
                 SysOrg param = new SysOrg();
@@ -271,13 +282,14 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
-    public void deleteOrgById(SysOrg org) {
-        //计算节点数量
-        org.setTreeNodeNum(org.getRightNum() - org.getLeftNum() + 1);
-        org.setDelFlag("1");
-        sysOrgMapper.updateLNum(org);
-        sysOrgMapper.updateRNum(org);
-        sysOrgMapper.deleteById(org.getId());
+    public void deleteOrgById(String id) {
+//        SysOrg org = sysOrgMapper.get(id);
+//        //计算节点数量
+//        org.setTreeNodeNum(org.getRightNum() - org.getLeftNum() + 1);
+//        org.setDelFlag("1");
+//        sysOrgMapper.updateLNum(org);
+//        sysOrgMapper.updateRNum(org);
+        sysOrgMapper.deleteById(id);
     }
 
     @Override

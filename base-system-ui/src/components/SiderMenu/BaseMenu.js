@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
-import { Menu, Icon } from 'antd';
-import { Link } from 'dva/router';
+import React, {PureComponent} from 'react';
+import {Icon, Menu} from 'antd';
+import {Link} from 'dva/router';
 import pathToRegexp from 'path-to-regexp';
-import { urlToList } from '../_utils/pathTools';
+import {urlToList} from '../_utils/pathTools';
 import styles from './index.less';
 
 const { SubMenu } = Menu;

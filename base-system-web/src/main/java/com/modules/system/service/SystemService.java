@@ -137,9 +137,9 @@ public interface SystemService {
 
     /**
      * 删除机构
-     * @param org
+     * @param id
      */
-    void deleteOrgById(SysOrg org);
+    void deleteOrgById(String id);
 
     /* 机构结束 */
 

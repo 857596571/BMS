@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
-import { Link } from 'dva/router';
+import React, {PureComponent} from 'react';
+import {Link} from 'dva/router';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import styles from './index.less';
-import { name, logoText } from '../../utils/config';
+import {logoText, name} from '../../utils/config';
 
 export default class TopNavHeader extends PureComponent {
   render() {

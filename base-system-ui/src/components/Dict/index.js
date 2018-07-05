@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { Form, Select } from 'antd';
-import { stringify } from 'qs';
+import React, {Component} from 'react';
+import {Form, Select} from 'antd';
+import {stringify} from 'qs';
 import request from '../../utils/request';
 import store from '../store'
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -82,7 +83,7 @@ export default class Dict extends Component {
           onChange={this.onChange}
           {...params}
         >
-          {state.data.map(item => <Option value={item.value} key={item.value}>{item.label}</Option>)}
+          {state.data.map(item => <Option value={item.code} key={item.code}>{item.label}</Option>)}
         </Select>}
       </span>
     );

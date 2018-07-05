@@ -1,23 +1,23 @@
-import React, { PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
+import React, {Fragment, PureComponent} from 'react';
+import {connect} from 'dva';
 import moment from 'moment';
 import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
-  Modal,
-  message,
   Badge,
+  Button,
+  Card,
+  Col,
+  DatePicker,
   Divider,
+  Dropdown,
+  Form,
+  Icon,
+  Input,
+  InputNumber,
+  Menu,
+  message,
+  Modal,
+  Row,
+  Select,
 } from 'antd';
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';

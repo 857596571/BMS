@@ -2,6 +2,7 @@ package com.modules.system.mapper;
 
 import com.common.mapper.BaseMapper;
 import com.modules.system.entity.SysDict;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Map;
@@ -43,5 +44,12 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
      * @param sysDict
      */
     void updateRNum(SysDict sysDict);
+
+    /**
+     * 根据父编码查询Map结构的一级子字典，map key为code
+     * @param codes
+     */
+    @MapKey("code")
+    Map<String, SysDict> findMapByParentCodes(String[] codes);
 
 }

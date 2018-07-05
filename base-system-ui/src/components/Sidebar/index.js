@@ -1,5 +1,5 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Select, List, Switch, Divider, Radio } from 'antd';
+import React, {Fragment, PureComponent} from 'react';
+import {Divider, List, Radio, Select, Switch} from 'antd';
 import DrawerMenu from 'rc-drawer-menu';
 import styles from './index.less';
 import ThemeColor from './ThemeColor';

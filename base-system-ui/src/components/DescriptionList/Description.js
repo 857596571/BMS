@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Col } from 'antd';
+import {Col} from 'antd';
 import styles from './index.less';
 import responsive from './responsive';
 

@@ -1,20 +1,6 @@
-import React, { PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  Button,
-  Modal,
-  message,
-  Badge,
-  Table,
-  Divider,
-} from 'antd';
+import React, {Fragment, PureComponent} from 'react';
+import {connect} from 'dva';
+import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, message, Modal, Row, Select, Table,} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import * as system from '../../services/system';
@@ -50,7 +36,12 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      handleAdd({ ...fieldsValue, parentId: item.parentId || 0 });
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+        parentId: item.parentId || 0,
+        state: item.state || 1,
+      });
     });
   };
 
@@ -74,21 +65,6 @@ const CreateForm = Form.create()(props => {
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem label="部门类型：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('type', {
-              initialValue: item.type ? item.type + '' : '',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择部门类型',
-                },
-              ],
-            })(<Dict code={1} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
           <FormItem label="机构名称：" hasFeedback {...formItemLayout}>
             {form.getFieldDecorator('name', {
               initialValue: item.name,
@@ -101,6 +77,21 @@ const CreateForm = Form.create()(props => {
             })(<Input />)}
           </FormItem>
         </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+        <FormItem label="机构级别：" hasFeedback {...formItemLayout}>
+          {form.getFieldDecorator('level', {
+            initialValue: item.level ? item.level + '' : '',
+            rules: [
+              {
+                required: true,
+                message: '请选择机构级别',
+              },
+            ],
+          })(<Dict code={1} />)}
+        </FormItem>
+      </Col>
         <Col span={12}>
           <FormItem label="机构编码：" hasFeedback {...formItemLayout}>
             {form.getFieldDecorator('code', {
@@ -127,16 +118,16 @@ const CreateForm = Form.create()(props => {
       </Row>
       <Row>
         <Col span={12}>
-          <FormItem label="机构状态：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('state', {
-              initialValue: item.state,
+          <FormItem label="机构类型：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('type', {
+              initialValue: item.type ? item.type + '' : '',
               rules: [
                 {
                   required: true,
-                  message: '请选择机构状态',
+                  message: '请选择机构类型',
                 },
               ],
-            })(<Input />)}
+            })(<Dict code={2} />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -250,7 +241,7 @@ export default class OrgList extends PureComponent {
     this.props.dispatch({
       type: 'sysOrg/deleteById',
       id,
-      callback: this.initQuery,
+      callback: () => this.initQuery(),
     });
   }
 
@@ -263,6 +254,11 @@ export default class OrgList extends PureComponent {
         title: '名称',
         key: 'name',
         dataIndex: 'name',
+      },
+      {
+        title: '编码',
+        key: 'code',
+        dataIndex: 'code',
       },
       {
         title: '级别',
@@ -321,9 +317,6 @@ export default class OrgList extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
-                新建
-              </Button>
               {Object.keys(tempSorts).length > 0 && (
                 <Button type="primary" onClick={() => this.handleUpdateSorts()}>
                   更新排序

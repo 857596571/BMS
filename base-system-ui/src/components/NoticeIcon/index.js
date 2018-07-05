@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import { Popover, Icon, Tabs, Badge, Spin } from 'antd';
+import React, {PureComponent} from 'react';
+import {Badge, Icon, Popover, Spin, Tabs} from 'antd';
 import classNames from 'classnames';
 import List from './NoticeList';
 import styles from './index.less';

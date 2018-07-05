@@ -1,5 +1,3 @@
-import { getListByParentCode } from '../../services/system';
-
 export default {
   namespace: 'sysDict',
   state: {

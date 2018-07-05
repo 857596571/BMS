@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
+import React, {PureComponent} from 'react';
+import {connect} from 'dva';
 import styles from './GridContent.less';
-import { setting } from '../utils/config';
+import {setting} from '../utils/config';
 
 class GridContent extends PureComponent {
   render() {
