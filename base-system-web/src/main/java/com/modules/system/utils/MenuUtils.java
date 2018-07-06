@@ -1,5 +1,6 @@
 package com.modules.system.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.modules.system.entity.SysMenu;
 
 import java.util.ArrayList;
@@ -19,21 +20,21 @@ public class MenuUtils {
      */
     public static void sortList(List<SysMenu> list, List<SysMenu> sourceList, String parentId) {
         sourceList.stream()
-                .filter(menu -> menu.getParentId() != null && menu.getParentId().toString().equals(parentId))
-                .forEach(menu -> {
-                    list.add(menu);
-                    // 判断是否还有子节点, 有则继续获取子节点
-                    sourceList.stream()
-                            .filter(child -> child.getParentId() != null && child.getParentId().toString().equals(menu.getId()))
-                            .peek(child -> sortList(list, sourceList, menu.getId()))
-                            .findFirst();
-                });
+                .filter(menu -> menu.getParentId() != null && menu.getParentId().toString()
+                        .equals(parentId)).forEach(menu -> {
+            list.add(menu);
+            // 判断是否还有子节点, 有则继续获取子节点
+            sourceList.stream()
+                    .filter(child -> child.getParentId() != null && child.getParentId().toString()
+                            .equals(menu.getId()))
+                    .peek(child -> sortList(list, sourceList, menu.getId())).findFirst();
+        });
     }
 
     /**
      * 构建树形结构
      * @param list 原始数据
-     * @param uselevel 级别[1:菜单，2:功能，2:功能菜单]
+     * @param uselevel 级别[1:菜单，2:功能]
      * @return 菜单列表
      */
     public static List<SysMenu> makeTree(List<SysMenu> list, Boolean uselevel) {
@@ -42,7 +43,7 @@ public class MenuUtils {
         for (SysMenu node : list) {
             // 原始数据对象为Node，放入dtoMap中。
             String id = node.getId();
-            if (uselevel ? (node.getLevel() != 2) : true) {
+            if (uselevel ? (StrUtil.isNotBlank(node.getLevel()) && !node.getLevel().equals("2")) : true) {
                 dtoMap.put(id, node);
             }
         }

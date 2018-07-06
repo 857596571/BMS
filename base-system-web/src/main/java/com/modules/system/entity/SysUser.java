@@ -20,11 +20,11 @@ public class SysUser extends DataEntity {
     /**
      * 机构ID
      */
-    private Integer orgId;
+    private String orgId;
     /**
      * 角色id
      */
-    private Integer roleId;
+    private String roleId;
     /**
      * 机构名称
      */
@@ -55,9 +55,13 @@ public class SysUser extends DataEntity {
      */
     private String mobile;
     /**
-     * 是否可用
+     * 状态
      */
-    private Integer state;
+    private String state;
+    /**
+     * 状态
+     */
+    private String stateDesc;
     /**
      * 备注
      */
@@ -85,19 +89,19 @@ public class SysUser extends DataEntity {
         super(id);
     }
 
-    public Integer getOrgId() {
+    public String getOrgId() {
         return orgId;
     }
 
-    public void setOrgId(Integer orgId) {
+    public void setOrgId(String orgId) {
         this.orgId = orgId;
     }
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 
@@ -157,11 +161,11 @@ public class SysUser extends DataEntity {
         this.mobile = mobile;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -205,5 +209,23 @@ public class SysUser extends DataEntity {
 
     public void setLastPasswordResetDate(Date lastPasswordResetDate) {
         this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
+    /**
+     * Getter method for property <tt>stateDesc</tt>.
+     *
+     * @return property value of stateDesc
+     */
+    public String getStateDesc() {
+        return stateDesc;
+    }
+
+    /**
+     * Setter method for property <tt>stateDesc</tt>.
+     *
+     * @param stateDesc value to be assigned to property stateDesc
+     */
+    public void setStateDesc(String stateDesc) {
+        this.stateDesc = stateDesc;
     }
 }

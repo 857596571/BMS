@@ -19,21 +19,37 @@ public class SysRole extends DataEntity {
      */
     private String name;
     /**
-     * 角色类型[1:管理角色，2:普通角色]
+     * 角色类型
      */
-    private Integer type;
+    private String type;
     /**
-     * 状态[1:在用，0:停用]
+     * 角色类型描述
      */
-    private Integer state;
+    private String typeDesc;
     /**
-     * 等级[1:系统，2:业务]
+     * 状态
      */
-    private Integer level;
+    private String state;
+    /**
+     * 状态描述
+     */
+    private String stateDesc;
+    /**
+     * 等级
+     */
+    private String level;
+    /**
+     * 等级描述
+     */
+    private String levelDesc;
     /**
      * 数据范围[1：所有数据；2：所在机构及以下数据；3：所在机构数据；4：仅本人数据；5：按明细设置]
      */
-    private Integer dataScope;
+    private String dataScope;
+    /**
+     * 数据范围描述
+     */
+    private String dataScopeDesc;
     /**
      * 拥有菜单列表
      */
@@ -65,36 +81,108 @@ public class SysRole extends DataEntity {
         this.name = name;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
-    public Integer getDataScope() {
+    public String getDataScope() {
         return dataScope;
     }
 
-    public void setDataScope(Integer dataScope) {
+    public void setDataScope(String dataScope) {
         this.dataScope = dataScope;
+    }
+
+    /**
+     * Getter method for property <tt>typeDesc</tt>.
+     *
+     * @return property value of typeDesc
+     */
+    public String getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Setter method for property <tt>typeDesc</tt>.
+     *
+     * @param typeDesc value to be assigned to property typeDesc
+     */
+    public void setTypeDesc(String typeDesc) {
+        this.typeDesc = typeDesc;
+    }
+
+    /**
+     * Getter method for property <tt>stateDesc</tt>.
+     *
+     * @return property value of stateDesc
+     */
+    public String getStateDesc() {
+        return stateDesc;
+    }
+
+    /**
+     * Setter method for property <tt>stateDesc</tt>.
+     *
+     * @param stateDesc value to be assigned to property stateDesc
+     */
+    public void setStateDesc(String stateDesc) {
+        this.stateDesc = stateDesc;
+    }
+
+    /**
+     * Getter method for property <tt>levelDesc</tt>.
+     *
+     * @return property value of levelDesc
+     */
+    public String getLevelDesc() {
+        return levelDesc;
+    }
+
+    /**
+     * Setter method for property <tt>levelDesc</tt>.
+     *
+     * @param levelDesc value to be assigned to property levelDesc
+     */
+    public void setLevelDesc(String levelDesc) {
+        this.levelDesc = levelDesc;
+    }
+
+    /**
+     * Getter method for property <tt>dataScopeDesc</tt>.
+     *
+     * @return property value of dataScopeDesc
+     */
+    public String getDataScopeDesc() {
+        return dataScopeDesc;
+    }
+
+    /**
+     * Setter method for property <tt>dataScopeDesc</tt>.
+     *
+     * @param dataScopeDesc value to be assigned to property dataScopeDesc
+     */
+    public void setDataScopeDesc(String dataScopeDesc) {
+        this.dataScopeDesc = dataScopeDesc;
     }
 
     public List<SysMenu> getMenus() {

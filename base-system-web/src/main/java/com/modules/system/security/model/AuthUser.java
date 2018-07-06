@@ -30,7 +30,7 @@ public class AuthUser extends AbstractAuthUser {
     /**
      * 机构ID
      */
-    private Integer orgId;
+    private String orgId;
     /**
      * 机构名称
      */
@@ -66,7 +66,7 @@ public class AuthUser extends AbstractAuthUser {
     /**
      * 是否可用
      */
-    private Integer state;
+    private String state;
     /**
      * 角色列表
      */
@@ -92,11 +92,11 @@ public class AuthUser extends AbstractAuthUser {
         this.id = id;
     }
 
-    public Integer getOrgId() {
+    public String getOrgId() {
         return orgId;
     }
 
-    public void setOrgId(Integer orgId) {
+    public void setOrgId(String orgId) {
         this.orgId = orgId;
     }
 
@@ -137,7 +137,7 @@ public class AuthUser extends AbstractAuthUser {
 
     @Override
     public boolean isEnabled() {
-        return state == 1;
+        return state.equals("1");
     }
 
     public void setPassword(String password) {
@@ -177,11 +177,11 @@ public class AuthUser extends AbstractAuthUser {
         this.authorities = authorities;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 

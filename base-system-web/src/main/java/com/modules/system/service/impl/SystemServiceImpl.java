@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
  */
-@Service
+@SuppressWarnings("ALL") @Service
 public class SystemServiceImpl implements SystemService {
 
     /**
@@ -113,7 +113,7 @@ public class SystemServiceImpl implements SystemService {
         return sysDictMapper.isCodeExists(sysDict) > 0;
     }
 
-    @Override
+    @SuppressWarnings("AlibabaTransactionMustHaveRollback") @Override
     @Transactional
     public SysDict saveDict(SysDict sysDict) {
         if(sysDict.getIsNewRecord()) {
@@ -307,7 +307,7 @@ public class SystemServiceImpl implements SystemService {
             // 更新角色数据
             role.preUpdate();
             sysRoleMapper.update(role);
-            if(role.getDataScope() == 5) {
+            if(StrUtil.equals(role.getDataScope(), "5")) {
                 sysRoleMapper.deleteRoleOrg(role);
             }
         }

@@ -13,31 +13,39 @@ public class SysMenu extends DataTreeEntity {
     /**
      * 名称
      */
-    private String name;
+    private String        name;
     /**
      * 链接
      */
-    private String href;
+    private String        href;
     /**
      * 图标
      */
-    private String icon;
+    private String        icon;
     /**
      * 排序
      */
-    private Integer sort;
+    private Integer       sort;
     /**
-     * 状态[1:显示，0:不显示]
+     * 状态
      */
-    private Integer state;
+    private String        state;
     /**
-     * 级别[1:菜单，2:功能]
+     * 状态
      */
-    private Integer level;
+    private String        stateDesc;
+    /**
+     * 级别
+     */
+    private String        level;
+    /**
+     * 级别描述
+     */
+    private String        levelDesc;
     /**
      * 权限标识
      */
-    private String permission;
+    private String        permission;
     /**
      * 子节点
      */
@@ -78,19 +86,19 @@ public class SysMenu extends DataTreeEntity {
         this.sort = sort;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
@@ -111,11 +119,49 @@ public class SysMenu extends DataTreeEntity {
     }
 
     /**
+     * Getter method for property <tt>stateDesc</tt>.
+     *
+     * @return property value of stateDesc
+     */
+    public String getStateDesc() {
+        return stateDesc;
+    }
+
+    /**
+     * Setter method for property <tt>stateDesc</tt>.
+     *
+     * @param stateDesc value to be assigned to property stateDesc
+     */
+    public void setStateDesc(String stateDesc) {
+        this.stateDesc = stateDesc;
+    }
+
+    /**
+     * Getter method for property <tt>levelDesc</tt>.
+     *
+     * @return property value of levelDesc
+     */
+    public String getLevelDesc() {
+        return levelDesc;
+    }
+
+    /**
+     * Setter method for property <tt>levelDesc</tt>.
+     *
+     * @param levelDesc value to be assigned to property levelDesc
+     */
+    public void setLevelDesc(String levelDesc) {
+        this.levelDesc = levelDesc;
+    }
+
+    /**
      * 添加子节点
      * @param node
      */
     public void addChild(SysMenu node) {
-        if(this.children == null) this.children = new ArrayList<>();
+        if (this.children == null) {
+            this.children = new ArrayList<>();
+        }
         this.children.add(node);
     }
 }

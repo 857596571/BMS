@@ -30,7 +30,7 @@ public class SysOrg extends DataTreeEntity {
     /**
      * 状态[1:在用，0:停用]
      */
-    private Integer state;
+    private String state;
     /**
      * 状态描述
      */
@@ -38,7 +38,7 @@ public class SysOrg extends DataTreeEntity {
     /**
      * 类型
      */
-    private Integer type;
+    private String type;
     /**
      * 类型描述
      */
@@ -46,7 +46,7 @@ public class SysOrg extends DataTreeEntity {
     /**
      * 级别
      */
-    private Integer level;
+    private String level;
     /**
      * 级别描述
      */
@@ -88,11 +88,11 @@ public class SysOrg extends DataTreeEntity {
         this.sort = sort;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -104,11 +104,11 @@ public class SysOrg extends DataTreeEntity {
         this.stateDesc = stateDesc;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -120,11 +120,11 @@ public class SysOrg extends DataTreeEntity {
         this.typeDesc = typeDesc;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
@@ -149,7 +149,9 @@ public class SysOrg extends DataTreeEntity {
      * @param node
      */
     public void addChild(SysOrg node) {
-        if(this.children == null) this.children = new ArrayList<>();
+        if(this.children == null) {
+            this.children = new ArrayList<>();
+        }
         this.children.add(node);
     }
 }

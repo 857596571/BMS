@@ -21,7 +21,7 @@ public class SysDictController extends BaseController {
 	private SystemService systemService;
 
     /**
-     * 获取制定编码下的所有子字典
+     * 获取指定编码下的所有子字典
      * @param code 编码
      * @return
      */

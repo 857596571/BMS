@@ -5,7 +5,6 @@ import com.common.api.DataTreeEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * 字典管理
  */
@@ -14,39 +13,51 @@ public class SysDict extends DataTreeEntity {
     /**
      * 编码
      */
-    private String code;
+    private String        code;
     /**
      * 标签
      */
-    private String label;
+    private String        label;
     /**
      * 数据值
      */
-    private String value;
+    private String        value;
     /**
-     * 值类型[1:值，2:表达式]
+     * 值类型
      */
-    private Integer type;
+    private String        type;
+    /**
+     * 值类型
+     */
+    private String        typeDesc;
     /**
      * IF表达式
      */
-    private String expression;
+    private String        expression;
     /**
      * 描述
      */
-    private String description;
+    private String        description;
     /**
      * 数据值
      */
-    private Integer sort;
+    private Integer       sort;
     /**
-     * 状态[1:在用，0:停用]
+     * 状态
      */
-    private Integer state;
+    private String        state;
     /**
-     * 等级[1:系统，2:业务]
+     * 状态描述
      */
-    private String level;
+    private String        stateDesc;
+    /**
+     * 等级
+     */
+    private String        level;
+    /**
+     * 等级描述
+     */
+    private String        levelDesc;
     /**
      * 子节点
      */
@@ -76,11 +87,11 @@ public class SysDict extends DataTreeEntity {
         this.value = value;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -108,11 +119,11 @@ public class SysDict extends DataTreeEntity {
         this.sort = sort;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -133,28 +144,84 @@ public class SysDict extends DataTreeEntity {
     }
 
     /**
+     * Getter method for property <tt>typeDesc</tt>.
+     *
+     * @return property value of typeDesc
+     */
+    public String getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Setter method for property <tt>typeDesc</tt>.
+     *
+     * @param typeDesc value to be assigned to property typeDesc
+     */
+    public void setTypeDesc(String typeDesc) {
+        this.typeDesc = typeDesc;
+    }
+
+    /**
+     * Getter method for property <tt>stateDesc</tt>.
+     *
+     * @return property value of stateDesc
+     */
+    public String getStateDesc() {
+        return stateDesc;
+    }
+
+    /**
+     * Setter method for property <tt>stateDesc</tt>.
+     *
+     * @param stateDesc value to be assigned to property stateDesc
+     */
+    public void setStateDesc(String stateDesc) {
+        this.stateDesc = stateDesc;
+    }
+
+    /**
+     * Getter method for property <tt>levelDesc</tt>.
+     *
+     * @return property value of levelDesc
+     */
+    public String getLevelDesc() {
+        return levelDesc;
+    }
+
+    /**
+     * Setter method for property <tt>levelDesc</tt>.
+     *
+     * @param levelDesc value to be assigned to property levelDesc
+     */
+    public void setLevelDesc(String levelDesc) {
+        this.levelDesc = levelDesc;
+    }
+
+    /**
      * 添加子节点
      * @param node
      */
     public void addChild(SysDict node) {
-        if(this.children == null) this.children = new ArrayList<>();
+        if (this.children == null) {
+            this.children = new ArrayList<>();
+        }
         this.children.add(node);
     }
 
-//	public static boolean executeExpression(Map<String, Object> rep) {
-//		ScriptEngine jse = new ScriptEngineManager().getEngineByName("JavaScript");
-//		if(CollectionUtil.isNotEmpty(rep)) {
-//			for (Map.Entry<String, Object> entry : rep.entrySet()) {
-//				jse.put(entry.getKey(), entry.getValue());
-//			}
-//			try {
-//				if((boolean) jse.eval(getExpression())) {
-//					flag += sysDict.getValue();
-//				}
-//			} catch (ScriptException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return false;
-//	}
+    //	public static boolean executeExpression(Map<String, Object> rep) {
+    //		ScriptEngine jse = new ScriptEngineManager().getEngineByName("JavaScript");
+    //		if(CollectionUtil.isNotEmpty(rep)) {
+    //			for (Map.Entry<String, Object> entry : rep.entrySet()) {
+    //				jse.put(entry.getKey(), entry.getValue());
+    //			}
+    //			try {
+    //				if((boolean) jse.eval(getExpression())) {
+    //					flag += sysDict.getValue();
+    //				}
+    //			} catch (ScriptException e) {
+    //				e.printStackTrace();
+    //			}
+    //		}
+    //		return false;
+    //	}
 }

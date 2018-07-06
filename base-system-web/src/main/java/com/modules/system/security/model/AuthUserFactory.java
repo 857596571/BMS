@@ -53,7 +53,7 @@ public final class AuthUserFactory {
     private static List<SimpleGrantedAuthority> mapToGrantedAuthorities(List<SysRole> sysRoles, List<SysMenu> sysMenus) {
 
         List<SimpleGrantedAuthority> authorities =
-            sysRoles.stream().filter(role -> role.getState() == 1)
+            sysRoles.stream().filter(role -> role.getState().equals("1"))
                 .map(sysRole -> new SimpleGrantedAuthority(sysRole.getCode())).collect(Collectors.toList());
 
         // 添加基于Permission的权限信息
