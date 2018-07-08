@@ -59,7 +59,7 @@ public class OrgUtils {
             }
         }
         List<SysOrg> resultSort = new ArrayList<>();
-        OrgUtils.sortList(resultSort, result, "0");
+        OrgUtils.sortList(resultSort, result, "1");
         return result;
     }
 }

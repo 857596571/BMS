@@ -41,8 +41,6 @@
         </triggeringPolicy>
     </appender>
 
-    <logger name="com.system.web.WebSystemApplication" level="INFO"/>
-
     <springProfile name="local">
         <logger name="com" level="DEBUG"/>
         <root level="INFO">
@@ -51,7 +49,7 @@
     </springProfile>
 
     <springProfile name="dev">
-        <logger name="com.cng" level="DEBUG"/>
+        <logger name="com" level="DEBUG"/>
         <root level="ERROR">
             <appender-ref ref="FILE"/>
         </root>
@@ -62,5 +60,10 @@
             <appender-ref ref="FILE"/>
         </root>
     </springProfile>
+
+    <logger name="com.modules.system.mapper.SysLogMapper.*" level="ERROR"/>
+    <logger name="com.modules.system.log.aop.*" level="ERROR"/>
+    <logger name="com.common.datasource.DynamicPlugin" level="ERROR"/>
+    <logger name="com.common.datasource.DynamicDataSourceTransactionManager" level="ERROR"/>
 
 </configuration>

@@ -5,6 +5,7 @@ import com.modules.system.entity.SysOrg;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 机构管理
@@ -37,4 +38,16 @@ public interface SysOrgMapper extends BaseMapper<SysOrg> {
      * @param org
      */
     void updateRNum(SysOrg org);
+
+    /**
+     * 更新排序
+     * @param sysOrg
+     */
+    void updateSort(SysOrg sysOrg);
+
+    /**
+     * 更新状态
+     * @param param
+     */
+    void updateStates(Map<String,String> param);
 }

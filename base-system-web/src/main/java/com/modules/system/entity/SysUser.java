@@ -26,6 +26,10 @@ public class SysUser extends DataEntity {
      */
     private String roleId;
     /**
+     * 角色ids
+     */
+    private String roleIds;
+    /**
      * 机构名称
      */
     private String orgName;
@@ -42,6 +46,14 @@ public class SysUser extends DataEntity {
      * 姓名
      */
     private String name;
+    /**
+     * 类型
+     */
+    private String type;
+    /**
+     * 类型描述
+     */
+    private String typeDesc;
     /**
      * 邮箱
      */
@@ -227,5 +239,29 @@ public class SysUser extends DataEntity {
      */
     public void setStateDesc(String stateDesc) {
         this.stateDesc = stateDesc;
+    }
+
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTypeDesc() {
+        return typeDesc;
+    }
+
+    public void setTypeDesc(String typeDesc) {
+        this.typeDesc = typeDesc;
     }
 }

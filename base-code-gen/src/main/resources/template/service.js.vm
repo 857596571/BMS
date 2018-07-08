@@ -4,17 +4,14 @@ import request from '../utils/request';
  * 列表查询
  */
 export async function queryList(params) {
-    return request('/${pathName}/list', {
-        method: 'GET'
-        body: params,
-    });
+    return request('/${pathName}/list');
 }
 
 /**
  * 保存
  */
 export async function saveInfo(params) {
-    return request('/${pathName}/save', {
+    return request('/${pathName}/save/', {
         method: 'POST'
         body: params,
     });

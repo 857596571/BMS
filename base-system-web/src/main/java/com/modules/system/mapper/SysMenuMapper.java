@@ -8,6 +8,7 @@ import com.modules.system.entity.SysOrg;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 菜单DAO接口
@@ -27,7 +28,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param menu
      * @return
      */
-    int getLRNum(SysMenu menu);
+    Integer getLRNum(SysMenu menu);
 
     /**
      * 更新左值
@@ -40,4 +41,16 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param menu
      */
     void updateRNum(SysMenu menu);
+
+    /**
+     * 更新排序
+     * @param sysMenu
+     */
+    void updateSort(SysMenu sysMenu);
+
+    /**
+     * 更新状态
+     * @param param
+     */
+    void updateStates(Map<String,String> param);
 }

@@ -34,21 +34,21 @@
     <!-- 更新左值 -->
     <update id="updateLNum">
         update sys_org set
-        <if test="delFlag != '1'">
-          left_num = left_num + 2 where left_num &gt;= #{rightNum}
+        <if test='delFlag != "1"'>
+            left_num = left_num + 2 where left_num &gt;= #{rightNum}
         </if>
-        <if test="delFlag == '1'">
-          left_num = left_num - #{treeNodeNum} where left_num &gt;= #{rightNum}
+        <if test='delFlag == "1"'>
+            left_num = left_num - #{treeNodeNum} where left_num &gt;= #{rightNum}
         </if>
     </update>
 
     <!-- 更新右值 -->
     <update id="updateRNum">
         update sys_org set
-        <if test="delFlag != '1'">
+        <if test='delFlag != "1"'>
             right_num = right_num + 2 where right_num &gt;= #{rightNum}
         </if>
-        <if test="delFlag == '1'">
+        <if test='delFlag == "1"'>
             right_num = right_num - #{treeNodeNum} where right_num &gt;= #{rightNum}
         </if>
     </update>
@@ -100,17 +100,25 @@
             <if test="level != null">level = #{level},</if>
             <if test="state != null">state = #{state},</if>
             <if test="sort != null">sort = #{sort},</if>
-            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
-            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag}</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            remarks = #{remarks}
         </set>
         where id = #{id}
     </update>
 
+    <!-- 更新机构排序 -->
+    <update id="updateSort" parameterType="com.modules.system.entity.SysOrg">
+		update sys_org set sort = #{sort} where id = #{id}
+	</update>
+
+    <!-- 更新机构状态 -->
+    <update id="updateStates">
+		update sys_org set state = #{state} where left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+	</update>
+
     <!-- 删除机构 -->
-    <update id="deleteById">
-        UPDATE sys_org
-        SET del_flag = '1'
-        WHERE id = #{id}
-    </update>
+    <delete id="delete">
+		delete from sys_org WHERE left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+	</delete>
 
 </mapper>

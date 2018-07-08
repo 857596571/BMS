@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * Service基类
  */
-@Transactional(readOnly = true)
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends DataEntity> implements BaseService<T> {
 
     /**
@@ -110,7 +109,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends DataEnt
      * @return 实体对象
      */
     @Override
-    @Transactional(readOnly = false)
     public T save(T entity) {
         if (entity.getIsNewRecord()) {
             entity.preInsert();
@@ -128,7 +126,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends DataEnt
      * @param entity 实体对象
      */
     @Override
-    @Transactional(readOnly = false)
     public void delete(T entity) {
         mapper.delete(entity);
     }
@@ -139,7 +136,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends DataEnt
      * @param entity 实体对象
      */
     @Override
-    @Transactional(readOnly = false)
     public void updateCondition(T entity) {
         mapper.updateCondition(entity);
     }
@@ -150,7 +146,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends DataEnt
      * @param id 主键
      */
     @Override
-    @Transactional(readOnly = false)
     public void deleteById(String id) {
         mapper.deleteById(id);
     }

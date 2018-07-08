@@ -71,18 +71,26 @@ public class AuthenticationController extends BaseController {
             tokenMap.put("expires_in", jwtTokenUtil.getExpiration());
             tokenMap.put("token_type", TokenUtil.TOKEN_TYPE_BEARER);
         } catch (UsernameNotFoundException e) { //用户找不到
+            logger.error("该账号不存在", e.getMessage(), e);
             return Result.error(1001, "该账号不存在");
         } catch (BadCredentialsException e) { //坏的凭据
+            logger.error("登录账号或密码错误(未分配角色或角色已冻结)", e.getMessage(), e);
             return Result.error(1002, "登录账号或密码错误(未分配角色或角色已冻结)");
         } catch (AccountExpiredException e) { //账户过期
+            logger.error("该账户已过期", e.getMessage(), e);
             return Result.error(1003, "该账户已过期");
         } catch (LockedException e) { //账户锁定
+            logger.error("该账户已锁定", e.getMessage(), e);
             return Result.error(1004, "该账户已锁定");
         } catch (DisabledException e) { //账户不可用
+            logger.error("该账户已冻结", e.getMessage(), e);
             return Result.error(1005, "该账户已冻结");
         } catch (CredentialsExpiredException e) { //证书过期
-            tokenMap.put("code", 1006);
+            logger.error("证书过期", e.getMessage(), e);
             return Result.error(1006, "证书过期");
+        } catch (Exception e) { //证书过期
+            logger.error("未知异常", e.getMessage(), e);
+            return Result.error(1007, "未知异常");
         }
         return Result.success(tokenMap);
     }

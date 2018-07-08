@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Form, Select} from 'antd';
+import { Select, Radio } from 'antd';
 import {stringify} from 'qs';
 import request from '../../utils/request';
 import store from '../store'
 
-const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 //缓存前缀
@@ -73,18 +73,28 @@ export default class Dict extends Component {
     }
   }
   render() {
-    const { info, code, codeValue } = this.props;
+    const { excludeCodes = [], radio, query} = this.props;
     const params = Object.assign({}, {style: {width: '100%'}} , this.props)
     const state = this.state;
+
     return (
       <span>
-        {info ? getDictLabel(code, codeValue) :
-        <Select
-          onChange={this.onChange}
-          {...params}
-        >
-          {state.data.map(item => <Option value={item.code} key={item.code}>{item.label}</Option>)}
-        </Select>}
+      {
+        radio ?
+          <RadioGroup {...params}>
+            {query && <Radio value={''}>全部</Radio>}
+            {state.data.filter(item => excludeCodes.filter(code => item.code === code).length === 0 )
+              .map(item => <Radio value={item.code} key={item.code}>{item.label}</Radio>)}
+          </RadioGroup>
+          :
+          <Select
+            onChange={this.onChange}
+            {...params}
+          >
+            {state.data.filter(item => excludeCodes.filter(code => item.code === code).length === 0 )
+              .map(item => <Option value={item.code} key={item.code}>{item.label}</Option>)}
+          </Select>
+      }
       </span>
     );
   }

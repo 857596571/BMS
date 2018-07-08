@@ -5,7 +5,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import * as system from '../../services/system';
 
-import styles from './OrgList.less';
+import styles from './System.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -18,149 +18,6 @@ const formItemLayout = {
     span: 14,
   },
 };
-const stateMap = ['error', 'success'];
-const state = ['停用', '启用'];
-const CreateForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    itemType,
-    item,
-    codeExists,
-    handleAdd,
-    handleModalVisible,
-    dispatch,
-  } = props;
-
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd({
-        ...fieldsValue,
-        id: item.id,
-        parentId: item.parentId || 0,
-        state: item.state || 1,
-      });
-    });
-  };
-
-  const modalProps = {
-    title: '新建',
-    visible,
-    onOk: okHandle,
-    onCancel: handleModalVisible,
-  };
-
-  if (itemType === 'create') modalProps.title = '新建';
-  if (itemType === 'update') modalProps.title = '修改';
-  if (itemType === 'sub') modalProps.title = '新建子机构';
-
-  return (
-    <Modal {...modalProps}>
-      <Row>
-        <Col span={12}>
-          <FormItem label="父部门：" hasFeedback {...formItemLayout}>
-            {<span>{item.parentName || '无'}</span>}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="机构名称：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('name', {
-              initialValue: item.name,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入机构名称',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-        <FormItem label="机构级别：" hasFeedback {...formItemLayout}>
-          {form.getFieldDecorator('level', {
-            initialValue: item.level ? item.level + '' : '',
-            rules: [
-              {
-                required: true,
-                message: '请选择机构级别',
-              },
-            ],
-          })(<Dict code={1} />)}
-        </FormItem>
-      </Col>
-        <Col span={12}>
-          <FormItem label="机构编码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('code', {
-              initialValue: item.code,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入机构编码',
-                },
-                {
-                  async validator(rule, value, callback) {
-                    const data = await system.isOrgCodeExists({
-                      code: value,
-                      id: item.id,
-                    });
-                    if (data.data) callback('该机构编码已存在');
-                    callback();
-                  },
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="机构类型：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('type', {
-              initialValue: item.type ? item.type + '' : '',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择机构类型',
-                },
-              ],
-            })(<Dict code={2} />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="机构排序：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('sort', {
-              initialValue: item.sort,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入机构顺序',
-                },
-              ],
-            })(<InputNumber min={0} style={{ width: '100%' }} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('remarks', {
-              initialValue: item.remarks,
-              rules: [
-                {
-                  message: '请输入机构名称',
-                },
-              ],
-            })(<Input.TextArea rows={2} />)}
-          </FormItem>
-        </Col>
-      </Row>
-    </Modal>
-  );
-});
 
 @connect(({ sysOrg, loading }) => ({
   sysOrg,
@@ -246,27 +103,27 @@ export default class OrgList extends PureComponent {
   }
 
   render() {
-    const { sysOrg: { list, codeExists }, loading } = this.props;
+    const { sysOrg: { list }, loading } = this.props;
     const { modalVisible, itemType, item, tempSorts } = this.state;
 
     const columns = [
       {
-        title: '名称',
+        title: '机构名称',
         key: 'name',
         dataIndex: 'name',
       },
       {
-        title: '编码',
+        title: '机构编码',
         key: 'code',
         dataIndex: 'code',
       },
       {
-        title: '级别',
+        title: '机构级别',
         key: 'levelDesc',
         dataIndex: 'levelDesc',
       },
       {
-        title: '类型',
+        title: '机构类型',
         key: 'typeDesc',
         dataIndex: 'typeDesc',
       },
@@ -305,7 +162,6 @@ export default class OrgList extends PureComponent {
     const createModalProps = {
       item,
       itemType,
-      codeExists,
       visible: modalVisible,
       dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
@@ -324,6 +180,7 @@ export default class OrgList extends PureComponent {
               )}
             </div>
             <Table
+              defaultExpandedRowKeys={['2']}
               loading={loading}
               dataSource={list}
               columns={columns}
@@ -337,3 +194,138 @@ export default class OrgList extends PureComponent {
     );
   }
 }
+
+const CreateForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    itemType,
+    item,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+        parentId: item.parentId || 0,
+        state: item.state || 'ON',
+      });
+    });
+  };
+
+  const modalProps = {
+    title: '新建',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  if (itemType === 'create') modalProps.title = '新建';
+  if (itemType === 'update') modalProps.title = '修改';
+  if (itemType === 'sub') modalProps.title = '新建子机构';
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={12}>
+          <FormItem label="父部门：" hasFeedback {...formItemLayout}>
+            {<span>{item.parentName || '无'}</span>}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="机构名称：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('name', {
+              initialValue: item.name,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入机构名称',
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="机构级别：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('level', {
+              initialValue: item.level,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择机构级别',
+                },
+              ],
+            })(<Dict code={'ORG_LEVEL'} />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="机构编码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('code', {
+              initialValue: item.code,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入机构编码',
+                },
+                {
+                  async validator(rule, value, callback) {
+                    const data = await system.isOrgCodeExists({
+                      code: value,
+                      id: item.id,
+                    });
+                    if (data.data) callback('该机构编码已存在');
+                    callback();
+                  },
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="机构类型：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('type', {
+              initialValue: item.type,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择机构类型',
+                },
+              ],
+            })(<Dict code={'ORG_TYPE'} />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="机构排序：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('sort', {
+              initialValue: item.sort,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入机构顺序',
+                },
+              ],
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+            {form.getFieldDecorator('remarks', {
+              initialValue: item.remarks,
+            })(<Input.TextArea rows={2} />)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Modal>
+  );
+});

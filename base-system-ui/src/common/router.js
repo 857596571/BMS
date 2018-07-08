@@ -70,22 +70,22 @@ function getFlatMenuData(menus) {
 export const getRouterData = app => {
   const routerConfig = {
     '/': {
-      component: dynamicWrapper(app, ['system/user', 'system/login', 'setting'], () => import('../layouts/LoadingPage')),
+      component: dynamicWrapper(app, ['system/user', 'system/login'], () => import('../layouts/LoadingPage')),
     },
     '/system/org': {
       component: dynamicWrapper(app, ['system/org'], () => import('../routes/System/OrgList')),
     },
     '/system/role': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/System/RoleList')),
+      component: dynamicWrapper(app, ['system/role', 'system/org', 'system/menu', ], () => import('../routes/System/RoleList')),
     },
     '/system/user': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/System/UserList')),
+      component: dynamicWrapper(app, ['system/org', 'system/role', ], () => import('../routes/System/UserList')),
     },
     '/system/dict': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/System/DictList')),
+      component: dynamicWrapper(app, ['system/dict'], () => import('../routes/System/DictList')),
     },
     '/system/menu': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/System/MenuList')),
+      component: dynamicWrapper(app, ['system/menu'], () => import('../routes/System/MenuList')),
     },
     '/sys': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),

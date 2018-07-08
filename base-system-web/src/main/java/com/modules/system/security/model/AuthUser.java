@@ -137,7 +137,7 @@ public class AuthUser extends AbstractAuthUser {
 
     @Override
     public boolean isEnabled() {
-        return state.equals("1");
+        return state.equals("ON");
     }
 
     public void setPassword(String password) {

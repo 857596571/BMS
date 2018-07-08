@@ -11,6 +11,7 @@
             a.login_name,
             a.password,
             a.name,
+            a.type,
             a.email,
             a.phone,
             a.mobile,
@@ -32,17 +33,38 @@
     <select id="getByLoginName" resultType="com.modules.system.entity.SysUser">
         <include refid="selectColumns"/>
         WHERE a.login_name = #{loginName}
+        and a.del_flag = '0'
     </select>
 
     <!-- 查询用户列表 -->
     <select id="findList" resultType="com.modules.system.entity.SysUser">
-        <include refid="selectColumns"/>
+        SELECT
+        a.id,
+        a.org_id,
+        d.name orgName,
+        a.login_name,
+        a.password,
+        a.name,
+        a.type,
+        a.email,
+        a.phone,
+        a.mobile,
+        a.state,
+        a.remarks,
+        a.create_date,
+        a.update_date,
+        (select GROUP_CONCAT(r.role_id) from sys_user_role r where r.user_id = a.id) roleIds
+        FROM sys_user a
+        left join sys_org d on d.id = a.org_id
         WHERE a.del_flag = '0'
-        <if test="loginName != null and loginName != ''">
-            AND a.login_name like CONCAT('%', #{loginName}, '%')
+        <if test="searchKeys != null and searchKeys != ''">
+            AND (a.login_name like CONCAT('%', #{searchKeys}, '%') or a.name like CONCAT('%', #{searchKeys}, '%') )
         </if>
-        <if test="name != null and name != ''">
-            AND (a.name like CONCAT('%', #{name}, '%') or a.login_name like CONCAT('%', #{name}, '%'))
+        <if test="state != null and state != ''">
+            AND a.state = #{state}
+        </if>
+        <if test="type != null and type != ''">
+            AND a.type = #{type}
         </if>
         <if test="orgId != null and orgId != ''">
             AND a.org_id = #{orgId}
@@ -58,21 +80,30 @@
 
     <!-- 获取指定角色的用户列表 -->
     <select id="getUsersByRoleId" resultType="com.modules.system.entity.SysUser">
-        select u.*,d.org_name orgName from sys_user u, sys_user_role ur, sys_dept d
+        select u.*, d.name orgName from sys_user u, sys_user_role ur, sys_org d
         where u.del_flag = '0'
         and u.id = ur.user_id
-        and d.id = u.dept_id
+        and d.id = u.org_id
         and ur.role_id = #{roleId}
     </select>
 
+    <!-- 判断登录账号是否唯一 -->
+    <select id="isExists" resultType="int">
+        select count(1) from sys_user u where u.del_flag = '0' and u.login_name = #{loginName}
+        <if test="id != null and id != ''">
+            and u.id != #{id}
+        </if>
+    </select>
+
     <!-- 插入用户 -->
-    <insert id="insert">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO sys_user (
             id,
-            dept_id,
+            org_id,
             login_name,
             password,
             name,
+            type,
             email,
             phone,
             mobile,
@@ -82,10 +113,11 @@
             remarks
         ) VALUES (
             #{id},
-            #{deptId},
+            #{orgId},
             #{loginName},
             #{password},
             #{name},
+            #{type},
             #{email},
             #{phone},
             #{mobile},
@@ -107,10 +139,15 @@
             <if test="phone != null and phone != '' ">phone = #{phone},</if>
             <if test="mobile != null and mobile != '' ">mobile = #{mobile},</if>
             <if test="state != null and state != '' ">state = #{state},</if>
-            <if test="remarks != null and remarks != '' ">remarks = #{remarks},</if>
-            <if test="updateDate != null and updateDate != '' ">update_date = #{updateDate}</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            remarks = #{remarks}
         </set>
         WHERE id = #{id}
+    </update>
+
+    <!-- 更新用户状态 -->
+    <update id="updateUserStates">
+        update sys_user set state = #{state} where id = #{id}
     </update>
 
     <!-- 更新用户密码 -->
@@ -124,7 +161,7 @@
     <!-- 删除用户 -->
     <update id="deleteById">
         UPDATE sys_user
-        SET del_flag = '1'
+        SET del_flag = '1', login_name = concat(login_name, '_del')
         WHERE id = #{id}
     </update>
 

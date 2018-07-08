@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色
@@ -22,7 +23,7 @@ public class SysRoleController extends BaseController {
     private SystemService systemService;
 
     /**
-     * 分页列表
+     * 列表
      * @param role
      * @return
      */
@@ -36,8 +37,8 @@ public class SysRoleController extends BaseController {
      * @param role
      * @return
      */
-    @PostMapping(value = "/isCodeExists")
-    public ResponseMessage isCodeExists(@RequestBody SysRole role) {
+    @GetMapping(value = "/isCodeExists")
+    public ResponseMessage isCodeExists(SysRole role) {
         return Result.success(systemService.isRoleCodeExists(role));
     }
 
@@ -49,6 +50,17 @@ public class SysRoleController extends BaseController {
     @PostMapping(value = "/save")
     public ResponseMessage<SysRole> saveRole(@RequestBody SysRole role) {
         return Result.success(systemService.saveRole(role));
+    }
+
+    /**
+     * 更新角色状态
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/updateStates")
+    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+        systemService.updateRoleStates(param);
+        return Result.success();
     }
 
     /**
@@ -77,7 +89,7 @@ public class SysRoleController extends BaseController {
      * @param id
      * @return
      */
-    @DeleteMapping(value = "/{id}")
+    @GetMapping(value = "/delete/{id}")
     public ResponseMessage delete(@PathVariable("id") String id) {
         systemService.deleteRoleById(id);
         return Result.success();
@@ -88,7 +100,7 @@ public class SysRoleController extends BaseController {
      * @param role
      * @return
      */
-    @DeleteMapping(value = "/deleteRoleUser")
+    @PostMapping(value = "/deleteRoleUser")
     public ResponseMessage deleteRoleUser(@RequestBody SysRole role) {
         systemService.deleteRoleUser(role);
         return Result.success();

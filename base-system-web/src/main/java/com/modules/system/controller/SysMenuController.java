@@ -7,13 +7,12 @@ import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysMenu;
 import com.modules.system.security.model.AuthUser;
 import com.modules.system.service.SystemService;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 菜单
@@ -30,8 +29,7 @@ public class SysMenuController extends BaseController {
      */
     @GetMapping(value = "/list")
     public ResponseMessage<List<SysMenu>> list() {
-        AuthUser user = UserUtil.getCurrentUser();
-        return Result.success(systemService.findMenuList(user.getId()));
+        return Result.success(systemService.findMenuList());
     }
 
     /**
@@ -46,13 +44,25 @@ public class SysMenuController extends BaseController {
     }
 
     /**
-     * 删除菜单
-     * @param menu
+     * 更新菜单状态
+     *
+     * @param param
      * @return
      */
-    @DeleteMapping(value = "/deleteById")
-    public ResponseMessage delete(SysMenu menu) {
-        systemService.deleteMenuById(menu);
+    @PostMapping(value = "/updateStates")
+    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+        systemService.updateMenuStates(param);
+        return Result.success();
+    }
+
+    /**
+     * 删除菜单
+     * @param sysMenu
+     * @return
+     */
+    @GetMapping(value = "/delete")
+    public ResponseMessage delete(SysMenu sysMenu) {
+        systemService.deleteMenu(sysMenu);
         return Result.success();
     }
 

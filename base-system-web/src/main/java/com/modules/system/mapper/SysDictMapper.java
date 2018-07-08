@@ -31,7 +31,7 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
      * @param sysDict
      * @return
      */
-    int getLRNum(SysDict sysDict);
+    Integer getLRNum(SysDict sysDict);
 
     /**
      * 更新左值
@@ -52,4 +52,9 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
     @MapKey("code")
     Map<String, SysDict> findMapByParentCodes(String[] codes);
 
+    /**
+     * 更新排序
+     * @param sysDict
+     */
+    void updateSort(SysDict sysDict);
 }

@@ -13,10 +13,7 @@ import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.SysUser;
 import com.modules.system.security.model.AuthUser;
 import com.modules.system.service.SystemService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.YamlMapFactoryBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 用户
@@ -115,7 +113,6 @@ public class SysUserController extends BaseController {
      */
     @GetMapping(value = "/getUsersByRoleId")
     public ResponseMessage getUsersByRoleId(String roleId) {
-        YamlMapFactoryBean a = new YamlMapFactoryBean();
         return Result.success(systemService.getUsersByRoleId(roleId));
 
     }
@@ -125,7 +122,7 @@ public class SysUserController extends BaseController {
      * @param user
      * @return
      */
-    @PostMapping(value = "/saveUser")
+    @PostMapping(value = "/save")
     public ResponseMessage saveUser(@Valid @RequestBody SysUser user) {
         if (user.getIsNewRecord() && StrUtil.isNotBlank(user.getPassword())) {
             //如果为新增用户并未设置密码则生成初始密码
@@ -135,11 +132,34 @@ public class SysUserController extends BaseController {
     }
 
     /**
+     * 判断登录账号是否唯一
+     *
+     * @param user
+     * @return
+     */
+    @GetMapping(value = "/isExists")
+    public ResponseMessage isCodeExists(SysUser user) {
+        return Result.success(systemService.isUserExists(user));
+    }
+
+    /**
+     * 更新用户状态
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/updateStates")
+    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+        systemService.updateUserStates(param);
+        return Result.success();
+    }
+
+    /**
      * 删除用户
      * @param id
      * @return
      */
-    @DeleteMapping(value = "/delete/{id}")
+    @GetMapping(value = "/delete/{id}")
     public ResponseMessage delete(@PathVariable("id") String id) {
         systemService.deleteUserById(id);
         return Result.success();

@@ -22,7 +22,7 @@ import {
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-import styles from './LogList.less';
+import styles from './System.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;

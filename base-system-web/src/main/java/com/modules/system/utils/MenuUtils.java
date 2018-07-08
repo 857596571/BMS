@@ -34,16 +34,16 @@ public class MenuUtils {
     /**
      * 构建树形结构
      * @param list 原始数据
-     * @param uselevel 级别[1:菜单，2:功能]
+     * @param useLevel 是否使用级别
      * @return 菜单列表
      */
-    public static List<SysMenu> makeTree(List<SysMenu> list, Boolean uselevel) {
+    public static List<SysMenu> makeTree(List<SysMenu> list, Boolean useLevel) {
         // 构建一个Map,把所有原始数据的ID作为Key,原始数据对象作为VALUE
         Map<String, SysMenu> dtoMap = new LinkedHashMap<>();
         for (SysMenu node : list) {
             // 原始数据对象为Node，放入dtoMap中。
             String id = node.getId();
-            if (uselevel ? (StrUtil.isNotBlank(node.getLevel()) && !node.getLevel().equals("2")) : true) {
+            if (useLevel ? (StrUtil.isNotBlank(node.getLevel()) && !node.getLevel().equals("FUNC")) : true) {
                 dtoMap.put(id, node);
             }
         }
@@ -62,7 +62,7 @@ public class MenuUtils {
             }
         }
         List<SysMenu> resultSort = new ArrayList<>();
-        MenuUtils.sortList(resultSort, result, "0");
+        MenuUtils.sortList(resultSort, result, "1");
         return result;
     }
 }

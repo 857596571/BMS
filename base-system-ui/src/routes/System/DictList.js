@@ -1,403 +1,413 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import moment from 'moment';
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Divider,
-  Dropdown,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  Menu,
-  message,
-  Modal,
-  Row,
-  Select,
-} from 'antd';
-import StandardTable from 'components/StandardTable';
+import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table,} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import Dict from '../../components/Dict';
+import * as system from '../../services/system';
 
-import styles from './DictList.less';
+import styles from './System.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
+const statusMap = {'ON': 'success', 'OFF': 'error'};
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+const formItemLayout = {
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 14,
+  },
+};
+
+@connect(({sysDict, sysUser, loading}) => ({
+  sysDict,
+  sysUser,
+  loading: loading.models.sysDict,
 }))
 @Form.create()
-export default class TableList extends PureComponent {
+export default class DictList extends PureComponent {
   state = {
     modalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
+    itemType: 'create',
+    item: {},
+    tempSorts: {},
   };
 
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'rule/fetch',
-    // });
+    this.initQuery();
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-  };
+  initQuery = () => {
+    const {dispatch, form} = this.props;
+    dispatch({
+      type: 'sysDict/getList',
+      payload: form.getFieldsValue(),
+    });
+  }
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-  };
+    this.props.form.resetFields();
+  }
 
-  toggleForm = () => {
-    this.setState({
-      expandForm: !this.state.expandForm,
-    });
-  };
-
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-  };
-
-  handleSelectRows = rows => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+  handleModalVisible = (flag, itemType, item) => {
+    if (itemType === 'create') item = {};
+    if (itemType === 'sub')
+      item = {
+        parentId: item.id,
+        parentName: item.label,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleModalVisible = flag => {
+    if (!flag) item = {};
     this.setState({
-      modalVisible: !!flag,
+      modalVisible: flag,
+      itemType: itemType,
+      item,
     });
   };
 
   handleAdd = fields => {
     this.props.dispatch({
-      type: 'rule/add',
+      type: 'sysDict/add',
       payload: {
-        description: fields.desc,
+        ...fields,
       },
+      callback: () => this.initQuery(),
     });
-
-    message.success('添加成功');
     this.setState({
       modalVisible: false,
     });
   };
 
-  renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
+  handleChangeSort(val, record) {
+    let tempSorts = this.state.tempSorts;
+    tempSorts[record.id.toString()] = {id: record.id, sort: val};
+    if ((val || 0) === (record.sort || 0)) delete tempSorts[record.id];
+    this.setState({tempSorts: Object.assign({}, tempSorts)});
   }
 
-  renderAdvancedForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <span style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </span>
-        </div>
-      </Form>
-    );
+  handleUpdateSorts() {
+    let sorts = [];
+    const {tempSorts} = this.state;
+    Object.keys(tempSorts).map(key => {
+      sorts.push(tempSorts[key]);
+    });
+    this.props.dispatch({
+      type: 'sysDict/updateSorts',
+      payload: sorts,
+      callback: () => {
+        this.initQuery();
+        this.setState({tempSorts: {}});
+      },
+    });
   }
 
-  renderForm() {
-    return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+  handleDelete(record) {
+    this.props.dispatch({
+      type: 'sysDict/delete',
+      payload: {
+        id: record.id,
+        leftNum: record.leftNum,
+        rightNum: record.rightNum,
+      },
+      callback: () => this.initQuery(),
+    });
+  }
+
+  handleChangeState(record) {
+    this.props.dispatch({
+      type: 'sysDict/updateStates',
+      payload: {
+        id: record.id,
+        state: record.state === 'ON' ? 'OFF' : 'ON',
+        leftNum: record.leftNum,
+        rightNum: record.rightNum,
+      },
+      callback: () => this.initQuery(),
+    });
   }
 
   render() {
-    const { rule: { data }, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
+    const {sysDict: {list}, sysUser: { currentUser }, loading, form} = this.props;
+    const {modalVisible, itemType, item, tempSorts} = this.state;
 
     const columns = [
       {
-        title: '规则编号',
-        dataIndex: 'no',
+        title: '字典编码',
+        key: 'code',
+        dataIndex: 'code',
       },
       {
-        title: '描述',
-        dataIndex: 'description',
+        title: '字典标签',
+        key: 'label',
+        dataIndex: 'label',
       },
       {
-        title: '服务调用次数',
-        dataIndex: 'callNo',
-        sorter: true,
-        align: 'right',
-        render: val => `${val} 万`,
-        // mark to display a total number
-        needTotal: true,
+        title: '字典值',
+        key: 'value',
+        dataIndex: 'value',
       },
       {
-        title: '状态',
-        dataIndex: 'status',
-        filters: [
-          {
-            text: status[0],
-            value: 0,
-          },
-          {
-            text: status[1],
-            value: 1,
-          },
-          {
-            text: status[2],
-            value: 2,
-          },
-          {
-            text: status[3],
-            value: 3,
-          },
-        ],
-        onFilter: (value, record) => record.status.toString() === value,
-        render(val) {
-          return <Badge status={statusMap[val]} text={status[val]} />;
-        },
+        title: '字典级别',
+        key: 'levelDesc',
+        dataIndex: 'levelDesc',
       },
       {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
-        sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: '字典状态',
+        key: 'stateDesc',
+        dataIndex: 'stateDesc',
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+      },
+      {
+        title: '排序',
+        key: 'sort',
+        dataIndex: 'sort',
+        render: (val, record) => (
+          <InputNumber
+            min={0}
+            defaultValue={val}
+            onChange={v => this.handleChangeSort(v, record)}
+          />
+        ),
+      },
+      {
+        title: '备注',
+        key: 'remarks',
+        dataIndex: 'remarks',
       },
       {
         title: '操作',
-        render: () => (
+        width: 240,
+        render: (val, record) => (
           <Fragment>
-            <a href="">修改</a>
-            <Divider type="vertical" />
-            <a href="">启用</a>
-            <Divider type="vertical" />
-            <a href="">删除</a>
-            <Divider type="vertical" />
-            <a href="">添加子机构</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleChangeState(record)}>{
+              record.state === 'ON' ? '禁用' : '启用'
+            }</a>
+            {
+              currentUser.admin &&
+              <span>
+                <Divider type="vertical"/>
+                <a onClick={() => this.handleDelete(record)}>删除</a>
+              </span>
+            }
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleModalVisible(true, 'sub', record)}>新建子字典</a>
           </Fragment>
         ),
       },
     ];
 
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
-    const parentMethods = {
+    const createModalProps = {
+      item,
+      itemType,
+      currentUser,
+      visible: modalVisible,
+      dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
+      handleModalVisible: () => this.handleModalVisible(false),
     };
 
     return (
-      <PageHeaderLayout title="字典">
+      <PageHeaderLayout>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <div className={styles.tableListForm}>
+              <Form onSubmit={this.handleSearch} layout="inline">
+                <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+                  <Col md={6} sm={24}>
+                    <FormItem>
+                      {form.getFieldDecorator('searchKeys')(<Input placeholder="请输入需查询的字典编码、标签、值" />)}
+                    </FormItem>
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <FormItem>
+                      {form.getFieldDecorator('state', {
+                        initialValue: ''
+                      })(
+                        <Dict code={'STATE'} radio query />
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <FormItem>
+                      {form.getFieldDecorator('level', {
+                        initialValue: 'BIZ'
+                      })(
+                        <Dict code={'LEVEL'} radio />
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col md={6} sm={24}>
+                    <span className={styles.submitButtons}>
+                      <Button type="primary" onClick={() => this.initQuery()}>
+                        查询
+                      </Button>
+                      <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                        重置
+                      </Button>
+                    </span>
+                  </Col>
+                </Row>
+              </Form>
+            </div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
                 新建
               </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
+              {Object.keys(tempSorts).length > 0 && (
+                <Button type="primary" onClick={() => this.handleUpdateSorts()}>
+                  更新排序
+                </Button>
               )}
             </div>
-            <StandardTable
-              selectedRows={selectedRows}
+            <Table
               loading={loading}
-              data={data}
+              dataSource={list}
               columns={columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              pagination={false}
+              rowKey={item => item.id}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm {...createModalProps} />
       </PageHeaderLayout>
     );
   }
 }
+
+const CreateForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    itemType,
+    item,
+    currentUser,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+        parentId: item.parentId || 1,
+        state: item.state || 'ON',
+      });
+    });
+  };
+
+  const modalProps = {
+    title: '新建',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  if (itemType === 'create') modalProps.title = '新建';
+  if (itemType === 'update') modalProps.title = '修改';
+  if (itemType === 'sub') modalProps.title = '新建子字典';
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={12}>
+          <FormItem label="父字典：" hasFeedback {...formItemLayout}>
+            {<span>{item.parentName || '无'}</span>}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="字典编码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('code', {
+              initialValue: item.code,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入字典编码',
+                },
+                {
+                  async validator(rule, value, callback) {
+                    const data = await system.isDictCodeExists({
+                      code: value,
+                      id: item.id,
+                    });
+                    if (data.data) callback('该字典编码已存在');
+                    callback();
+                  },
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="字典标签：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('label', {
+              initialValue: item.label,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入字典标签',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="字典值：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('value', {
+              initialValue: item.value || form.getFieldValue('code'),
+              rules: [
+                {
+                  required: true,
+                  message: '请输入字典值',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="字典级别：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('level', {
+              initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
+              rules: [
+                {
+                  required: true,
+                  message: '请选择字典级别',
+                },
+              ],
+            })(<Dict code={'LEVEL'} excludeCodes={ [!currentUser.admin && 'SYSTEM'] } disabled={!currentUser.admin} />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="字典排序：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('sort', {
+              initialValue: item.sort,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入字典顺序',
+                },
+              ],
+            })(<InputNumber min={0} style={{width: '100%'}}/>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+            {form.getFieldDecorator('remarks', {
+              initialValue: item.remarks,
+            })(<Input.TextArea rows={2}/>)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Modal>
+  );
+});

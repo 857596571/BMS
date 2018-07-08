@@ -5,6 +5,9 @@ export interface IDictProps {
   type?: React.ReactNode | string;
   value?: React.ReactNode | string;
   info?: React.ReactNode | string;
+  excludeCodes?: React.ReactNode | any;
+  query?: React.ReactNode | boolean;
+  radio?: React.ReactNode | boolean;
   style?: React.CSSProperties;
 }
 

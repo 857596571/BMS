@@ -19,6 +19,10 @@ public abstract class DataEntity extends BaseEntity {
     public static final String DEL_FLAG_DELETE = "1";
 
     /**
+     * 搜索
+     */
+    private String searchKeys;
+    /**
      * 创建日期
      */
     private Date createDate;
@@ -61,7 +65,7 @@ public abstract class DataEntity extends BaseEntity {
 //        if (this.getIsNewRecord()) {
 //            setId(RandomHelper.uuid());
 //        }
-        this.delFlag="0";
+        this.delFlag= DEL_FLAG_NORMAL;
         this.updateDate = new Date();
         this.createDate = this.updateDate;
     }
@@ -121,5 +125,13 @@ public abstract class DataEntity extends BaseEntity {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getSearchKeys() {
+        return searchKeys;
+    }
+
+    public void setSearchKeys(String searchKeys) {
+        this.searchKeys = searchKeys;
     }
 }

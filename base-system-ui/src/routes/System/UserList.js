@@ -1,426 +1,639 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import moment from 'moment';
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Divider,
-  Dropdown,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  Menu,
-  message,
-  Modal,
-  Row,
-  Select,
-} from 'antd';
-import StandardTable from 'components/StandardTable';
+import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table, TreeSelect, Tree, } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-
-import styles from './UserList.less';
+import styles from './System.less';
+import Dict from '../../components/Dict';
+import * as system from '../../services/system';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
+const TreeNode = Tree.TreeNode;
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
+const statusMap = {'ON': 'success', 'OFF': 'error'};
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+const formItemLayout = {
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 14,
+  },
+};
+
+@connect(({sysUser, sysOrg, sysRole, loading}) => ({
+  sysUser,
+  sysOrg,
+  sysRole,
+  loading: loading.models.sysUser,
 }))
 @Form.create()
-export default class TableList extends PureComponent {
+export default class UserList extends PureComponent {
   state = {
     modalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
+    passwordModalVisible: false,
+    assignModalVisible: false,
+    itemType: 'create',
+    item: {},
+    orgId: '',
   };
 
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'rule/fetch',
-    // });
+    this.initQuery();
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
+  initQuery = () => {
+    const {dispatch} = this.props;
     dispatch({
-      type: 'rule/fetch',
-      payload: params,
+      type: 'sysOrg/getList',
     });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    this.initQueryUser();
     dispatch({
-      type: 'rule/fetch',
-      payload: {},
+      type: 'sysRole/getList',
     });
-  };
+  }
 
-  toggleForm = () => {
+  initQueryUser = (selectKeys) => {
+    const orgId = selectKeys && selectKeys.length > 0 ? selectKeys[0] : ''
     this.setState({
-      expandForm: !this.state.expandForm,
+      orgId: orgId
+    })
+    const {dispatch, form} = this.props;
+    dispatch({
+      type: 'sysUser/getList',
+      payload: {
+        orgId: orgId,
+        ...form.getFieldsValue(),
+      },
     });
-  };
+  }
 
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleSelectRows = rows => {
+  handleModalVisible = (flag, itemType, item) => {
+    if (itemType === 'create') item = { orgId : this.state.orgId};
+    if (!flag) item = {};
     this.setState({
-      selectedRows: rows,
+      modalVisible: flag,
+      itemType: itemType,
+      item,
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleModalVisible = flag => {
+  handlePasswordModalVisible = (flag, item) => {
+    if (!flag) item = {};
     this.setState({
-      modalVisible: !!flag,
+      passwordModalVisible: flag,
+      item,
     });
   };
 
   handleAdd = fields => {
     this.props.dispatch({
-      type: 'rule/add',
+      type: 'sysUser/add',
       payload: {
-        description: fields.desc,
+        ...fields,
       },
+      callback: () => this.initQuery(),
     });
-
-    message.success('添加成功');
     this.setState({
       modalVisible: false,
     });
   };
 
-  renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
+  handleResetPassword = fields => {
+    this.props.dispatch({
+      type: 'sysUser/resetPassword',
+      payload: {
+        ...fields,
+      },
+    });
+    this.setState({
+      authModalVisible: false,
+    });
+  };
+
+  handleDelete(record) {
+    this.props.dispatch({
+      type: 'sysUser/delete',
+      payload: record.id,
+      callback: () => this.initQuery(),
+    });
   }
 
-  renderAdvancedForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <span style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </span>
-        </div>
-      </Form>
-    );
+  handleChangeState(record) {
+    this.props.dispatch({
+      type: 'sysUser/updateStates',
+      payload: {
+        id: record.id,
+        state: record.state === 'ON' ? 'OFF' : 'ON',
+      },
+      callback: () => this.initQuery(),
+    });
   }
 
-  renderForm() {
-    return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+  handlePageChange = (page) => {
+    this.props.dispatch({
+      type: 'sysUser/getList',
+      payload: {
+        pageNum: page.current,
+        pageSize: page.pageSize,
+        ...this.props.form.getFieldsValue(),
+      },
+    });
+  }
+
+  getSelectTreeData = list => {
+    return list.map(item => {
+      if(item.children && item.children.length > 0) {
+        return {
+          label: item.name,
+          value: item.id,
+          key: item.id,
+          children: this.getSelectTreeData(item.children),
+        };
+      }
+      return {
+        label: item.name,
+        value: item.id,
+        key: item.id,
+      };
+    });
   }
 
   render() {
-    const { rule: { data }, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
+    const {
+      sysUser: {list = [], pagination = {}},
+      loading,
+      form,
+    } = this.props;
+    const {modalVisible, passwordModalVisible, itemType, item} = this.state;
 
     const columns = [
       {
-        title: '规则编号',
-        dataIndex: 'no',
+        title: '用户名称',
+        key: 'name',
+        dataIndex: 'name',
       },
       {
-        title: '描述',
-        dataIndex: 'description',
+        title: '所属机构',
+        key: 'orgName',
+        dataIndex: 'orgName',
       },
       {
-        title: '服务调用次数',
-        dataIndex: 'callNo',
-        sorter: true,
-        align: 'right',
-        render: val => `${val} 万`,
-        // mark to display a total number
-        needTotal: true,
+        title: '登录账号',
+        key: 'loginName',
+        dataIndex: 'loginName',
+      },
+      {
+        title: '用户类型',
+        key: 'typeDesc',
+        dataIndex: 'typeDesc',
+      },
+      {
+        title: '电子邮箱',
+        key: 'email',
+        dataIndex: 'email',
+      },
+      {
+        title: '手机',
+        key: 'mobile',
+        dataIndex: 'mobile',
       },
       {
         title: '状态',
-        dataIndex: 'status',
-        filters: [
-          {
-            text: status[0],
-            value: 0,
-          },
-          {
-            text: status[1],
-            value: 1,
-          },
-          {
-            text: status[2],
-            value: 2,
-          },
-          {
-            text: status[3],
-            value: 3,
-          },
-        ],
-        onFilter: (value, record) => record.status.toString() === value,
-        render(val) {
-          return <Badge status={statusMap[val]} text={status[val]} />;
-        },
+        key: 'stateDesc',
+        dataIndex: 'stateDesc',
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
       },
       {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
-        sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: '备注',
+        key: 'remarks',
+        dataIndex: 'remarks',
       },
       {
         title: '操作',
-        render: () => (
+        width: 240,
+        render: (val, record) => (
           <Fragment>
-            <a href="">配置</a>
-            <Divider type="vertical" />
-            <a href="">订阅警报</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleChangeState(record)}>{
+              record.state === 'ON' ? '禁用' : '启用'
+            }</a>
+            <span>
+              <Divider type="vertical"/>
+              <a onClick={() => this.handleDelete(record)}>删除</a>
+            </span>
+            <Divider type="vertical"/>
+            <a onClick={() => this.handlePasswordModalVisible(true, record)}>重置密码</a>
           </Fragment>
         ),
       },
     ];
 
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
-    const parentMethods = {
+    const createModalProps = {
+      item,
+      itemType,
+      selectTreeData: this.getSelectTreeData(this.props.sysOrg.list),
+      roleList: this.props.sysRole.list,
+      visible: modalVisible,
+      dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
+      handleModalVisible: () => this.handleModalVisible(false),
     };
 
+    const createPasswordModalProps = {
+      item,
+      visible: passwordModalVisible,
+      dispatch: this.props.dispatch,
+      handleAdd: this.handleResetPassword,
+      handleModalVisible: () => this.handlePasswordModalVisible(false),
+    };
+
+    const renderTreeNodes = (data) => {
+      return data.map((item) => {
+        if (item.children && item.children.length > 0) {
+          return (
+            <TreeNode title={item.name} key={item.id} dataRef={item}>
+              {renderTreeNodes(item.children)}
+            </TreeNode>
+          );
+        }
+        return <TreeNode title={item.name} key={item.id} />;
+      });
+    }
+
+    const CreateFormGen = () => <CreateForm {...createModalProps} />;
+
     return (
-      <PageHeaderLayout title="用户">
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
-            </div>
-            <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data}
-              columns={columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
-          </div>
-        </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+      <PageHeaderLayout>
+        <Row gutter={16}>
+          <Col span={6}>
+            <Card bordered={false}>
+              <Tree
+                defaultExpandedKeys={['2']}
+                onSelect={this.initQueryUser}
+              >
+                {renderTreeNodes(this.props.sysOrg.list)}
+              </Tree>
+            </Card>
+          </Col>
+          <Col span={18}>
+            <Card bordered={false}>
+              <div className={styles.tableList}>
+                <div className={styles.tableListForm}>
+                  <Form onSubmit={this.handleSearch} layout="inline">
+                    <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+                      <Col md={6} sm={24}>
+                        <FormItem>
+                          {form.getFieldDecorator('searchKeys')(<Input placeholder="请输入需查询的用户名称、登录账号" />)}
+                        </FormItem>
+                      </Col>
+                      <Col md={6} sm={24}>
+                        <FormItem>
+                          {form.getFieldDecorator('state', {
+                            initialValue: ''
+                          })(
+                            <Dict code={'STATE'} radio query />
+                          )}
+                        </FormItem>
+                      </Col>
+                      <Col md={6} sm={24}>
+                        <FormItem>
+                          {form.getFieldDecorator('type', {
+                            initialValue: 'USER_BIZ'
+                          })(
+                            <Dict code={'USER_TYPE'} radio />
+                          )}
+                        </FormItem>
+                      </Col>
+                      <Col md={6} sm={24}>
+                    <span className={styles.submitButtons}>
+                      <Button type="primary" onClick={() => this.initQuery()}>
+                        查询
+                      </Button>
+                      <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                        重置
+                      </Button>
+                    </span>
+                      </Col>
+                    </Row>
+                  </Form>
+                </div>
+                <div className={styles.tableListOperator}>
+                  <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
+                    新建
+                  </Button>
+                </div>
+                <Table
+                  loading={loading}
+                  dataSource={list}
+                  columns={columns}
+                  pagination={pagination}
+                  onChange={this.handlePageChange}
+                  rowKey={item => item.id}
+                />
+              </div>
+            </Card>
+          </Col>
+        </Row>
+        <CreateFormGen />
+        <CreatePasswordForm {...createPasswordModalProps} />
       </PageHeaderLayout>
     );
   }
 }
+
+const CreateForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    itemType,
+    item,
+    roleList,
+    selectTreeData,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      console.log(err,fieldsValue)
+      if (err) return;
+      form.resetFields();
+      let formValues = {
+        ...fieldsValue,
+        id: item.id,
+        state: item.state || 'ON',
+        type: item.type || 'USER_SYSTEM'
+      };
+      delete formValues.resPassword;
+      if(itemType === 'update') delete formValues.password;
+      if(formValues.rolesTemp && formValues.rolesTemp.length > 0) {
+        formValues.roles = formValues.rolesTemp.map(item => {return {id: item}});
+        delete formValues.rolesTemp;
+      }
+      handleAdd(formValues);
+    });
+  };
+
+  const modalProps = {
+    title: '新建',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  if (itemType === 'create') modalProps.title = '新建';
+  if (itemType === 'update') {
+    modalProps.title = '修改';
+  }
+
+  const defaultRoles = item.roleIds ? item.roleIds.split(',') : undefined;
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={12}>
+          <FormItem label="用户名称：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('name', {
+              initialValue: item.name,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入用户名称',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="所属机构：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('orgId', {
+              initialValue: item.orgId,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择所属机构',
+                },
+              ],
+            })(
+              <TreeSelect
+                style={{ width: '100%' }}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeData={selectTreeData}
+                treeDefaultExpandAll
+              />
+            )}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="登录账号：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('loginName', {
+              initialValue: item.loginName,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入登录账号',
+                },
+                {
+                  async validator(rule, value, callback) {
+                    const data = await system.isUserExists({
+                      loginName: value,
+                      id: item.id,
+                    });
+                    if (data.data) callback('该登录账号已存在');
+                    callback();
+                  },
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="所属角色：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('rolesTemp', {
+              initialValue: defaultRoles,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择角色',
+                },
+              ],
+            })(
+              <Select style={{ width: '100%' }} mode={'multiple'}>
+                {
+                  roleList && roleList.map(item => <Select.Option key={item.id} vlaue={item.id}>{item.name}</Select.Option>)
+                }
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+      </Row>
+      {
+        itemType !== 'update' &&
+        <Row>
+          <Col span={12}>
+            <FormItem label="登录密码：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('password', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入登录密码',
+                  },
+                ],
+              })(<Input type={'password'} />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="确认密码：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('resPassword', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入确认登录密码',
+                  },
+                  {
+                    validator: (rule, value, callback) => {
+                      if(value !== form.getFieldValue('password')) {
+                        callback('两次密码不一致');
+                      }
+                      callback();
+                    }
+                  }
+                ],
+              })(<Input type={'password'} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      }
+      <Row>
+        <Col span={12}>
+          <FormItem label="电子邮件：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('email', {
+              initialValue: item.email,
+              rules: [
+                {
+                  type: 'email',
+                  message: '请输入正确的电子邮件地址',
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="手机号码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('mobile', {
+              initialValue: item.mobile,
+              rules: [
+                {
+                  message: '请输入手机号码',
+                },
+                {
+                  validator: (rule, value, callback) => {
+                  if(value && !(/^1[34578]\d{9}$/.test(value))) {
+                      callback('输入的手机号码有误');
+                    }
+                    callback();
+                  }
+                }
+              ],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+            {form.getFieldDecorator('remarks', {
+              initialValue: item.remarks,
+            })(<Input.TextArea rows={2}/>)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Modal>
+  );
+});
+
+const CreatePasswordForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    item,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+      });
+    });
+  };
+
+  const modalProps = {
+    title: '重置密码',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={24}>
+          <FormItem label="原密码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('oldPassword', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入登录密码',
+                },
+              ],
+            })(<Input type={'password'} />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="新密码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('newPassword', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入登录密码',
+                },
+              ],
+            })(<Input type={'password'} />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="确认新密码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('resPassword', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入确认登录密码',
+                },
+                {
+                  validator: (rule, value, callback) => {
+                    if(value !== form.getFieldValue('newPassword')) {
+                      callback('两次密码不一致');
+                    }
+                    callback();
+                  }
+                }
+              ],
+            })(<Input type={'password'} />)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Modal>
+  );
+});

@@ -11,6 +11,10 @@ import java.util.List;
 public class SysRole extends DataEntity {
 
     /**
+     * 用户ID
+     */
+    private String userId;
+    /**
      * 角色编码
      */
     private String code;
@@ -43,6 +47,7 @@ public class SysRole extends DataEntity {
      */
     private String levelDesc;
     /**
+     * place_org_all
      * 数据范围[1：所有数据；2：所在机构及以下数据；3：所在机构数据；4：仅本人数据；5：按明细设置]
      */
     private String dataScope;
@@ -58,6 +63,18 @@ public class SysRole extends DataEntity {
      * 按明细设置数据范围
      */
     private List<SysOrg> orgs;
+    /**
+     * 机构ids
+     */
+    private String orgIds;
+    /**
+     * 菜单ids
+     */
+    private String menuIds;
+    /**
+     * 用户ids
+     */
+    private String userIds;
 
     public SysRole() {}
 
@@ -199,5 +216,37 @@ public class SysRole extends DataEntity {
 
     public void setOrgs(List<SysOrg> orgs) {
         this.orgs = orgs;
+    }
+
+    public String getOrgIds() {
+        return orgIds;
+    }
+
+    public void setOrgIds(String orgIds) {
+        this.orgIds = orgIds;
+    }
+
+    public String getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(String menuIds) {
+        this.menuIds = menuIds;
+    }
+
+    public String getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(String userIds) {
+        this.userIds = userIds;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

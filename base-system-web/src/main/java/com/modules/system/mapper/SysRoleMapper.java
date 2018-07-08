@@ -7,6 +7,7 @@ import com.modules.system.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色DAO接口
@@ -78,4 +79,10 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
      * @return
      */
     int isCodeExists(SysRole role);
+
+    /**
+     * 更新角色状态
+     * @param param
+     */
+    void updateRoleStates(Map<String,String> param);
 }

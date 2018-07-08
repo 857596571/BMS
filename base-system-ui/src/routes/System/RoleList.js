@@ -1,426 +1,670 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import moment from 'moment';
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Divider,
-  Dropdown,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  Menu,
-  message,
-  Modal,
-  Row,
-  Select,
-} from 'antd';
-import StandardTable from 'components/StandardTable';
+import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table, TreeSelect, Tree, } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-
-import styles from './RoleList.less';
+import Dict from '../../components/Dict';
+import styles from './System.less';
+import * as system from '../../services/system';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
+const TreeNode = Tree.TreeNode;
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
+const statusMap = {'ON': 'success', 'OFF': 'error'};
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+const formItemLayout = {
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 14,
+  },
+};
+
+@connect(({sysRole, sysOrg, sysMenu, sysUser, loading}) => ({
+  sysRole,
+  sysOrg,
+  sysMenu,
+  sysUser,
+  loading: loading.models.sysRole,
 }))
 @Form.create()
-export default class TableList extends PureComponent {
+export default class RoleList extends PureComponent {
   state = {
     modalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
+    authModalVisible: false,
+    assignModalVisible: false,
+    itemType: 'create',
+    item: {},
   };
 
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'rule/fetch',
-    // });
+    this.initQuery();
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
+  initQuery = () => {
+    const {dispatch, form} = this.props;
     dispatch({
-      type: 'rule/fetch',
-      payload: params,
-    });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
+      type: 'sysRole/getList',
+      payload: form.getFieldsValue(),
     });
     dispatch({
-      type: 'rule/fetch',
-      payload: {},
+      type: 'sysOrg/getList',
     });
-  };
+    dispatch({
+      type: 'sysMenu/getList',
+    });
+  }
 
-  toggleForm = () => {
+  initAssginData = (orgId, roleId) => {
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'sysUser/getList',
+      payload: {
+        orgId,
+        roleId,
+      }
+    });
+
+    dispatch({
+      type: 'sysUser/getUsersByRoleId',
+      payload: {
+        roleId,
+      }
+    });
+  }
+
+  handleModalVisible = (flag, itemType, item) => {
+    if (itemType === 'create') item = {};
+    if (!flag) item = {};
     this.setState({
-      expandForm: !this.state.expandForm,
+      modalVisible: flag,
+      itemType: itemType,
+      item,
     });
   };
 
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleSelectRows = rows => {
+  handleAuthModalVisible = (flag, item) => {
+    if (!flag) item = {};
     this.setState({
-      selectedRows: rows,
+      authModalVisible: flag,
+      item,
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleModalVisible = flag => {
+  handleAssignModalVisible = (flag, item) => {
+    if (!flag) item = {};
+    else this.initAssginData('', item.id,)
     this.setState({
-      modalVisible: !!flag,
+      assignModalVisible: flag,
+      item,
     });
   };
 
   handleAdd = fields => {
     this.props.dispatch({
-      type: 'rule/add',
+      type: 'sysRole/add',
       payload: {
-        description: fields.desc,
+        ...fields,
       },
+      callback: () => this.initQuery(),
     });
-
-    message.success('添加成功');
     this.setState({
       modalVisible: false,
     });
   };
 
-  renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
+  handleAuth = fields => {
+    this.props.dispatch({
+      type: 'sysRole/saveMenuAuth',
+      payload: {
+        ...fields,
+      },
+    });
+    this.setState({
+      authModalVisible: false,
+    });
+  };
+
+  handleDelete(record) {
+    this.props.dispatch({
+      type: 'sysRole/delete',
+      payload: record.id,
+      callback: () => this.initQuery(),
+    });
   }
 
-  renderAdvancedForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <span style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </span>
-        </div>
-      </Form>
-    );
+  handleChangeState(record) {
+    this.props.dispatch({
+      type: 'sysRole/updateStates',
+      payload: {
+        id: record.id,
+        state: record.state === 'ON' ? 'OFF' : 'ON',
+      },
+      callback: () => this.initQuery(),
+    });
   }
 
-  renderForm() {
-    return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+  handleOrgUserPageChange = (page, param) => {
+    this.props.dispatch({
+      type: 'sysUser/getList',
+      payload: {
+        pageNum: page.current,
+        pageSize: page.pageSize,
+        ...param,
+      },
+    });
+  }
+
+  handleMenuClick = (flag, row, item, orgId) => {
+    let param = {
+      id: item.id,
+      userId: row.id
+    };
+    if(flag === 'add') {
+      this.props.dispatch({
+        type: 'sysRole/assignRole',
+        payload: param,
+        callback: () => this.initAssginData(orgId, item.id),
+      });
+    } else {
+      this.props.dispatch({
+        type: 'sysRole/deleteRoleUser',
+        payload: param,
+        callback: () => this.initAssginData(orgId, item.id),
+      });
+    }
   }
 
   render() {
-    const { rule: { data }, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
+    const {
+      sysRole: {list = []},
+      sysUser: { currentUser, },
+      loading
+    } = this.props;
+    const {modalVisible, authModalVisible, assignModalVisible, itemType, item} = this.state;
+
+    let listFilter = list;
+    if(!currentUser.admin) {
+      listFilter = list.filter(item => item.id !== '1');
+    }
 
     const columns = [
       {
-        title: '规则编号',
-        dataIndex: 'no',
+        title: '角色名称',
+        key: 'name',
+        dataIndex: 'name',
       },
       {
-        title: '描述',
-        dataIndex: 'description',
+        title: '角色编码',
+        key: 'code',
+        dataIndex: 'code',
       },
       {
-        title: '服务调用次数',
-        dataIndex: 'callNo',
-        sorter: true,
-        align: 'right',
-        render: val => `${val} 万`,
-        // mark to display a total number
-        needTotal: true,
+        title: '角色级别',
+        key: 'levelDesc',
+        dataIndex: 'levelDesc',
+      },
+      {
+        title: '数据范围',
+        key: 'dataScopeDesc',
+        dataIndex: 'dataScopeDesc',
       },
       {
         title: '状态',
-        dataIndex: 'status',
-        filters: [
-          {
-            text: status[0],
-            value: 0,
-          },
-          {
-            text: status[1],
-            value: 1,
-          },
-          {
-            text: status[2],
-            value: 2,
-          },
-          {
-            text: status[3],
-            value: 3,
-          },
-        ],
-        onFilter: (value, record) => record.status.toString() === value,
-        render(val) {
-          return <Badge status={statusMap[val]} text={status[val]} />;
-        },
+        key: 'stateDesc',
+        dataIndex: 'stateDesc',
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
       },
       {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
-        sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: '备注',
+        key: 'remarks',
+        dataIndex: 'remarks',
       },
       {
         title: '操作',
-        render: () => (
+        width: 300,
+        render: (val, record) => (
           <Fragment>
-            <a href="">配置</a>
-            <Divider type="vertical" />
-            <a href="">订阅警报</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleChangeState(record)}>{
+              record.state === 'ON' ? '禁用' : '启用'
+            }</a>
+            {
+              currentUser.admin &&
+              <span>
+                <Divider type="vertical"/>
+                <a onClick={() => this.handleDelete(record)}>删除</a>
+              </span>
+            }
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleAuthModalVisible(true, record)}>权限设置</a>
+            <Divider type="vertical"/>
+            <a onClick={() => this.handleAssignModalVisible(true, record)}>关联用户</a>
           </Fragment>
         ),
       },
     ];
 
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
-    const parentMethods = {
+    const createModalProps = {
+      item,
+      itemType,
+      currentUser,
+      orgTree: this.props.sysOrg.list,
+      visible: modalVisible,
+      dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
+      handleModalVisible: () => this.handleModalVisible(false),
+    };
+
+    const createAuthModalProps = {
+      item,
+      currentUser,
+      menuTree: this.props.sysMenu.list,
+      visible: authModalVisible,
+      dispatch: this.props.dispatch,
+      handleAdd: this.handleAuth,
+      handleModalVisible: () => this.handleAuthModalVisible(false),
+    };
+
+    const createAssignModalProps = {
+      item,
+      currentUser,
+      orgTree: this.props.sysOrg.list,
+      pagination: this.props.sysUser.pagination,
+      orgUserList: this.props.sysUser.list,
+      roleUserList: this.props.sysUser.roleUserList,
+      visible: assignModalVisible,
+      dispatch: this.props.dispatch,
+      handlePageChange: this.handleOrgUserPageChange,
+      handleMenuClick: this.handleMenuClick,
+      handleOrgUserChange: this.initAssginData,
+      handleModalVisible: () => this.handleAssignModalVisible(false),
     };
 
     return (
-      <PageHeaderLayout title="角色">
+      <PageHeaderLayout>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
                 新建
               </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
             </div>
-            <StandardTable
-              selectedRows={selectedRows}
+            <Table
               loading={loading}
-              data={data}
+              dataSource={listFilter}
               columns={columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              pagination={false}
+              rowKey={item => item.id}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm {...createModalProps} />
+        <CreateAuthForm {...createAuthModalProps} />
+        <CreateAssignForm {...createAssignModalProps} />
       </PageHeaderLayout>
     );
   }
 }
+
+const CreateForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    itemType,
+    item,
+    orgTree,
+    currentUser,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+        state: item.state || 'ON',
+      });
+    });
+  };
+
+  const renderTreeNodes = (data) => {
+    return data.map((item) => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <TreeNode title={item.name} key={item.id} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode title={item.name} key={item.id} />;
+    });
+  }
+
+  const handleOrgTreeCheck = (checkedKeys) => {
+    form.setFieldsValue({
+      orgs: checkedKeys.map(val => {
+        return {id: val};
+      }),
+    })
+  }
+
+  const checkedKeys = item.orgIds ? item.orgIds.split(',') : [];
+
+  const modalProps = {
+    title: '新建',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  if (itemType === 'create') modalProps.title = '新建';
+  if (itemType === 'update') modalProps.title = '修改';
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={12}>
+          <FormItem label="角色名称：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('name', {
+              initialValue: item.name,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入菜单名称',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="角色编码：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('code', {
+              initialValue: item.code,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入角色编码',
+                },
+                {
+                  async validator(rule, value, callback) {
+                    const data = await system.isRoleCodeExists({
+                      code: value,
+                      id: item.id,
+                    });
+                    if (data.data) callback('该角色编码已存在');
+                    callback();
+                  },
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="数据范围：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('dataScope', {
+              initialValue: item.dataScope,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择角色数据范围',
+                },
+              ],
+            })(<Dict code={'DATA_SCOPE'} />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="角色级别：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('level', {
+              initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
+              rules: [
+                {
+                  required: true,
+                  message: '请选择角色级别',
+                },
+              ],
+            })(<Dict code={'LEVEL'} excludeCodes={ [!currentUser.admin && 'SYSTEM'] } disabled={!currentUser.admin} />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          {
+            form.getFieldValue('dataScope') === 'SCOPE_DETAIL' &&
+            form.getFieldDecorator('orgs')(
+              <Tree
+                checkable
+                defaultExpandAll
+                onCheck={handleOrgTreeCheck}
+                defaultCheckedKeys={checkedKeys}
+              >
+                {renderTreeNodes(orgTree)}
+              </Tree>
+            )
+          }
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+            {form.getFieldDecorator('remarks', {
+              initialValue: item.remarks,
+            })(<Input.TextArea rows={2}/>)}
+          </FormItem>
+        </Col>
+      </Row>
+    </Modal>
+  );
+});
+
+const CreateAuthForm = Form.create()(props => {
+  const {
+    visible,
+    form,
+    item,
+    menuTree,
+    handleAdd,
+    handleModalVisible,
+  } = props;
+
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd({
+        ...fieldsValue,
+        id: item.id,
+      });
+    });
+  };
+
+  const renderTreeNodes = (data) => {
+    return data.map((item) => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <TreeNode title={item.name} key={item.id} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode title={item.name} key={item.id} />;
+    });
+  }
+
+  const handleMenuTreeCheck = (checkedKeys, e) => {
+    form.setFieldsValue({
+      menus: checkedKeys.concat(e.halfCheckedKeys).map(val => {
+        return {id: val};
+      }),
+    })
+  }
+
+  const checkedKeys = item.menuIds
+    ? item.menuIds.split(',').filter(val =>
+      menuTree.filter(item =>
+        item.children && item.children.length > 0 && item.id === val).length === 0)
+    : [];
+  const modalProps = {
+    title: '菜单权限设置',
+    visible,
+    onOk: okHandle,
+    onCancel: handleModalVisible,
+  };
+
+  return (
+    <Modal {...modalProps}>
+      <Row>
+        <Col span={24}>
+          {
+            form.getFieldDecorator('menus')(
+              <Tree
+                checkable
+                defaultExpandAll
+                onCheck={handleMenuTreeCheck}
+                defaultCheckedKeys={checkedKeys}
+              >
+                {renderTreeNodes(menuTree)}
+              </Tree>
+            )
+          }
+        </Col>
+      </Row>
+    </Modal>
+  );
+});
+
+const CreateAssignForm = Form.create()(props => {
+  const {
+    visible,
+    item,
+    orgTree,
+    pagination,
+    handleMenuClick,
+    orgUserList,
+    roleUserList,
+    handleOrgUserChange,
+    onPageChange,
+    handleModalVisible,
+  } = props;
+
+  let orgId = '';
+
+  const renderTreeNodes = (data) => {
+    return data.map((item) => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <TreeNode title={item.name} key={item.id} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode title={item.name} key={item.id} />;
+    });
+  }
+
+  const orgUserColumns = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    }, {
+      title: '机构',
+      dataIndex: 'orgName',
+      key: 'orgName',
+    }, {
+      title: '状态',
+      key: 'stateDesc',
+      dataIndex: 'stateDesc',
+      render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+    }, {
+      title: '操作',
+      key: 'operation',
+      width: 80,
+      render: (text, row) =>
+        <span>
+          { row.id !== '1' ? <a onClick={() => {
+            handleMenuClick('add', row, item, orgId)
+          }}>关联</a> : ''}
+        </span>
+      ,
+    },
+  ]
+
+  const roleUserColumns = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    }, {
+      title: '机构',
+      dataIndex: 'orgName',
+      key: 'orgName',
+    }, {
+      title: '状态',
+      key: 'stateDesc',
+      dataIndex: 'stateDesc',
+      render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+    }, {
+      title: '操作',
+      key: 'operation',
+      width: 80,
+      render: (text, row) =>
+        <span>
+           { row.id !== '1' ? <a onClick={() => {
+             handleMenuClick('remove', row, item, orgId);
+           }}>移除</a> : ''}
+        </span>
+      ,
+    },
+  ]
+
+  const modalProps = {
+    title: '关联用户',
+    visible,
+    width: 1000,
+    footer: null,
+    onCancel: handleModalVisible,
+  };
+
+  return (
+    <Modal {...modalProps}>
+      <Divider orientation="left">待关联用户</Divider>
+      <Row>
+        <Col span={8}>
+          <Tree
+            defaultExpandedKeys={['2']}
+            onSelect={(value)=> {
+              orgId = value.length > 0 ? value[0] : '';
+              console.log(orgId)
+              handleOrgUserChange(orgId, item.id);
+            }}
+          >
+            {renderTreeNodes(orgTree)}
+          </Tree>
+        </Col>
+        <Col span={16}>
+          <Table
+            columns={orgUserColumns}
+            dataSource={orgUserList}
+            onChange={onPageChange}
+            pagination={pagination}
+            rowKey={record => record.id}
+          />
+        </Col>
+      </Row>
+      <Divider orientation="left">已关联用户</Divider>
+      <Table
+        columns={roleUserColumns}
+        dataSource={roleUserList}
+        pagination={false}
+        rowKey={record => record.id}
+      />
+    </Modal>
+  );
+});

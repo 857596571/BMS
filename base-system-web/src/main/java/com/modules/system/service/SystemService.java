@@ -71,7 +71,7 @@ public interface SystemService {
      * 删除字典
      * @param sysDict
      */
-    void deleteDictById(SysDict sysDict);
+    void deleteDict(SysDict sysDict);
 
     /* 字典结束 */
 
@@ -79,16 +79,15 @@ public interface SystemService {
 
     /**
      * 查询用户菜单列表
-     * @param userId 用户ID
      * @return
      */
-    List<SysMenu> findMenuList(String userId);
+    List<SysMenu> findMenuList();
 
     /**
      * 删除菜单
      * @param menu
      */
-    void deleteMenuById(SysMenu menu);
+    void deleteMenu(SysMenu menu);
 
     /**
      * 保存菜单
@@ -102,6 +101,12 @@ public interface SystemService {
      * @param list
      */
     void updateMenuSorts(List<SysMenu> list);
+
+    /**
+     * 更新菜单状态
+     * @param param
+     */
+    void updateMenuStates(Map<String, String> param);
 
     /* 菜单结束 */
 
@@ -136,10 +141,16 @@ public interface SystemService {
     void updateOrgSorts(List<SysOrg> list);
 
     /**
-     * 删除机构
-     * @param id
+     * 更新机构状态
+     * @param param
      */
-    void deleteOrgById(String id);
+    void updateOrgStates(Map<String, String> param);
+
+    /**
+     * 删除机构
+     * @param sysOrg
+     */
+    void deleteOrg(SysOrg sysOrg);
 
     /* 机构结束 */
 
@@ -158,6 +169,12 @@ public interface SystemService {
      * @return the sys role
      */
     SysRole saveRole(SysRole role);
+
+    /**
+     * 更新角色状态
+     * @param param
+     */
+    void updateRoleStates(Map<String, String> param);
 
     /**
      * 保存角色
@@ -219,6 +236,12 @@ public interface SystemService {
     SysUser saveUser(SysUser user);
 
     /**
+     * 更新用户状态
+     * @param param
+     */
+    void updateUserStates(Map<String, String> param);
+
+    /**
      * 删除用户
      *
      * @param userId 用户ID
@@ -239,6 +262,13 @@ public interface SystemService {
      * @return
      */
     SysUser getUserById(String id);
+
+    /**
+     * 判断登录账号是否唯一
+     * @param user
+     * @return
+     */
+    Boolean isUserExists(SysUser user);
 
     /* 用户结束 */
 

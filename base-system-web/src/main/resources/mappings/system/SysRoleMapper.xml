@@ -17,7 +17,7 @@
         <include refid="selectColumns"/>
         LEFT JOIN sys_user_role ur ON ur.role_id = a.id
         WHERE a.del_flag = '0'
-        AND a.state = '1'
+        AND a.state = 'ON'
         AND ur.user_id = #{userId}
         ORDER BY a.create_date
     </select>
@@ -61,7 +61,7 @@
             #{name},
             #{code},
             #{state},
-            #{roleType},
+            #{type},
             #{dataScope},
             #{level},
             #{createDate},
@@ -81,9 +81,14 @@
             <if test="dataScope != null and dataScope != ''">data_scope = #{dataScope},</if>
             <if test="level != null and level != ''">level = #{level},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
-            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+            remarks = #{remarks}
         </set>
         WHERE id = #{id}
+    </update>
+
+    <!-- 更新角色状态 -->
+    <update id="updateRoleStates">
+        update sys_role set state = #{state} where id = #{id}
     </update>
 
     <!-- 删除角色 -->

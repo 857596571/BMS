@@ -2,13 +2,13 @@ import * as system from '../../services/system';
 import {message} from 'antd';
 
 export default {
-  namespace: 'sysOrg',
+  namespace: 'sysMenu',
   state: {
     list: [],
   },
   effects: {
     *getList({ payload }, { call, put }) {
-      const { data, ok } = yield call(system.getOrgList, payload);
+      const { data, ok } = yield call(system.getMenuList, payload);
       if (ok) {
         yield put({
           type: 'save',
@@ -19,7 +19,7 @@ export default {
       }
     },
     *add({ payload, callback }, { call, put }) {
-      const { data, ok } = yield call(system.saveOrg, payload);
+      const { data, ok } = yield call(system.saveMenu, payload);
       if (ok) {
         yield put({
           type: 'save',
@@ -34,7 +34,7 @@ export default {
       }
     },
     *updateSorts({ payload, callback }, { call, put }) {
-      const { ok } = yield call(system.updateOrgSorts, payload);
+      const { ok } = yield call(system.updateMenuSorts, payload);
       if (ok) {
         if (typeof callback === 'function') {
           callback();
@@ -44,8 +44,19 @@ export default {
         message.error('更新排序失败');
       }
     },
+    *updateStates({ payload, callback }, { call, put }) {
+      const { ok } = yield call(system.updateMenuStates, payload);
+      if (ok) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+        message.success('状态更新成功');
+      } else {
+        message.error('状态更新失败');
+      }
+    },
     *delete({ payload, callback }, { call, put }) {
-      const { ok } = yield call(system.deleteOrg, payload);
+      const { ok } = yield call(system.deleteMenu, payload);
       if (ok) {
         if (typeof callback === 'function') {
           callback();

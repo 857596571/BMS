@@ -1,5 +1,5 @@
 import fetch from 'dva/fetch';
-import {notification} from 'antd';
+import {message} from 'antd';
 import {routerRedux} from 'dva/router';
 import store from '../index';
 import config from "../utils/config";
@@ -28,10 +28,11 @@ function checkStatus(response) {
     return response;
   }
   const errortext = codeMessage[response.status] || response.statusText;
-  notification.error({
+  message.error(`请求错误 ${response.status}: ${errortext}`);
+  console.error({
     message: `请求错误 ${response.status}: ${response.url}`,
     description: errortext,
-  });
+  })
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -94,9 +95,7 @@ export default function request(urlPrefix, options) {
       const { dispatch } = store;
       const status = e.name;
       if(status === 'TypeError') {
-        notification.error({
-          message: codeMessage[status],
-        });
+        message.error(codeMessage[status]);
       }
       if (status === 401) {
         dispatch({

@@ -58,7 +58,7 @@ public class DictUtils {
             }
         }
         List<SysDict> resultSort = new ArrayList<>();
-        DictUtils.sortList(resultSort, result, "0");
+        DictUtils.sortList(resultSort, result, "1");
         return result;
     }
 }
