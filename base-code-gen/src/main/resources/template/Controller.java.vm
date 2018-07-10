@@ -1,23 +1,19 @@
 package ${package}.modules.${module}.controller;
 
-import java.util.List;
-import java.util.Map;
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.common.api.Paging;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.github.pagehelper.PageInfo;
+import ${package}.modules.${module}.entity.${className};
+import ${package}.modules.${module}.service.${className}Service;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import io.swagger.annotations.*;
-import ${package}.modules.${module}.entity.${className};
-import ${package}.modules.${module}.service.${className}Service;
 
+import java.util.Map;
 
 
 /**
@@ -32,7 +28,7 @@ import ${package}.modules.${module}.service.${className}Service;
 @RestController
 @RequestMapping("/${pathName}")
 public class ${className}Controller extends BaseController {
-    @Reference
+    @Autowired
 	private ${className}Service ${classname}Service;
 	
 	/**
@@ -54,8 +50,7 @@ public class ${className}Controller extends BaseController {
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "query", dataType = "int", required = true)
     })
 	@GetMapping("/list")
-	@PreAuthorize("hasAuthority('${pathName}:list')")
-	public ResponseMessage<PageInfo<${className}>> list(Paging page, Map<String, Object> query){
+	public ResponseMessage<PageInfo<${className}>> list(Paging page, Map<String, Object> query) {
         return Result.success(${classname}Service.findPage(page, query));
 	}
 	
@@ -74,10 +69,9 @@ public class ${className}Controller extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "${pk.attrType} ${pk.attrname}", value = "主键", paramType = "query", dataType = "${pk.attrType}"),
     })
-	@GetMapping("/info/{${pk.attrname}}")
-	@PreAuthorize("hasAuthority('${pathName}:info')")
-	public ResponseMessage<${className}> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
-        return Result.success(${classname}Service.get(${pk.attrname}));
+	@GetMapping("/info/{id}")
+	public ResponseMessage<${className}> info(@PathVariable("id") String id) {
+        return Result.success(${classname}Service.get(id));
 	}
 	
 	/**
@@ -92,8 +86,7 @@ public class ${className}Controller extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
 	@PostMapping("/save")
-	@PreAuthorize("hasAuthority('${pathName}:save')")
-	public ResponseMessage<${className}> save(@RequestBody ${className} ${classname}){
+	public ResponseMessage<${className}> save(@RequestBody ${className} ${classname}) {
         return	Result.success(${classname}Service.save(${classname}));
 	}
 	
@@ -108,9 +101,8 @@ public class ${className}Controller extends BaseController {
             @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
-	@DeleteMapping("/delete/{${pk.attrname}}")
-	@PreAuthorize("hasAuthority('${pathName}:delete')")
-	public ResponseMessage delete(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+	@GetMapping("/delete/{id}")
+	public ResponseMessage delete(@PathVariable(@PathVariable("id") String id) {
 		${classname}Service.deleteById(${pk.attrname});
         return Result.success();
 	}

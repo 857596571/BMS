@@ -10,7 +10,7 @@
     
     <modules>
         <module>base-common</module>
-        <!--<modcngform-code-gen</module>-->
+        <module>base-code-gen</module>
         <module>base-system-web</module>
     </modules>
     <packaging>pom</packaging>

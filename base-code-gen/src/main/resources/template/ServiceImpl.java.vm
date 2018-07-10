@@ -4,7 +4,7 @@ import com.common.service.BaseServiceImpl;
 import ${package}.modules.${module}.entity.${className};
 import ${package}.modules.${module}.mapper.${className}Mapper;
 import ${package}.modules.${module}.service.${className}Service;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**

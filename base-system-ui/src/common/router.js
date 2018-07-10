@@ -87,6 +87,8 @@ export const getRouterData = app => {
     '/system/menu': {
       component: dynamicWrapper(app, ['system/menu'], () => import('../routes/System/MenuList')),
     },
+
+
     '/sys': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },

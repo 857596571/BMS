@@ -24,7 +24,7 @@ public class SysGeneratorServiceTest {
 	//zip输出路径
 	String zipPath = "/WORKSPACE/code.zip";
 	//表名
-	String[] tableNames = new String[] {"sys_user"};
+	String[] tableNames = new String[] {"quartz_job"};
 	@Test
 	public void testGeneratorCode() throws IOException {
 		byte[] data = sysGeneratorService.generatorCode(tableNames);

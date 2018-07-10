@@ -5,7 +5,8 @@ import {Icon} from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
 import {getRoutes} from '../utils/utils';
-import {copyrightText, logoSrc, logoText, name} from '../utils/config';
+import logo from '../assets/logo.svg';
+import {copyrightText, logoText, name} from '../utils/config';
 
 const copyright = (
   <Fragment>
@@ -32,7 +33,7 @@ class UserLayout extends React.PureComponent {
             <div className={styles.top}>
               <div className={styles.header}>
                 <Link to="/">
-                  <img alt={logoText} className={styles.logo} src={logoSrc} />
+                  <img alt={logoText} className={styles.logo} src={logo} />
                   <span className={styles.title}>{name}</span>
                 </Link>
               </div>

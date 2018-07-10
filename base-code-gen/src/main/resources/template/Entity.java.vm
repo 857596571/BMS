@@ -1,10 +1,9 @@
 package ${package}.entity;
 
-        import java.io.Serializable;
-        import java.util.Date;
-        import com.muck.common.entity.DataEntity;
-        import java.math.BigDecimal;
+import java.io.Serializable;
+import java.util.Date;
 
+import com.common.api.DataEntity;
 
 /**
  * ${comments}
@@ -21,7 +20,7 @@ public class ${className} extends DataEntity {
 	&&$column.columnName !='cat_nm'
 	&&$column.columnName !='cat_cd'
 	&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
-    //$column.comments
+    /** $column.comments */
     private $column.attrType $column.attrname;
 	#end
 #end
@@ -34,14 +33,14 @@ public class ${className} extends DataEntity {
      * 设置：${column.comments}
      */
     public void set${column.attrName}($column.attrType $column.attrname) {
-            this.$column.attrname = $column.attrname;
-            }
+		this.$column.attrname = $column.attrname;
+	}
     /**
      * 获取：${column.comments}
      */
     public $column.attrType get${column.attrName}() {
-            return $column.attrname;
-            }
+		return $column.attrname;
+	}
 	#end
 #end
-        }
+}
