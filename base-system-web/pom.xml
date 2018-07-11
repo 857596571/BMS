@@ -75,7 +75,6 @@
     </dependencies>
 
     <build>
-        <finalName>api</finalName>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
@@ -95,5 +94,18 @@
                 </excludes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <!--如果想在没有web.xml文件的情况下构建WAR，请设置为false。-->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!--注意增加这两行，在打包时相关的类会被独立打成jar-->
+                    <attachClasses>true</attachClasses>
+                    <classesClassifier>api</classesClassifier>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
