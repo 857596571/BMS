@@ -2,9 +2,9 @@ spring:
   # DataSource Config
   datasource:
     write:
-      url: jdbc:mysql://47.95.252.122:3306/xxjq?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      url: jdbc:mysql://127.0.0.1:3306/base-system?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: root
-      password: changxin100@2017
+      password: root
       driver-class-name: com.mysql.jdbc.Driver
       max-active: 20
       initial-size: 1
@@ -23,9 +23,9 @@ spring:
       # 合并多个DruidDataSource的监控数据
       #spring.datasource.useGlobalDataSourceStat=true
     read:
-      url: jdbc:mysql://47.95.252.122:3306/xxjq?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      url: jdbc:mysql://127.0.0.1:3306/base-system?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       username: root
-      password: changxin100@2017
+      password: root
       driver-class-name: com.mysql.jdbc.Driver
       max-active: 20
       initial-size: 1
@@ -77,4 +77,3 @@ commonYml:
       access-url: http://127.0.0.1:8090 #文件访问地址，可使用反向代理
     #初始密码
     initialPassword: 123456
-
