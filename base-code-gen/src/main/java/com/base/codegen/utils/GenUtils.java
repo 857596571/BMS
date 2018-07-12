@@ -8,9 +8,9 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.core.resource.ClasspathResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,16 +30,16 @@ public class GenUtils {
 
     public static List<String> getTemplates() {
         List<String> templates = new ArrayList<String>();
-        templates.add("template/Entity.java.vm");
-        templates.add("template/Mapper.java.vm");
-        templates.add("template/Mapper.xml.vm");
-        templates.add("template/Service.java.vm");
-        templates.add("template/ServiceImpl.java.vm");
-        templates.add("template/Controller.java.vm");
-        templates.add("template/model.js.vm");
-		templates.add("template/list.js.vm");
-        templates.add("template/service.js.vm");
-        templates.add("template/router.js.vm");
+        templates.add("template/Entity.java.btl");
+        templates.add("template/Mapper.java.btl");
+        templates.add("template/Mapper.xml.btl");
+        templates.add("template/Service.java.btl");
+        templates.add("template/ServiceImpl.java.btl");
+        templates.add("template/Controller.java.btl");
+        templates.add("template/model.js.btl");
+		templates.add("template/list.js.btl");
+        templates.add("template/service.js.btl");
+        templates.add("template/router.js.btl");
         return templates;
     }
 
@@ -47,7 +47,7 @@ public class GenUtils {
      * 生成代码
      */
     public static void generatorCode(Map<String, String> table,
-                                     List<Map<String, String>> columns, ZipOutputStream zip) {
+                                     List<Map<String, String>> columns, ZipOutputStream zip) throws IOException {
         //配置信息
         Configuration config = getConfig();
 
@@ -92,13 +92,8 @@ public class GenUtils {
             tableEntity.setPk(tableEntity.getColumns().get(0));
         }
 
-        //设置velocity资源加载器
-        Properties prop = new Properties();
-        prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        Velocity.init(prop);
-
         //封装模板数据
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String,Object> map = new HashMap<String,Object>();
         map.put("tableName", tableEntity.getTableName());
         map.put("comments", tableEntity.getComments());
         map.put("pk", tableEntity.getPk());
@@ -111,21 +106,25 @@ public class GenUtils {
         map.put("author", config.getString("author"));
         map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
-        VelocityContext context = new VelocityContext(map);
+
+
+        ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader();
+        org.beetl.core.Configuration cfg = org.beetl.core.Configuration.defaultConfiguration();
+        GroupTemplate gt = new GroupTemplate(resourceLoader, cfg);
+        gt.setSharedVars(map);
 
         //获取模板列表
         List<String> templates = getTemplates();
         for (String template : templates) {
+
             //渲染模板
-            StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, "UTF-8");
-            tpl.merge(context, sw);
+            Template temp = gt.getTemplate(template);
 
             try {
                 //添加到zip
                 zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), tableEntity.getClassname(), config.getString("package"), config.getString("module"))));
-                IOUtils.write(sw.toString(), zip, "UTF-8");
-                IOUtils.closeQuietly(sw);
+                IOUtils.write(temp.render(), zip, "UTF-8");
+                IOUtils.closeQuietly();
                 zip.closeEntry();
             } catch (IOException e) {
                 throw new RRException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
@@ -175,49 +174,49 @@ public class GenUtils {
         }
         String packageJsPath = packageBasePath + "js" + File.separator;
 
-        if (template.contains("Entity.java.vm")) {
+        if (template.contains("Entity.java.btl")) {
             return packageJavaPath + "entity" + File.separator + className + ".java";
         }
 
-        if (template.contains("Mapper.java.vm")) {
+        if (template.contains("Mapper.java.btl")) {
             return packageJavaPath + "mapper" + File.separator + className + "Mapper.java";
         }
 
-        if (template.contains("Mapper.xml.vm")) {
+        if (template.contains("Mapper.xml.btl")) {
             return packageBasePath + File.separator + "resources" + File.separator
                     + "mappings" + File.separator + module + File.separator + className + "Mapper.xml";
         }
 
-        if (template.contains("Service.java.vm")) {
+        if (template.contains("Service.java.btl")) {
             return packageJavaPath + "service" + File.separator + className + "Service.java";
         }
 
-        if (template.contains("ServiceImpl.java.vm")) {
+        if (template.contains("ServiceImpl.java.btl")) {
             return packageJavaPath + "service" + File.separator + "impl" + File.separator + className + "ServiceImpl.java";
         }
 
-        if (template.contains("Controller.java.vm")) {
+        if (template.contains("Controller.java.btl")) {
             return packageJavaPath + "controller" + File.separator + className + "Controller.java";
         }
-//		if(template.contains("Test.java.vm")){
+//		if(template.contains("Test.java.btl")){
 //			return packagePath + "test" + File.separator + className + "ServiceTest.java";
 
 
-        if (template.contains("model.js.vm")) {
+        if (template.contains("model.js.btl")) {
             return packageJsPath + "models" + File.separator + module + File.separator  + classname + ".js";
         }
 
 
-        if (template.contains("list.js.vm")) {
+        if (template.contains("list.js.btl")) {
             return packageJsPath + "routes" + File.separator + module + File.separator + className + ".js";
         }
 
-        if (template.contains("service.js.vm")) {
+        if (template.contains("service.js.btl")) {
             return packageJsPath + "services" + File.separator + module + File.separator + className + ".js";
         }
 
-        if (template.contains("router.js.vm")) {
-            return  packageJsPath + "common" + File.separator + "router.js";
+        if (template.contains("router.js.btl")) {
+            return  packageJsPath + "common" + File.separator + "router-" + className + ".js";
         }
 
         return null;

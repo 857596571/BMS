@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
@@ -39,7 +40,7 @@ public class SysGeneratorServiceImpl implements SysGeneratorService {
 	}
 
 	@Override
-	public byte[] generatorCode(String[] tableNames) {
+	public byte[] generatorCode(String[] tableNames) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(outputStream);
 		

@@ -1,0 +1,22 @@
+package ${package}.modules.${module}.service.impl;
+
+import com.common.service.BaseServiceImpl;
+import ${package}.modules.${module}.entity.${className};
+import ${package}.modules.${module}.mapper.${className}Mapper;
+import ${package}.modules.${module}.service.${className}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Service
+public class ${className}ServiceImpl extends BaseServiceImpl<${className}Mapper, ${className}> implements ${className}Service {
+    @Autowired
+    private ${className}Mapper ${classname}Mapper;
+
+}

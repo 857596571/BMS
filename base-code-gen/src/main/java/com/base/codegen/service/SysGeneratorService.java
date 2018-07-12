@@ -1,5 +1,6 @@
 package com.base.codegen.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,5 +24,5 @@ public interface SysGeneratorService {
 	/**
 	 * 生成代码
 	 */
-	byte[] generatorCode(String[] tableNames);
+	byte[] generatorCode(String[] tableNames) throws IOException;
 }
