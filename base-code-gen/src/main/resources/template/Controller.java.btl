@@ -103,7 +103,7 @@ public class ${className}Controller extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @GetMapping("/delete/{id}")
-    public ResponseMessage delete(@PathVariable(@PathVariable("id") String id) {
+    public ResponseMessage delete(@PathVariable("id") String id) {
         ${classname}Service.deleteById(${pk.attrname});
         return Result.success();
     }
