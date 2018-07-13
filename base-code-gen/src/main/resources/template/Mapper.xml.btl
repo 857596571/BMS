@@ -16,7 +16,7 @@
     </select>
 
     <!-- 保存${comments} -->
-    <insert id="insert" parameterType="${package}.modules.${module}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+    <insert id="insert" parameterType="${package}.modules.${module}.entity.${className}"<%if(pk.extra == 'auto_increment') {%> useGeneratedKeys="true" keyProperty="${pk.attrname}"<%}%>>
         insert into ${tableName} (
             <%
             for (column in columns) {
