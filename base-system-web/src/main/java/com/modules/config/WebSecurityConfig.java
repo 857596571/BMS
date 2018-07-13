@@ -17,7 +17,16 @@ public class WebSecurityConfig extends AbstractWebSecurityConfig {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/sys/task/**");
+        web.ignoring().antMatchers("/servlet/**",
+                "/**/export",
+                "/device/**",
+                "/**/download",
+                "/webjars/**",
+                "/v2/api-docs", // swagger api json
+                "/swagger-resources/configuration/ui", // 用来获取支持的动作
+                "/swagger-resources", //用来获取api-docs的URI
+                "/swagger-resources/configuration/security", // 安全选项
+                "/swagger-ui.html");
     }
 
     @Override
