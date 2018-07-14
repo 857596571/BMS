@@ -248,6 +248,8 @@
                     <include>**/application*.yml</include>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                    <include>**/*.setting</include>
+                    <include>**/mappings/**/*Mapper.xml</include>
                 </includes>
             </resource>
             <resource>
@@ -256,6 +258,8 @@
                     <exclude>**/application*.yml</exclude>
                     <exclude>**/*.properties</exclude>
                     <exclude>**/*.xml</exclude>
+                    <exclude>**/*.setting</exclude>
+                    <exclude>**/mappings/**/*Mapper.xml</exclude>
                 </excludes>
             </resource>
         </resources>

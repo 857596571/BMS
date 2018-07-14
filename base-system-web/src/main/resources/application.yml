@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cng-web-Provider
+    name: base-system-web
   profiles:
     active: @profileActive@
 
