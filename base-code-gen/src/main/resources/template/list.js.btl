@@ -124,8 +124,8 @@ export default class ${className} extends PureComponent {
     return (
       <PageHeaderLayout>
         <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>
+          <div className={'tableList'}>
+            <div className={'tableListForm'}>
               <Form onSubmit={this.handleSearch} layout="inline">
                 <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                   <Col md={6} sm={24}>
@@ -134,7 +134,7 @@ export default class ${className} extends PureComponent {
                     </FormItem>
                   </Col>
                   <Col md={6} sm={24}>
-                    <span className={styles.submitButtons}>
+                    <span className={'submitButtons'}>
                       <Button type="primary" onClick={() => this.initQuery()}>
                         查询
                       </Button>
@@ -146,7 +146,7 @@ export default class ${className} extends PureComponent {
                 </Row>
               </Form>
             </div>
-            <div className={styles.tableListOperator}>
+            <div className={'tableListOperator'}>
               <Button type="primary" onClick={() => this.handleModalVisible(true, 'create')}>
                 新建
               </Button>
@@ -208,16 +208,16 @@ const CreateForm = Form.create()(props => {
           && column.columnName != 'del_flag'){
       %>
         <Col span={12}>
-          <FormItem label="$column.comments：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('$column.attrname', {
-              initialValue: item.$column.attrname,
+          <FormItem label="${column.comments}：" hasFeedback {...formItemLayout}>
+            {form.getFieldDecorator('${column.attrname}', {
+              initialValue: item.${column.attrname},
               rules: [
                 {
                   required: false,
-                  message: '请输入$column.comments',
+                  message: '请输入${column.comments}',
                 },
               ],
-            })(<Input placeholder={'请输入$column.comments'} />)}
+            })(<Input placeholder={'请输入${column.comments}'} />)}
           </FormItem>
         </Col>
 
