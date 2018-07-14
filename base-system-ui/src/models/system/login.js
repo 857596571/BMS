@@ -1,7 +1,7 @@
-import {routerRedux} from 'dva/router';
-import {userLogin} from '../../services/system';
-import {setAuthority} from '../../utils/authority';
-import {reloadAuthorized} from '../../utils/Authorized';
+import { routerRedux } from 'dva/router';
+import { userLogin, userLogout } from '../../services/system';
+import { setAuthority } from '../../utils/authority';
+import { reloadAuthorized } from '../../utils/Authorized';
 
 export default {
   namespace: 'sysLogin',
@@ -13,6 +13,9 @@ export default {
       const response = yield call(userLogin, payload);
       // Login successfully
       if (response.ok) {
+        yield put({
+          type: 'sysUser/getLoginUser',
+        });
         yield put({
           type: 'changeLoginStatus',
           payload: {
@@ -32,24 +35,32 @@ export default {
         });
       }
     },
-    *logout(_, { put, select }) {
-      try {
-        // get location pathname
-        const urlParams = new URL(window.location.href);
-        const pathname = yield select(state => state.routing.location.pathname);
-        // add the parameters in the url
-        urlParams.searchParams.set('redirect', pathname);
-        window.history.replaceState(null, 'login', urlParams.href);
-      } finally {
-        localStorage.removeItem('Authorization');
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            currentAuthority: 'guest',
-          },
-        });
-        reloadAuthorized();
-        yield put(routerRedux.push('/sys/login'));
+    *logout(_, { call, put, select }) {
+      const response = yield call(userLogout);
+      if (response.ok) {
+        try {
+          yield put({
+            type: 'sysUser/saveCurrentUser',
+            payload: {},
+          });
+          // get location pathname
+          const urlParams = new URL(window.location.href);
+          const pathname = yield select(state => state.routing.location.pathname);
+          // add the parameters in the url
+          urlParams.searchParams.set('redirect', pathname);
+
+          window.history.replaceState(null, 'login', urlParams.href);
+        } finally {
+          localStorage.removeItem('Authorization');
+          yield put({
+            type: 'changeLoginStatus',
+            payload: {
+              currentAuthority: 'guest',
+            },
+          });
+          reloadAuthorized();
+          yield put(routerRedux.push('/sys/login'));
+        }
       }
     },
   },

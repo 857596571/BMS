@@ -1,6 +1,24 @@
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'dva';
-import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table, TreeSelect, Tree, } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  message,
+  Modal,
+  Row,
+  Select,
+  Table,
+  TreeSelect,
+  Tree,
+  Popconfirm,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './System.less';
 import Dict from '../../components/Dict';
@@ -9,7 +27,7 @@ import * as system from '../../services/system';
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
 
-const statusMap = {'ON': 'success', 'OFF': 'error'};
+const statusMap = { ON: 'success', OFF: 'error' };
 
 const formItemLayout = {
   labelCol: {
@@ -20,7 +38,7 @@ const formItemLayout = {
   },
 };
 
-@connect(({sysUser, sysOrg, sysRole, loading}) => ({
+@connect(({ sysUser, sysOrg, sysRole, loading }) => ({
   sysUser,
   sysOrg,
   sysRole,
@@ -42,7 +60,7 @@ export default class UserList extends PureComponent {
   }
 
   initQuery = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'sysOrg/getList',
     });
@@ -50,14 +68,15 @@ export default class UserList extends PureComponent {
     dispatch({
       type: 'sysRole/getList',
     });
-  }
+  };
 
-  initQueryUser = (selectKeys) => {
-    const orgId = selectKeys && selectKeys.length > 0 ? selectKeys[0] : ''
+  initQueryUser = selectKeys => {
+    const orgId =
+      selectKeys && selectKeys.length > 0 ? (selectKeys[0] !== '2' ? selectKeys[0] : '') : '';
     this.setState({
-      orgId: orgId
-    })
-    const {dispatch, form} = this.props;
+      orgId: orgId,
+    });
+    const { dispatch, form } = this.props;
     dispatch({
       type: 'sysUser/getList',
       payload: {
@@ -65,10 +84,14 @@ export default class UserList extends PureComponent {
         ...form.getFieldsValue(),
       },
     });
-  }
+  };
+
+  handleFormReset = () => {
+    this.props.form.resetFields();
+  };
 
   handleModalVisible = (flag, itemType, item) => {
-    if (itemType === 'create') item = { orgId : this.state.orgId};
+    if (itemType === 'create') item = { orgId: this.state.orgId };
     if (!flag) item = {};
     this.setState({
       modalVisible: flag,
@@ -98,15 +121,25 @@ export default class UserList extends PureComponent {
     });
   };
 
-  handleResetPassword = fields => {
+  // handleResetPassword = fields => {
+  //   this.props.dispatch({
+  //     type: 'sysUser/resetPassword',
+  //     payload: {
+  //       ...fields,
+  //     },
+  //   });
+  //   this.setState({
+  //     authModalVisible: false,
+  //   });
+  // };
+
+  handleResetPassword = record => {
     this.props.dispatch({
       type: 'sysUser/resetPassword',
       payload: {
-        ...fields,
+        id: record.id,
+        type: 'INIT',
       },
-    });
-    this.setState({
-      authModalVisible: false,
     });
   };
 
@@ -129,7 +162,7 @@ export default class UserList extends PureComponent {
     });
   }
 
-  handlePageChange = (page) => {
+  handlePageChange = page => {
     this.props.dispatch({
       type: 'sysUser/getList',
       payload: {
@@ -138,11 +171,11 @@ export default class UserList extends PureComponent {
         ...this.props.form.getFieldsValue(),
       },
     });
-  }
+  };
 
   getSelectTreeData = list => {
     return list.map(item => {
-      if(item.children && item.children.length > 0) {
+      if (item.children && item.children.length > 0) {
         return {
           label: item.name,
           value: item.id,
@@ -156,15 +189,11 @@ export default class UserList extends PureComponent {
         key: item.id,
       };
     });
-  }
+  };
 
   render() {
-    const {
-      sysUser: {list = [], pagination = {}},
-      loading,
-      form,
-    } = this.props;
-    const {modalVisible, passwordModalVisible, itemType, item} = this.state;
+    const { sysUser: { list = [], pagination = {}, currentUser }, loading, form } = this.props;
+    const { modalVisible, passwordModalVisible, itemType, item } = this.state;
 
     const columns = [
       {
@@ -201,7 +230,7 @@ export default class UserList extends PureComponent {
         title: '状态',
         key: 'stateDesc',
         dataIndex: 'stateDesc',
-        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
       },
       {
         title: '备注',
@@ -213,17 +242,49 @@ export default class UserList extends PureComponent {
         width: 240,
         render: (val, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleChangeState(record)}>{
-              record.state === 'ON' ? '禁用' : '启用'
-            }</a>
-            <span>
-              <Divider type="vertical"/>
-              <a onClick={() => this.handleDelete(record)}>删除</a>
-            </span>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handlePasswordModalVisible(true, record)}>重置密码</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>
+              修改<Divider type="vertical" />
+            </a>
+            {record.state === 'ON' ? (
+              <Popconfirm
+                title="禁用该用户后该用户将无法登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  禁用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            ) : (
+              <Popconfirm
+                title="启用该用户后该用户将正常登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  启用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            {record.type === 'USER_SYSTEM' && (
+              <Popconfirm
+                title="删除该用户后将该用户将无法登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleDelete(record)}
+              >
+                <a>
+                  删除<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+
+            <Popconfirm
+              title="重置密码后将会自动把密码重置为默认密码，请谨慎使用?"
+              placement="topRight"
+              onConfirm={() => this.handleResetPassword(record)}
+            >
+              <a>重置密码</a>
+            </Popconfirm>
           </Fragment>
         ),
       },
@@ -232,6 +293,7 @@ export default class UserList extends PureComponent {
     const createModalProps = {
       item,
       itemType,
+      currentUser,
       selectTreeData: this.getSelectTreeData(this.props.sysOrg.list),
       roleList: this.props.sysRole.list,
       visible: modalVisible,
@@ -248,8 +310,8 @@ export default class UserList extends PureComponent {
       handleModalVisible: () => this.handlePasswordModalVisible(false),
     };
 
-    const renderTreeNodes = (data) => {
-      return data.map((item) => {
+    const renderTreeNodes = data => {
+      return data.map(item => {
         if (item.children && item.children.length > 0) {
           return (
             <TreeNode title={item.name} key={item.id} dataRef={item}>
@@ -259,7 +321,7 @@ export default class UserList extends PureComponent {
         }
         return <TreeNode title={item.name} key={item.id} />;
       });
-    }
+    };
 
     const CreateFormGen = () => <CreateForm {...createModalProps} />;
 
@@ -268,10 +330,7 @@ export default class UserList extends PureComponent {
         <Row gutter={16}>
           <Col span={6}>
             <Card bordered={false}>
-              <Tree
-                defaultExpandedKeys={['2']}
-                onSelect={this.initQueryUser}
-              >
+              <Tree defaultExpandedKeys={['2']} onSelect={this.initQueryUser}>
                 {renderTreeNodes(this.props.sysOrg.list)}
               </Tree>
             </Card>
@@ -284,36 +343,34 @@ export default class UserList extends PureComponent {
                     <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                       <Col md={6} sm={24}>
                         <FormItem>
-                          {form.getFieldDecorator('searchKeys')(<Input placeholder="请输入需查询的用户名称、登录账号" />)}
+                          {form.getFieldDecorator('searchKeys')(
+                            <Input placeholder="请输入需查询的用户名称、登录账号" />
+                          )}
                         </FormItem>
                       </Col>
                       <Col md={6} sm={24}>
                         <FormItem>
                           {form.getFieldDecorator('state', {
-                            initialValue: ''
-                          })(
-                            <Dict code={'STATE'} radio query />
-                          )}
+                            initialValue: '',
+                          })(<Dict code={'STATE'} radio query />)}
                         </FormItem>
                       </Col>
                       <Col md={6} sm={24}>
                         <FormItem>
                           {form.getFieldDecorator('type', {
-                            initialValue: 'USER_BIZ'
-                          })(
-                            <Dict code={'USER_TYPE'} radio />
-                          )}
+                            initialValue: '',
+                          })(<Dict code={'USER_TYPE'} radio query />)}
                         </FormItem>
                       </Col>
                       <Col md={6} sm={24}>
-                    <span className={styles.submitButtons}>
-                      <Button type="primary" onClick={() => this.initQuery()}>
-                        查询
-                      </Button>
-                      <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                        重置
-                      </Button>
-                    </span>
+                        <span className={styles.submitButtons}>
+                          <Button type="primary" onClick={() => this.initQuery()}>
+                            查询
+                          </Button>
+                          <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                            重置
+                          </Button>
+                        </span>
                       </Col>
                     </Row>
                   </Form>
@@ -349,6 +406,7 @@ const CreateForm = Form.create()(props => {
     itemType,
     item,
     roleList,
+    currentUser,
     selectTreeData,
     handleAdd,
     handleModalVisible,
@@ -356,19 +414,21 @@ const CreateForm = Form.create()(props => {
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      console.log(err,fieldsValue)
+      console.log(err, fieldsValue);
       if (err) return;
       form.resetFields();
       let formValues = {
         ...fieldsValue,
         id: item.id,
         state: item.state || 'ON',
-        type: item.type || 'USER_SYSTEM'
+        type: item.type || 'USER_SYSTEM',
       };
       delete formValues.resPassword;
-      if(itemType === 'update') delete formValues.password;
-      if(formValues.rolesTemp && formValues.rolesTemp.length > 0) {
-        formValues.roles = formValues.rolesTemp.map(item => {return {id: item}});
+      if (itemType === 'update') delete formValues.password;
+      if (formValues.rolesTemp && formValues.rolesTemp.length > 0) {
+        formValues.roles = formValues.rolesTemp.map(item => {
+          return { id: item };
+        });
         delete formValues.rolesTemp;
       }
       handleAdd(formValues);
@@ -402,7 +462,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入用户名称',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -447,7 +507,7 @@ const CreateForm = Form.create()(props => {
                   },
                 },
               ],
-            })(<Input />)}
+            })(<Input disabled={item.id === '1'} />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -462,51 +522,17 @@ const CreateForm = Form.create()(props => {
               ],
             })(
               <Select style={{ width: '100%' }} mode={'multiple'}>
-                {
-                  roleList && roleList.map(item => <Select.Option key={item.id} vlaue={item.id}>{item.name}</Select.Option>)
-                }
+                {roleList &&
+                  roleList.map(item => (
+                    <Select.Option key={item.id} vlaue={item.id}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
               </Select>
             )}
           </FormItem>
         </Col>
       </Row>
-      {
-        itemType !== 'update' &&
-        <Row>
-          <Col span={12}>
-            <FormItem label="登录密码：" hasFeedback {...formItemLayout}>
-              {form.getFieldDecorator('password', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入登录密码',
-                  },
-                ],
-              })(<Input type={'password'} />)}
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem label="确认密码：" hasFeedback {...formItemLayout}>
-              {form.getFieldDecorator('resPassword', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入确认登录密码',
-                  },
-                  {
-                    validator: (rule, value, callback) => {
-                      if(value !== form.getFieldValue('password')) {
-                        callback('两次密码不一致');
-                      }
-                      callback();
-                    }
-                  }
-                ],
-              })(<Input type={'password'} />)}
-            </FormItem>
-          </Col>
-        </Row>
-      }
       <Row>
         <Col span={12}>
           <FormItem label="电子邮件：" hasFeedback {...formItemLayout}>
@@ -531,12 +557,12 @@ const CreateForm = Form.create()(props => {
                 },
                 {
                   validator: (rule, value, callback) => {
-                  if(value && !(/^1[34578]\d{9}$/.test(value))) {
+                    if (value && !/^1[12345789]\d{9}$/.test(value)) {
                       callback('输入的手机号码有误');
                     }
                     callback();
-                  }
-                }
+                  },
+                },
               ],
             })(<Input />)}
           </FormItem>
@@ -544,10 +570,10 @@ const CreateForm = Form.create()(props => {
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
             {form.getFieldDecorator('remarks', {
               initialValue: item.remarks,
-            })(<Input.TextArea rows={2}/>)}
+            })(<Input.TextArea rows={2} />)}
           </FormItem>
         </Col>
       </Row>
@@ -556,13 +582,7 @@ const CreateForm = Form.create()(props => {
 });
 
 const CreatePasswordForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    item,
-    handleAdd,
-    handleModalVisible,
-  } = props;
+  const { visible, form, item, handleAdd, handleModalVisible } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -623,12 +643,12 @@ const CreatePasswordForm = Form.create()(props => {
                 },
                 {
                   validator: (rule, value, callback) => {
-                    if(value !== form.getFieldValue('newPassword')) {
+                    if (value !== form.getFieldValue('newPassword')) {
                       callback('两次密码不一致');
                     }
                     callback();
-                  }
-                }
+                  },
+                },
               ],
             })(<Input type={'password'} />)}
           </FormItem>

@@ -113,7 +113,13 @@
 
     <!-- 更新机构状态 -->
     <update id="updateStates">
-		update sys_org set state = #{state} where left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+		update sys_org set state = #{state} where
+        <if test='state == "OFF"'>
+            left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+        </if>
+        <if test='state == "ON"'>
+            left_num &lt;= #{leftNum} and right_num &gt;= #{rightNum}
+        </if>
 	</update>
 
     <!-- 删除机构 -->

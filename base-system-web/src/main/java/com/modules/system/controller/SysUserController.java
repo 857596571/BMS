@@ -77,7 +77,7 @@ public class SysUserController extends BaseController {
             user.setId(authUser.getId());
             user.setPassword(authUser.getPassword());
         }
-        if(StrUtil.isNotBlank(type) && type.equals("2")) {
+        if(StrUtil.isNotBlank(type) && type.equals("INIT")) {
             //重置为初始密码 "123456"
             systemService.updateUserPasswordById(user.getId(),
                     passwordEncoder.encode(ymlConfig.getStr("initialPassword")),
@@ -124,7 +124,7 @@ public class SysUserController extends BaseController {
      */
     @PostMapping(value = "/save")
     public ResponseMessage saveUser(@Valid @RequestBody SysUser user) {
-        if (user.getIsNewRecord() && StrUtil.isNotBlank(user.getPassword())) {
+        if (user.getIsNewRecord() && StrUtil.isBlank(user.getPassword())) {
             //如果为新增用户并未设置密码则生成初始密码
             user.setPassword(passwordEncoder.encode(ymlConfig.getStr("initialPassword")));
         }

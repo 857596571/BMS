@@ -1,5 +1,5 @@
 import * as system from '../../services/system';
-import {message} from 'antd';
+import { message } from 'antd';
 
 export default {
   namespace: 'sysOrg',
@@ -44,7 +44,7 @@ export default {
         message.error('更新排序失败');
       }
     },
-    *delete({ payload, callback }, { call, put }) {
+    *deleteById({ payload, callback }, { call, put }) {
       const { ok } = yield call(system.deleteOrg, payload);
       if (ok) {
         if (typeof callback === 'function') {

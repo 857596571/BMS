@@ -1,13 +1,30 @@
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'dva';
-import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table, TreeSelect, } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  message,
+  Modal,
+  Row,
+  Select,
+  Table,
+  TreeSelect,
+  Popconfirm,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import styles from './System.less';
 
 const FormItem = Form.Item;
 
-const statusMap = {'ON': 'success', 'OFF': 'error'};
+const statusMap = { ON: 'success', OFF: 'error' };
 
 const formItemLayout = {
   labelCol: {
@@ -18,7 +35,7 @@ const formItemLayout = {
   },
 };
 
-@connect(({sysMenu, sysUser, loading}) => ({
+@connect(({ sysMenu, sysUser, loading }) => ({
   sysMenu,
   sysUser,
   loading: loading.models.sysMenu,
@@ -37,12 +54,12 @@ export default class MenuList extends PureComponent {
   }
 
   initQuery = () => {
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
     dispatch({
       type: 'sysMenu/getList',
       payload: form.getFieldsValue(),
     });
-  }
+  };
 
   handleModalVisible = (flag, itemType, item) => {
     if (itemType === 'create') item = {};
@@ -74,14 +91,14 @@ export default class MenuList extends PureComponent {
 
   handleChangeSort(val, record) {
     let tempSorts = this.state.tempSorts;
-    tempSorts[record.id.toString()] = {id: record.id, sort: val};
+    tempSorts[record.id.toString()] = { id: record.id, sort: val };
     if ((val || 0) === (record.sort || 0)) delete tempSorts[record.id];
-    this.setState({tempSorts: Object.assign({}, tempSorts)});
+    this.setState({ tempSorts: Object.assign({}, tempSorts) });
   }
 
   handleUpdateSorts() {
     let sorts = [];
-    const {tempSorts} = this.state;
+    const { tempSorts } = this.state;
     Object.keys(tempSorts).map(key => {
       sorts.push(tempSorts[key]);
     });
@@ -90,7 +107,7 @@ export default class MenuList extends PureComponent {
       payload: sorts,
       callback: () => {
         this.initQuery();
-        this.setState({tempSorts: {}});
+        this.setState({ tempSorts: {} });
       },
     });
   }
@@ -122,7 +139,7 @@ export default class MenuList extends PureComponent {
 
   getSelectTreeData = list => {
     return list.map(item => {
-      if(item.children && item.children.length > 0) {
+      if (item.children && item.children.length > 0) {
         return {
           label: item.name,
           value: item.id,
@@ -136,11 +153,11 @@ export default class MenuList extends PureComponent {
         key: item.id,
       };
     });
-  }
+  };
 
   render() {
-    const {sysMenu: {list = []}, sysUser: { currentUser }, loading} = this.props;
-    const {modalVisible, itemType, item, tempSorts} = this.state;
+    const { sysMenu: { list = [] }, sysUser: { currentUser }, loading } = this.props;
+    const { modalVisible, itemType, item, tempSorts } = this.state;
 
     const columns = [
       {
@@ -167,7 +184,7 @@ export default class MenuList extends PureComponent {
         title: '状态',
         key: 'stateDesc',
         dataIndex: 'stateDesc',
-        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
       },
       {
         title: '排序',
@@ -191,19 +208,41 @@ export default class MenuList extends PureComponent {
         width: 240,
         render: (val, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleChangeState(record)}>{
-              record.state === 'ON' ? '禁用' : '启用'
-            }</a>
-            {
-              currentUser.admin &&
-              <span>
-                <Divider type="vertical"/>
-                <a onClick={() => this.handleDelete(record)}>删除</a>
-              </span>
-            }
-            <Divider type="vertical"/>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>
+              修改<Divider type="vertical" />
+            </a>
+            {record.state === 'ON' ? (
+              <Popconfirm
+                title="禁用该菜单（及其所有子菜单）后右侧菜单栏将无法显示，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  禁用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            ) : (
+              <Popconfirm
+                title="启用该菜单（及其所有子菜单）后右侧菜单栏将正常显示，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  启用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            {currentUser.admin && (
+              <Popconfirm
+                title="删除该菜单（及其所有子菜单）后右侧菜单栏将无法显示且无法找回，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleDelete(record)}
+              >
+                <a>
+                  删除<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
             <a onClick={() => this.handleModalVisible(true, 'sub', record)}>新建子菜单</a>
           </Fragment>
         ),
@@ -213,12 +252,14 @@ export default class MenuList extends PureComponent {
     const createModalProps = {
       item,
       itemType,
-      selectTreeData: [{
-        label: '顶层',
-        value: '1',
-        key: '1',
-        children: this.getSelectTreeData(list),
-      }],
+      selectTreeData: [
+        {
+          label: '顶层',
+          value: '1',
+          key: '1',
+          children: this.getSelectTreeData(list),
+        },
+      ],
       visible: modalVisible,
       dispatch: this.props.dispatch,
       handleAdd: this.handleAdd,
@@ -257,15 +298,7 @@ export default class MenuList extends PureComponent {
 }
 
 const CreateForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    itemType,
-    item,
-    selectTreeData,
-    handleAdd,
-    handleModalVisible,
-  } = props;
+  const { visible, form, itemType, item, selectTreeData, handleAdd, handleModalVisible } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -294,7 +327,7 @@ const CreateForm = Form.create()(props => {
     <Modal {...modalProps}>
       <Row>
         <Col span={24}>
-          <FormItem label="父菜单：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+          <FormItem label="父菜单：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
             {form.getFieldDecorator('parentId', {
               initialValue: item.parentId ? item.parentId.toString() : '1',
               rules: [
@@ -326,7 +359,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入菜单名称',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -339,7 +372,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入菜单地址',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
       </Row>
@@ -353,7 +386,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入菜单图标',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -380,7 +413,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入权限编码',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -393,16 +426,16 @@ const CreateForm = Form.create()(props => {
                   message: '请输入菜单顺序',
                 },
               ],
-            })(<InputNumber min={0} style={{width: '100%'}}/>)}
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
             {form.getFieldDecorator('remarks', {
               initialValue: item.remarks,
-            })(<Input.TextArea rows={2}/>)}
+            })(<Input.TextArea rows={2} />)}
           </FormItem>
         </Col>
       </Row>

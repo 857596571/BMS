@@ -56,7 +56,7 @@
         (select GROUP_CONCAT(r.role_id) from sys_user_role r where r.user_id = a.id) roleIds
         FROM sys_user a
         left join sys_org d on d.id = a.org_id
-        WHERE a.del_flag = '0'
+        WHERE a.del_flag = '0' and a.id != 1
         <if test="searchKeys != null and searchKeys != ''">
             AND (a.login_name like CONCAT('%', #{searchKeys}, '%') or a.name like CONCAT('%', #{searchKeys}, '%') )
         </if>

@@ -1,6 +1,21 @@
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'dva';
-import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, message, Modal, Row, Select, Table,} from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Row,
+  Select,
+  Table,
+  Popconfirm,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import * as system from '../../services/system';
@@ -19,8 +34,9 @@ const formItemLayout = {
   },
 };
 
-@connect(({ sysOrg, loading }) => ({
+@connect(({ sysOrg, sysUser, loading }) => ({
   sysOrg,
+  sysUser,
   loading: loading.models.sysOrg,
 }))
 @Form.create()
@@ -30,6 +46,7 @@ export default class OrgList extends PureComponent {
     itemType: 'create',
     item: {},
     tempSorts: {},
+    expandedRowKeys: ['2'],
   };
 
   componentDidMount() {
@@ -94,16 +111,26 @@ export default class OrgList extends PureComponent {
     });
   }
 
-  handleDeleteById(id) {
+  handleDeleteById(record) {
     this.props.dispatch({
       type: 'sysOrg/deleteById',
-      id,
+      payload: {
+        id: record.id,
+        leftNum: record.leftNum,
+        rightNum: record.rightNum,
+      },
       callback: () => this.initQuery(),
     });
   }
 
+  handleTableExpand = expandedRows => {
+    this.setState({
+      expandedRowKeys: expandedRows,
+    });
+  };
+
   render() {
-    const { sysOrg: { list }, loading } = this.props;
+    const { sysOrg: { list }, sysUser: { currentUser }, loading } = this.props;
     const { modalVisible, itemType, item, tempSorts } = this.state;
 
     const columns = [
@@ -133,6 +160,7 @@ export default class OrgList extends PureComponent {
         dataIndex: 'sort',
         render: (val, record) => (
           <InputNumber
+            disabled={record.id === '2'}
             min={0}
             defaultValue={val}
             onChange={v => this.handleChangeSort(v, record)}
@@ -149,10 +177,21 @@ export default class OrgList extends PureComponent {
         width: 240,
         render: (val, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
-            <Divider type="vertical" />
-            <a onClick={() => this.handleDeleteById(record.id)}>删除</a>
-            <Divider type="vertical" />
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>
+              修改<Divider type="vertical" />
+            </a>
+            {currentUser.admin &&
+              record.id !== '2' && (
+                <Popconfirm
+                  title="删除该机构（及其所有子机构）后将影响功能正常显示且无法找回，请谨慎使用?"
+                  placement="topRight"
+                  onConfirm={() => this.handleDeleteById(record)}
+                >
+                  <a>
+                    删除<Divider type="vertical" />
+                  </a>
+                </Popconfirm>
+              )}
             <a onClick={() => this.handleModalVisible(true, 'sub', record)}>新建子机构</a>
           </Fragment>
         ),
@@ -180,11 +219,12 @@ export default class OrgList extends PureComponent {
               )}
             </div>
             <Table
-              defaultExpandedRowKeys={['2']}
+              expandedRowKeys={this.state.expandedRowKeys}
               loading={loading}
               dataSource={list}
               columns={columns}
               pagination={false}
+              onExpandedRowsChange={this.handleTableExpand}
               rowKey={item => item.id}
             />
           </div>
@@ -196,14 +236,7 @@ export default class OrgList extends PureComponent {
 }
 
 const CreateForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    itemType,
-    item,
-    handleAdd,
-    handleModalVisible,
-  } = props;
+  const { visible, form, itemType, item, handleAdd, handleModalVisible } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {

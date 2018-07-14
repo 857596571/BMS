@@ -1,6 +1,24 @@
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'dva';
-import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table, TreeSelect, Tree, } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  message,
+  Modal,
+  Row,
+  Select,
+  Table,
+  TreeSelect,
+  Tree,
+  Popconfirm,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import styles from './System.less';
@@ -9,7 +27,7 @@ import * as system from '../../services/system';
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
 
-const statusMap = {'ON': 'success', 'OFF': 'error'};
+const statusMap = { ON: 'success', OFF: 'error' };
 
 const formItemLayout = {
   labelCol: {
@@ -20,7 +38,7 @@ const formItemLayout = {
   },
 };
 
-@connect(({sysRole, sysOrg, sysMenu, sysUser, loading}) => ({
+@connect(({ sysRole, sysOrg, sysMenu, sysUser, loading }) => ({
   sysRole,
   sysOrg,
   sysMenu,
@@ -42,7 +60,7 @@ export default class RoleList extends PureComponent {
   }
 
   initQuery = () => {
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
     dispatch({
       type: 'sysRole/getList',
       payload: form.getFieldsValue(),
@@ -53,25 +71,25 @@ export default class RoleList extends PureComponent {
     dispatch({
       type: 'sysMenu/getList',
     });
-  }
+  };
 
   initAssginData = (orgId, roleId) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'sysUser/getList',
       payload: {
         orgId,
         roleId,
-      }
+      },
     });
 
     dispatch({
       type: 'sysUser/getUsersByRoleId',
       payload: {
         roleId,
-      }
+      },
     });
-  }
+  };
 
   handleModalVisible = (flag, itemType, item) => {
     if (itemType === 'create') item = {};
@@ -93,7 +111,7 @@ export default class RoleList extends PureComponent {
 
   handleAssignModalVisible = (flag, item) => {
     if (!flag) item = {};
-    else this.initAssginData('', item.id,)
+    else this.initAssginData('', item.id);
     this.setState({
       assignModalVisible: flag,
       item,
@@ -114,15 +132,19 @@ export default class RoleList extends PureComponent {
   };
 
   handleAuth = fields => {
-    this.props.dispatch({
-      type: 'sysRole/saveMenuAuth',
-      payload: {
-        ...fields,
-      },
-    });
-    this.setState({
-      authModalVisible: false,
-    });
+    if (fields.menus && fields.menus.length > 0) {
+      this.props.dispatch({
+        type: 'sysRole/saveMenuAuth',
+        payload: {
+          ...fields,
+        },
+      });
+      this.setState({
+        authModalVisible: false,
+      });
+    } else {
+      message.error('请勾选需要赋权的菜单');
+    }
   };
 
   handleDelete(record) {
@@ -153,14 +175,14 @@ export default class RoleList extends PureComponent {
         ...param,
       },
     });
-  }
+  };
 
   handleMenuClick = (flag, row, item, orgId) => {
     let param = {
       id: item.id,
-      userId: row.id
+      userId: row.id,
     };
-    if(flag === 'add') {
+    if (flag === 'add') {
       this.props.dispatch({
         type: 'sysRole/assignRole',
         payload: param,
@@ -173,18 +195,14 @@ export default class RoleList extends PureComponent {
         callback: () => this.initAssginData(orgId, item.id),
       });
     }
-  }
+  };
 
   render() {
-    const {
-      sysRole: {list = []},
-      sysUser: { currentUser, },
-      loading
-    } = this.props;
-    const {modalVisible, authModalVisible, assignModalVisible, itemType, item} = this.state;
+    const { sysRole: { list = [] }, sysUser: { currentUser }, loading } = this.props;
+    const { modalVisible, authModalVisible, assignModalVisible, itemType, item } = this.state;
 
     let listFilter = list;
-    if(!currentUser.admin) {
+    if (!currentUser.admin) {
       listFilter = list.filter(item => item.id !== '1');
     }
 
@@ -213,7 +231,7 @@ export default class RoleList extends PureComponent {
         title: '状态',
         key: 'stateDesc',
         dataIndex: 'stateDesc',
-        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
       },
       {
         title: '备注',
@@ -225,22 +243,49 @@ export default class RoleList extends PureComponent {
         width: 300,
         render: (val, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleChangeState(record)}>{
-              record.state === 'ON' ? '禁用' : '启用'
-            }</a>
-            {
-              currentUser.admin &&
-              <span>
-                <Divider type="vertical"/>
-                <a onClick={() => this.handleDelete(record)}>删除</a>
-              </span>
-            }
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleAuthModalVisible(true, record)}>权限设置</a>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleAssignModalVisible(true, record)}>关联用户</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>
+              修改<Divider type="vertical" />
+            </a>
+            {record.state === 'ON' ? (
+              <Popconfirm
+                title="禁用该角色后该角色下的所有用户将无法登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  禁用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            ) : (
+              <Popconfirm
+                title="启用该角色后该角色下的所有用户将正常登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  启用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            {currentUser.admin && (
+              <Popconfirm
+                title="删除该角色后该角色下的所有用户将无法登录系统，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleDelete(record)}
+              >
+                <a>
+                  删除<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            {record.id !== '1' && (
+              <a onClick={() => this.handleAuthModalVisible(true, record)}>
+                权限设置<Divider type="vertical" />
+              </a>
+            )}
+            {record.id !== '1' && (
+              <a onClick={() => this.handleAssignModalVisible(true, record)}>关联用户</a>
+            )}
           </Fragment>
         ),
       },
@@ -282,6 +327,8 @@ export default class RoleList extends PureComponent {
       handleModalVisible: () => this.handleAssignModalVisible(false),
     };
 
+    const CreateAuthFormGen = () => <CreateAuthForm {...createAuthModalProps} />;
+
     return (
       <PageHeaderLayout>
         <Card bordered={false}>
@@ -301,7 +348,7 @@ export default class RoleList extends PureComponent {
           </div>
         </Card>
         <CreateForm {...createModalProps} />
-        <CreateAuthForm {...createAuthModalProps} />
+        <CreateAuthFormGen />
         <CreateAssignForm {...createAssignModalProps} />
       </PageHeaderLayout>
     );
@@ -332,8 +379,8 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  const renderTreeNodes = (data) => {
-    return data.map((item) => {
+  const renderTreeNodes = data => {
+    return data.map(item => {
       if (item.children && item.children.length > 0) {
         return (
           <TreeNode title={item.name} key={item.id} dataRef={item}>
@@ -343,15 +390,15 @@ const CreateForm = Form.create()(props => {
       }
       return <TreeNode title={item.name} key={item.id} />;
     });
-  }
+  };
 
-  const handleOrgTreeCheck = (checkedKeys) => {
+  const handleOrgTreeCheck = checkedKeys => {
     form.setFieldsValue({
       orgs: checkedKeys.map(val => {
-        return {id: val};
+        return { id: val };
       }),
-    })
-  }
+    });
+  };
 
   const checkedKeys = item.orgIds ? item.orgIds.split(',') : [];
 
@@ -378,7 +425,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入菜单名称',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -401,7 +448,7 @@ const CreateForm = Form.create()(props => {
                   },
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
       </Row>
@@ -429,14 +476,19 @@ const CreateForm = Form.create()(props => {
                   message: '请选择角色级别',
                 },
               ],
-            })(<Dict code={'LEVEL'} excludeCodes={ [!currentUser.admin && 'SYSTEM'] } disabled={!currentUser.admin} />)}
+            })(
+              <Dict
+                code={'LEVEL'}
+                excludeCodes={[!currentUser.admin && 'SYSTEM']}
+                disabled={!currentUser.admin}
+              />
+            )}
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
-          {
-            form.getFieldValue('dataScope') === 'SCOPE_DETAIL' &&
+          {form.getFieldValue('dataScope') === 'SCOPE_DETAIL' &&
             form.getFieldDecorator('orgs')(
               <Tree
                 checkable
@@ -446,16 +498,15 @@ const CreateForm = Form.create()(props => {
               >
                 {renderTreeNodes(orgTree)}
               </Tree>
-            )
-          }
+            )}
         </Col>
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
             {form.getFieldDecorator('remarks', {
               initialValue: item.remarks,
-            })(<Input.TextArea rows={2}/>)}
+            })(<Input.TextArea rows={2} />)}
           </FormItem>
         </Col>
       </Row>
@@ -464,14 +515,7 @@ const CreateForm = Form.create()(props => {
 });
 
 const CreateAuthForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    item,
-    menuTree,
-    handleAdd,
-    handleModalVisible,
-  } = props;
+  const { visible, form, item, menuTree, handleAdd, handleModalVisible } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -484,8 +528,8 @@ const CreateAuthForm = Form.create()(props => {
     });
   };
 
-  const renderTreeNodes = (data) => {
-    return data.map((item) => {
+  const renderTreeNodes = data => {
+    return data.map(item => {
       if (item.children && item.children.length > 0) {
         return (
           <TreeNode title={item.name} key={item.id} dataRef={item}>
@@ -495,20 +539,24 @@ const CreateAuthForm = Form.create()(props => {
       }
       return <TreeNode title={item.name} key={item.id} />;
     });
-  }
+  };
 
   const handleMenuTreeCheck = (checkedKeys, e) => {
     form.setFieldsValue({
       menus: checkedKeys.concat(e.halfCheckedKeys).map(val => {
-        return {id: val};
+        return { id: val };
       }),
-    })
-  }
+    });
+  };
 
   const checkedKeys = item.menuIds
-    ? item.menuIds.split(',').filter(val =>
-      menuTree.filter(item =>
-        item.children && item.children.length > 0 && item.id === val).length === 0)
+    ? item.menuIds
+        .split(',')
+        .filter(
+          val =>
+            menuTree.filter(item => item.children && item.children.length > 0 && item.id === val)
+              .length === 0
+        )
     : [];
   const modalProps = {
     title: '菜单权限设置',
@@ -521,18 +569,16 @@ const CreateAuthForm = Form.create()(props => {
     <Modal {...modalProps}>
       <Row>
         <Col span={24}>
-          {
-            form.getFieldDecorator('menus')(
-              <Tree
-                checkable
-                defaultExpandAll
-                onCheck={handleMenuTreeCheck}
-                defaultCheckedKeys={checkedKeys}
-              >
-                {renderTreeNodes(menuTree)}
-              </Tree>
-            )
-          }
+          {form.getFieldDecorator('menus')(
+            <Tree
+              checkable
+              defaultExpandAll
+              onCheck={handleMenuTreeCheck}
+              defaultCheckedKeys={checkedKeys}
+            >
+              {renderTreeNodes(menuTree)}
+            </Tree>
+          )}
         </Col>
       </Row>
     </Modal>
@@ -555,8 +601,8 @@ const CreateAssignForm = Form.create()(props => {
 
   let orgId = '';
 
-  const renderTreeNodes = (data) => {
-    return data.map((item) => {
+  const renderTreeNodes = data => {
+    return data.map(item => {
       if (item.children && item.children.length > 0) {
         return (
           <TreeNode title={item.name} key={item.id} dataRef={item}>
@@ -566,63 +612,81 @@ const CreateAssignForm = Form.create()(props => {
       }
       return <TreeNode title={item.name} key={item.id} />;
     });
-  }
+  };
 
   const orgUserColumns = [
     {
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
-    }, {
+    },
+    {
       title: '机构',
       dataIndex: 'orgName',
       key: 'orgName',
-    }, {
+    },
+    {
       title: '状态',
       key: 'stateDesc',
       dataIndex: 'stateDesc',
-      render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
-    }, {
+      render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
+    },
+    {
       title: '操作',
       key: 'operation',
       width: 80,
-      render: (text, row) =>
+      render: (text, row) => (
         <span>
-          { row.id !== '1' ? <a onClick={() => {
-            handleMenuClick('add', row, item, orgId)
-          }}>关联</a> : ''}
+          {row.id !== '1' && (
+            <Popconfirm
+              title="关联该用户后该用户将具有本角色的权限，确定进行关联?"
+              placement="topRight"
+              onConfirm={() => handleMenuClick('add', row, item, orgId)}
+            >
+              <a>关联</a>
+            </Popconfirm>
+          )}
         </span>
-      ,
+      ),
     },
-  ]
+  ];
 
   const roleUserColumns = [
     {
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
-    }, {
+    },
+    {
       title: '机构',
       dataIndex: 'orgName',
       key: 'orgName',
-    }, {
+    },
+    {
       title: '状态',
       key: 'stateDesc',
       dataIndex: 'stateDesc',
-      render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
-    }, {
+      render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
+    },
+    {
       title: '操作',
       key: 'operation',
       width: 80,
-      render: (text, row) =>
+      render: (text, row) => (
         <span>
-           { row.id !== '1' ? <a onClick={() => {
-             handleMenuClick('remove', row, item, orgId);
-           }}>移除</a> : ''}
+          {row.id !== '1' && (
+            <Popconfirm
+              title="异常该用户后该用户将失去本角色的权限，确定进行移除?"
+              placement="topRight"
+              onConfirm={() => handleMenuClick('remove', row, item, orgId)}
+            >
+              <a>移除</a>
+            </Popconfirm>
+          )}
         </span>
-      ,
+      ),
     },
-  ]
+  ];
 
   const modalProps = {
     title: '关联用户',
@@ -639,9 +703,9 @@ const CreateAssignForm = Form.create()(props => {
         <Col span={8}>
           <Tree
             defaultExpandedKeys={['2']}
-            onSelect={(value)=> {
+            onSelect={value => {
               orgId = value.length > 0 ? value[0] : '';
-              console.log(orgId)
+              console.log(orgId);
               handleOrgUserChange(orgId, item.id);
             }}
           >

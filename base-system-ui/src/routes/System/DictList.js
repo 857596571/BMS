@@ -1,6 +1,22 @@
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'dva';
-import {Badge, Button, Card, Col, Divider, Form, Input, InputNumber, Radio, message, Modal, Row, Select, Table,} from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  message,
+  Modal,
+  Row,
+  Select,
+  Table,
+  Popconfirm,
+} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import Dict from '../../components/Dict';
 import * as system from '../../services/system';
@@ -9,7 +25,7 @@ import styles from './System.less';
 
 const FormItem = Form.Item;
 
-const statusMap = {'ON': 'success', 'OFF': 'error'};
+const statusMap = { ON: 'success', OFF: 'error' };
 
 const formItemLayout = {
   labelCol: {
@@ -20,7 +36,7 @@ const formItemLayout = {
   },
 };
 
-@connect(({sysDict, sysUser, loading}) => ({
+@connect(({ sysDict, sysUser, loading }) => ({
   sysDict,
   sysUser,
   loading: loading.models.sysDict,
@@ -39,16 +55,16 @@ export default class DictList extends PureComponent {
   }
 
   initQuery = () => {
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
     dispatch({
       type: 'sysDict/getList',
       payload: form.getFieldsValue(),
     });
-  }
+  };
 
   handleFormReset = () => {
     this.props.form.resetFields();
-  }
+  };
 
   handleModalVisible = (flag, itemType, item) => {
     if (itemType === 'create') item = {};
@@ -80,14 +96,14 @@ export default class DictList extends PureComponent {
 
   handleChangeSort(val, record) {
     let tempSorts = this.state.tempSorts;
-    tempSorts[record.id.toString()] = {id: record.id, sort: val};
+    tempSorts[record.id.toString()] = { id: record.id, sort: val };
     if ((val || 0) === (record.sort || 0)) delete tempSorts[record.id];
-    this.setState({tempSorts: Object.assign({}, tempSorts)});
+    this.setState({ tempSorts: Object.assign({}, tempSorts) });
   }
 
   handleUpdateSorts() {
     let sorts = [];
-    const {tempSorts} = this.state;
+    const { tempSorts } = this.state;
     Object.keys(tempSorts).map(key => {
       sorts.push(tempSorts[key]);
     });
@@ -96,7 +112,7 @@ export default class DictList extends PureComponent {
       payload: sorts,
       callback: () => {
         this.initQuery();
-        this.setState({tempSorts: {}});
+        this.setState({ tempSorts: {} });
       },
     });
   }
@@ -127,8 +143,8 @@ export default class DictList extends PureComponent {
   }
 
   render() {
-    const {sysDict: {list}, sysUser: { currentUser }, loading, form} = this.props;
-    const {modalVisible, itemType, item, tempSorts} = this.state;
+    const { sysDict: { list }, sysUser: { currentUser }, loading, form } = this.props;
+    const { modalVisible, itemType, item, tempSorts } = this.state;
 
     const columns = [
       {
@@ -155,7 +171,7 @@ export default class DictList extends PureComponent {
         title: '字典状态',
         key: 'stateDesc',
         dataIndex: 'stateDesc',
-        render: (val, record) => <Badge status={statusMap[record.state]} text={val}/>
+        render: (val, record) => <Badge status={statusMap[record.state]} text={val} />,
       },
       {
         title: '排序',
@@ -179,20 +195,44 @@ export default class DictList extends PureComponent {
         width: 240,
         render: (val, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalVisible(true, 'update', record)}>修改</a>
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleChangeState(record)}>{
-              record.state === 'ON' ? '禁用' : '启用'
-            }</a>
-            {
-              currentUser.admin &&
-              <span>
-                <Divider type="vertical"/>
-                <a onClick={() => this.handleDelete(record)}>删除</a>
-              </span>
-            }
-            <Divider type="vertical"/>
-            <a onClick={() => this.handleModalVisible(true, 'sub', record)}>新建子字典</a>
+            <a onClick={() => this.handleModalVisible(true, 'update', record)}>
+              修改<Divider type="vertical" />
+            </a>
+            {record.state === 'ON' ? (
+              <Popconfirm
+                title="禁用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  禁用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            ) : (
+              <Popconfirm
+                title="启用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleChangeState(record)}
+              >
+                <a>
+                  启用<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            {currentUser.admin && (
+              <Popconfirm
+                title="删除该字典（及其所有子字典）后将影响功能正常显示且无法找回，请谨慎使用?"
+                placement="topRight"
+                onConfirm={() => this.handleDelete(record)}
+              >
+                <a>
+                  删除<Divider type="vertical" />
+                </a>
+              </Popconfirm>
+            )}
+            <a onClick={() => this.handleModalVisible(true, 'sub', record)}>
+              新建子字典<Divider type="vertical" />
+            </a>
           </Fragment>
         ),
       },
@@ -217,25 +257,23 @@ export default class DictList extends PureComponent {
                 <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                   <Col md={6} sm={24}>
                     <FormItem>
-                      {form.getFieldDecorator('searchKeys')(<Input placeholder="请输入需查询的字典编码、标签、值" />)}
+                      {form.getFieldDecorator('searchKeys')(
+                        <Input placeholder="请输入需查询的字典编码、标签、值" />
+                      )}
                     </FormItem>
                   </Col>
                   <Col md={6} sm={24}>
                     <FormItem>
                       {form.getFieldDecorator('state', {
-                        initialValue: ''
-                      })(
-                        <Dict code={'STATE'} radio query />
-                      )}
+                        initialValue: '',
+                      })(<Dict code={'STATE'} radio query />)}
                     </FormItem>
                   </Col>
                   <Col md={6} sm={24}>
                     <FormItem>
                       {form.getFieldDecorator('level', {
-                        initialValue: 'BIZ'
-                      })(
-                        <Dict code={'LEVEL'} radio />
-                      )}
+                        initialValue: 'BIZ',
+                      })(<Dict code={'LEVEL'} radio />)}
                     </FormItem>
                   </Col>
                   <Col md={6} sm={24}>
@@ -277,15 +315,7 @@ export default class DictList extends PureComponent {
 }
 
 const CreateForm = Form.create()(props => {
-  const {
-    visible,
-    form,
-    itemType,
-    item,
-    currentUser,
-    handleAdd,
-    handleModalVisible,
-  } = props;
+  const { visible, form, itemType, item, currentUser, handleAdd, handleModalVisible } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -339,7 +369,7 @@ const CreateForm = Form.create()(props => {
                   },
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
       </Row>
@@ -354,7 +384,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入字典标签',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -367,7 +397,7 @@ const CreateForm = Form.create()(props => {
                   message: '请输入字典值',
                 },
               ],
-            })(<Input/>)}
+            })(<Input />)}
           </FormItem>
         </Col>
       </Row>
@@ -382,7 +412,13 @@ const CreateForm = Form.create()(props => {
                   message: '请选择字典级别',
                 },
               ],
-            })(<Dict code={'LEVEL'} excludeCodes={ [!currentUser.admin && 'SYSTEM'] } disabled={!currentUser.admin} />)}
+            })(
+              <Dict
+                code={'LEVEL'}
+                excludeCodes={[!currentUser.admin && 'SYSTEM']}
+                disabled={!currentUser.admin}
+              />
+            )}
           </FormItem>
         </Col>
         <Col span={12}>
@@ -395,16 +431,16 @@ const CreateForm = Form.create()(props => {
                   message: '请输入字典顺序',
                 },
               ],
-            })(<InputNumber min={0} style={{width: '100%'}}/>)}
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{span: 4}} wrapperCol={{span: 19}}>
+          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
             {form.getFieldDecorator('remarks', {
               initialValue: item.remarks,
-            })(<Input.TextArea rows={2}/>)}
+            })(<Input.TextArea rows={2} />)}
           </FormItem>
         </Col>
       </Row>

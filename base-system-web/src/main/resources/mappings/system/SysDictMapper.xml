@@ -134,7 +134,13 @@
 
 	<!-- 更新字典状态 -->
 	<update id="updateStates">
-		update sys_dict set state = #{state} where left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+		update sys_dict set state = #{state} where
+		<if test='state == "OFF"'>
+			left_num &gt;= #{leftNum} and right_num &lt;= #{rightNum}
+		</if>
+		<if test='state == "ON"'>
+			left_num &lt;= #{leftNum} and right_num &gt;= #{rightNum}
+		</if>
 	</update>
 
 	<!-- 删除字典 -->

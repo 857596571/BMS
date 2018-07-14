@@ -1,10 +1,16 @@
-import {stringify} from 'qs';
+import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function userLogin(params) {
   return request('/auth/token', {
     method: 'POST',
     body: params,
+  });
+}
+
+export async function userLogout(params) {
+  return request('/auth/token', {
+    method: 'DELETE',
   });
 }
 
@@ -183,4 +189,3 @@ export async function updateUserStates(params) {
 export async function deleteUser(id) {
   return request(`/sys/user/delete/${id}`);
 }
-

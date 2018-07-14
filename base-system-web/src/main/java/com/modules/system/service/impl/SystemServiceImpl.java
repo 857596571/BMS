@@ -164,7 +164,9 @@ public class SystemServiceImpl implements SystemService {
         List<SysMenu> menuList;
         //超级管理员
         if (SysUser.ADMIN_USER_ID.equals(userId) || StrUtil.isEmpty(userId)) {
-            menuList = sysMenuMapper.findList();
+            SysMenu menu = new SysMenu();
+            menu.setState("ON");
+            menuList = sysMenuMapper.findList(menu);
         } else {
             menuList = sysMenuMapper.findListByUserId(userId);
         }
