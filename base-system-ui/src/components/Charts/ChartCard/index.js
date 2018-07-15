@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Spin} from 'antd';
+import { Card, Spin } from 'antd';
 import classNames from 'classnames';
 
 import styles from './index.less';

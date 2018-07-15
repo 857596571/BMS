@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {Chart, Coord, Geom, Tooltip} from 'bizcharts';
-import {DataView} from '@antv/data-set';
-import {Divider} from 'antd';
+import React, { Component } from 'react';
+import { Chart, Coord, Geom, Tooltip } from 'bizcharts';
+import { DataView } from '@antv/data-set';
+import { Divider } from 'antd';
 import classNames from 'classnames';
 import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
