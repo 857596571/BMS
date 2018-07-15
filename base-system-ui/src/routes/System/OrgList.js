@@ -183,7 +183,7 @@ export default class OrgList extends PureComponent {
             {currentUser.admin &&
               record.id !== '2' && (
                 <Popconfirm
-                  title="删除该机构（及其所有子机构）后将影响功能正常显示且无法找回，请谨慎使用?"
+                  title="删除该机构（及其所有子机构）后将影响功能正常显示且无法找回，请谨慎使用！"
                   placement="topRight"
                   onConfirm={() => this.handleDeleteById(record)}
                 >

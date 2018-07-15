@@ -6,7 +6,7 @@ module.exports = {
   iconFontCSS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.css',
   iconFontJS: '//at.alicdn.com/t/font_403714_waqeyi27uubu766r.js',
   baseURL: 'http://127.0.0.1:8080/api',
-  // baseURL: 'http://47.95.252.122:8080/api',
+  // baseURL: 'http://47.95.252.122:8080/base-system-web-1.0.0-SNAPSHOT',
   //公共分页信息
   pagination: {
     showSizeChanger: true,

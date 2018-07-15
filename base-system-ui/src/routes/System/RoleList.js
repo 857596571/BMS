@@ -138,6 +138,7 @@ export default class RoleList extends PureComponent {
         payload: {
           ...fields,
         },
+        callback: this.initQuery,
       });
       this.setState({
         authModalVisible: false,
@@ -248,7 +249,7 @@ export default class RoleList extends PureComponent {
             </a>
             {record.state === 'ON' ? (
               <Popconfirm
-                title="禁用该角色后该角色下的所有用户将无法登录系统，请谨慎使用?"
+                title="禁用该角色后该角色下的所有用户将无法登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -258,7 +259,7 @@ export default class RoleList extends PureComponent {
               </Popconfirm>
             ) : (
               <Popconfirm
-                title="启用该角色后该角色下的所有用户将正常登录系统，请谨慎使用?"
+                title="启用该角色后该角色下的所有用户将正常登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -269,7 +270,7 @@ export default class RoleList extends PureComponent {
             )}
             {currentUser.admin && (
               <Popconfirm
-                title="删除该角色后该角色下的所有用户将无法登录系统，请谨慎使用?"
+                title="删除该角色后该角色下的所有用户将无法登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleDelete(record)}
               >
@@ -639,7 +640,7 @@ const CreateAssignForm = Form.create()(props => {
         <span>
           {row.id !== '1' && (
             <Popconfirm
-              title="关联该用户后该用户将具有本角色的权限，确定进行关联?"
+              title="关联该用户后该用户将具有本角色的权限，确定进行关联！"
               placement="topRight"
               onConfirm={() => handleMenuClick('add', row, item, orgId)}
             >
@@ -676,7 +677,7 @@ const CreateAssignForm = Form.create()(props => {
         <span>
           {row.id !== '1' && (
             <Popconfirm
-              title="异常该用户后该用户将失去本角色的权限，确定进行移除?"
+              title="异常该用户后该用户将失去本角色的权限，确定进行移除！"
               placement="topRight"
               onConfirm={() => handleMenuClick('remove', row, item, orgId)}
             >

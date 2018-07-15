@@ -247,7 +247,7 @@ export default class UserList extends PureComponent {
             </a>
             {record.state === 'ON' ? (
               <Popconfirm
-                title="禁用该用户后该用户将无法登录系统，请谨慎使用?"
+                title="禁用该用户后该用户将无法登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -257,7 +257,7 @@ export default class UserList extends PureComponent {
               </Popconfirm>
             ) : (
               <Popconfirm
-                title="启用该用户后该用户将正常登录系统，请谨慎使用?"
+                title="启用该用户后该用户将正常登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -268,7 +268,7 @@ export default class UserList extends PureComponent {
             )}
             {record.type === 'USER_SYSTEM' && (
               <Popconfirm
-                title="删除该用户后将该用户将无法登录系统，请谨慎使用?"
+                title="删除该用户后将该用户将无法登录系统，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleDelete(record)}
               >
@@ -279,7 +279,7 @@ export default class UserList extends PureComponent {
             )}
 
             <Popconfirm
-              title="重置密码后将会自动把密码重置为默认密码，请谨慎使用?"
+              title="重置密码后将会自动把密码重置为默认密码，请谨慎使用！"
               placement="topRight"
               onConfirm={() => this.handleResetPassword(record)}
             >
@@ -557,7 +557,7 @@ const CreateForm = Form.create()(props => {
                 },
                 {
                   validator: (rule, value, callback) => {
-                    if (value && !/^1[12345789]\d{9}$/.test(value)) {
+                    if (value && !/^1[123456789]\d{9}$/.test(value)) {
                       callback('输入的手机号码有误');
                     }
                     callback();

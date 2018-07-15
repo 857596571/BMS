@@ -28,8 +28,8 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<List<SysMenu>> list() {
-        return Result.success(systemService.findMenuList());
+    public ResponseMessage<List<SysMenu>> list(SysMenu menu) {
+        return Result.success(systemService.findMenuList(menu));
     }
 
     /**

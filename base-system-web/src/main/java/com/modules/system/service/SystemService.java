@@ -79,9 +79,10 @@ public interface SystemService {
 
     /**
      * 查询用户菜单列表
+     * @param menu
      * @return
      */
-    List<SysMenu> findMenuList();
+    List<SysMenu> findMenuList(SysMenu menu);
 
     /**
      * 删除菜单

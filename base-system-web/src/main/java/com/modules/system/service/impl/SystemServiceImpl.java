@@ -174,8 +174,8 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
-    public List<SysMenu> findMenuList() {
-        List<SysMenu> list = sysMenuMapper.findList();
+    public List<SysMenu> findMenuList(SysMenu sysMenu) {
+        List<SysMenu> list = sysMenuMapper.findList(sysMenu);
         //按父子顺序排列菜单列表
         if(CollUtil.isNotEmpty(list)) {
             Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "MENU_LEVEL"});

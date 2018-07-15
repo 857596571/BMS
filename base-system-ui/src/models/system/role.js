@@ -47,6 +47,9 @@ export default {
     *saveMenuAuth({ payload, callback }, { call, put }) {
       const { ok } = yield call(system.saveMenuAuth, payload);
       if (ok) {
+        if (typeof callback === 'function') {
+          callback();
+        }
         message.success('保存菜单权限成功');
       } else {
         message.error('保存菜单权限失败');

@@ -200,7 +200,7 @@ export default class DictList extends PureComponent {
             </a>
             {record.state === 'ON' ? (
               <Popconfirm
-                title="禁用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用?"
+                title="禁用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -210,7 +210,7 @@ export default class DictList extends PureComponent {
               </Popconfirm>
             ) : (
               <Popconfirm
-                title="启用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用?"
+                title="启用该字典（及其所有子字典）后将影响到界面显示，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleChangeState(record)}
               >
@@ -221,7 +221,7 @@ export default class DictList extends PureComponent {
             )}
             {currentUser.admin && (
               <Popconfirm
-                title="删除该字典（及其所有子字典）后将影响功能正常显示且无法找回，请谨慎使用?"
+                title="删除该字典（及其所有子字典）后将影响功能正常显示且无法找回，请谨慎使用！"
                 placement="topRight"
                 onConfirm={() => this.handleDelete(record)}
               >
