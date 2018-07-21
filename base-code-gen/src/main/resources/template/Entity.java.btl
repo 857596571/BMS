@@ -1,9 +1,8 @@
 package ${package}.modules.${module}.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.common.api.DataEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ${comments}
@@ -12,16 +11,18 @@ import com.common.api.DataEntity;
  * @email ${email}
  * @date ${datetime}
  */
+@ApiModel(value = "${className}", description = "${comments}")
 public class ${className} extends DataEntity {
 
 <%
 for (column in columns) {
     if(column.columnName != pk.columnName && column.columnName != 'create_date'
-        && column.columnName !='create_by' && column.columnName !='remarks'
-	    && column.columnName != 'update_by' && column.columnName !='update_date'
+        && column.columnName !='create_user_id' && column.columnName !='remarks'
+	    && column.columnName != 'update_user_id' && column.columnName !='update_date'
         && column.columnName != 'del_flag'){
 %>
     /** ${column.comments} */
+    @ApiModelProperty(value="${column.comments}", name="${column.attrname}")
     private ${column.attrType} ${column.attrname};
 
 <%
@@ -32,8 +33,8 @@ for (column in columns) {
 <%
 for (column in columns) {
     if(column.columnName != pk.columnName && column.columnName != 'create_date'
-        && column.columnName !='create_by' && column.columnName !='remarks'
-	    && column.columnName != 'update_by' && column.columnName !='update_date'
+        && column.columnName !='create_user_id' && column.columnName !='remarks'
+	    && column.columnName != 'update_user_id' && column.columnName !='update_date'
         && column.columnName != 'del_flag'){
 %>
     /**

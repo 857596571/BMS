@@ -16,10 +16,10 @@ public class ${className} extends DataEntity {
 
 #foreach ($column in $columns)
 	#if($column.columnName != $pk.columnName&&
-		$column.columnName != 'create_date'&&$column.columnName !='create_by'&&$column.columnName !='remarks'
+		$column.columnName != 'create_date'&&$column.columnName !='create_user_id'&&$column.columnName !='remarks'
 	&&$column.columnName !='cat_nm'
 	&&$column.columnName !='cat_cd'
-	&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
+	&&$column.columnName != 'update_user_id'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
     /** $column.comments */
     private $column.attrType $column.attrname;
 	#end
@@ -27,8 +27,8 @@ public class ${className} extends DataEntity {
 
 #foreach ($column in $columns)
 	#if($column.columnName != $pk.columnName&&
-		$column.columnName != 'create_date'&&$column.columnName !='create_by'&&$column.columnName !='remarks'&&$column.columnName !='cat_cd'
-	&&$column.columnName !='cat_nm'&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
+		$column.columnName != 'create_date'&&$column.columnName !='create_user_id'&&$column.columnName !='remarks'&&$column.columnName !='cat_cd'
+	&&$column.columnName !='cat_nm'&&$column.columnName != 'update_user_id'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
     /**
      * 设置：${column.comments}
      */

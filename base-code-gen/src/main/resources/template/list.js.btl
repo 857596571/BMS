@@ -85,8 +85,8 @@ export default class ${className} extends PureComponent {
     <%
     for (column in columns) {
       if(column.columnName != pk.columnName && column.columnName != 'create_date'
-        && column.columnName !='create_by' && column.columnName !='remarks'
-        && column.columnName != 'update_by' && column.columnName !='update_date'
+        && column.columnName !='create_user_id' && column.columnName !='remarks'
+        && column.columnName != 'update_user_id' && column.columnName !='update_date'
         && column.columnName != 'del_flag'){
     %>
       {
@@ -199,12 +199,13 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal {...modalProps}>
+     <Form>
       <Row>
       <%
       for (column in columns) {
         if(column.columnName != pk.columnName && column.columnName != 'create_date'
-          && column.columnName !='create_by' && column.columnName !='remarks'
-          && column.columnName != 'update_by' && column.columnName !='update_date'
+          && column.columnName !='create_user_id' && column.columnName !='remarks'
+          && column.columnName != 'update_user_id' && column.columnName !='update_date'
           && column.columnName != 'del_flag'){
       %>
         <Col span={12}>
@@ -235,6 +236,7 @@ const CreateForm = Form.create()(props => {
           </FormItem>
         </Col>
       </Row>
+     </Form>
     </Modal>
   );
 });

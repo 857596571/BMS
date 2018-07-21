@@ -9,12 +9,8 @@ import ${package}.modules.${module}.entity.${className};
 import ${package}.modules.${module}.service.${className}Service;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
 
 /**
  * ${comments}
@@ -35,7 +31,7 @@ public class ${className}Controller extends BaseController {
     /**
      * 列表
      */
-    @ApiOperation(value = "${comments}分页列表")
+    @ApiOperation(value = "${comments}分页列表", response = ${className}.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "请求已完成"),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -51,7 +47,7 @@ public class ${className}Controller extends BaseController {
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "query", dataType = "int", required = true)
     })
     @GetMapping("/list")
-    public ResponseMessage<PageInfo<${className}>> list(Paging page, Map<String, Object> query) {
+    public ResponseMessage<PageInfo<${className}>> list(Paging page, ${className} query) {
         return Result.success(${classname}Service.findPage(page, query));
     }
 	
@@ -59,7 +55,7 @@ public class ${className}Controller extends BaseController {
     /**
      * 信息
      */
-    @ApiOperation(value = "${comments}信息详情")
+    @ApiOperation(value = "${comments}信息详情", response = ${className}.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "请求已完成"),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -78,7 +74,7 @@ public class ${className}Controller extends BaseController {
     /**
      * 保存
 	 */
-    @ApiOperation(value = "添加修改${comments}信息")
+    @ApiOperation(value = "添加修改${comments}信息", response = ${className}.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "请求已完成"),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

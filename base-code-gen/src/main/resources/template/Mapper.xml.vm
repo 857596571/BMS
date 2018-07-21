@@ -21,8 +21,8 @@
         WHERE 1=1
 		#foreach($column in $columns)
 			#if($column.columnName != $pk.columnName&&
-				$column.columnName != 'create_date'&&$column.columnName !='create_by'&&$column.columnName !='remarks'
-			&&$column.columnName != 'update_by'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
+				$column.columnName != 'create_date'&&$column.columnName !='create_user_id'&&$column.columnName !='remarks'
+			&&$column.columnName != 'update_user_id'&&$column.columnName !='update_date'&&$column.columnName != 'del_flag')
 		<if test="$column.attrname != null and $column.attrname != ''">
 			AND t.$column.columnName like CONCAT('%', #{$column.attrname}, '%')
 		</if>
