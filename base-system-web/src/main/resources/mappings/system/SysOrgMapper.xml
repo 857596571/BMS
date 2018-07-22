@@ -20,6 +20,9 @@
     <select id="findList" resultType="com.modules.system.entity.SysOrg">
         select a.* from sys_org a
         WHERE a.del_flag = '0'
+        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(level)">
+          and a.level = #{level}
+        </if>
         ORDER BY a.sort ASC
     </select>
 

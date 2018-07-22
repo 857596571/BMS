@@ -1,5 +1,7 @@
 package com.modules.system.log.aop;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.modules.system.entity.SysLog;
 import com.modules.system.service.SysLogService;
 import org.aspectj.lang.annotation.Aspect;
@@ -85,16 +87,16 @@ public class SysLogAspect {
             if (request.getMethod().equalsIgnoreCase("GET")) {
                 sysLog.setParameter(request.getQueryString());
             } else {
-                sysLog.setParameter(ObjectUtils.toString(request.getParameterMap()));
+                sysLog.setParameter(JSONUtil.toJsonStr(request.getParameterMap()));
             }
-            sysLog.setResult(ObjectUtils.toString(result));
+            sysLog.setResult(result != null ? JSONUtil.toJsonStr(result) : null);
             sysLog.setSpendTime((int) (endTime - startTime));
             sysLog.setStartTime(startTime);
             sysLog.setUri(request.getRequestURI());
-            sysLog.setUrl(ObjectUtils.toString(request.getRequestURL()));
+            sysLog.setUrl(request.getRequestURL().toString());
             sysLog.setUserAgent(request.getHeader("User-Agent"));
             if (request.getUserPrincipal() != null) {
-                sysLog.setUsername(ObjectUtils.toString(request.getUserPrincipal().getName()));
+                sysLog.setUsername(request.getUserPrincipal().getName());
             }
             sysLogService.save(sysLog);
             return result;

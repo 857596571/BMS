@@ -6,7 +6,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomi
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 
 /**
- * access log config
+ * access log base
  *
  * @author dcp
  */

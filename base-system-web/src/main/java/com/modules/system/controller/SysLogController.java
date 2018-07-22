@@ -26,8 +26,7 @@ public class SysLogController extends BaseController {
 	 * 列表
 	 */
 	@GetMapping(value = "/list")
-	@PreAuthorize("hasAuthority('sys:log:list')")
-	public ResponseMessage<PageInfo<SysLog>> list(Paging page, Map<String, Object> query){
+	public ResponseMessage<PageInfo<SysLog>> list(Paging page, SysLog query){
         return Result.success(sysLogService.findPage(page, query));
 	}
 
@@ -35,7 +34,6 @@ public class SysLogController extends BaseController {
 	 * 保存
 	 */
 	@PostMapping(value = "/save")
-	@PreAuthorize("hasAuthority('sys:log:save')")
 	public ResponseMessage<SysLog> save(@RequestBody SysLog sysLog){
         return Result.success(sysLogService.save(sysLog));
 	}
@@ -44,7 +42,6 @@ public class SysLogController extends BaseController {
 	 * 删除
 	 */
 	@DeleteMapping(value = "/id")
-	@PreAuthorize("hasAuthority('sys:log:delete')")
 	public ResponseMessage delete(@PathVariable("id") String id){
 		sysLogService.deleteById(id);
         return Result.success();

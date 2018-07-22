@@ -70,6 +70,9 @@ export default class RoleList extends PureComponent {
     });
     dispatch({
       type: 'sysMenu/getList',
+      payload: {
+        state: 'ON'
+      }
     });
   };
 
@@ -415,102 +418,104 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal {...modalProps}>
-      <Row>
-        <Col span={12}>
-          <FormItem label="角色名称：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('name', {
-              initialValue: item.name,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入菜单名称',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="角色编码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('code', {
-              initialValue: item.code,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入角色编码',
-                },
-                {
-                  async validator(rule, value, callback) {
-                    const data = await system.isRoleCodeExists({
-                      code: value,
-                      id: item.id,
-                    });
-                    if (data.data) callback('该角色编码已存在');
-                    callback();
+      <Form>
+        <Row>
+          <Col span={12}>
+            <FormItem label="角色名称：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('name', {
+                initialValue: item.name,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入菜单名称',
                   },
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="数据范围：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('dataScope', {
-              initialValue: item.dataScope,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择角色数据范围',
-                },
-              ],
-            })(<Dict code={'DATA_SCOPE'} />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="角色级别：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('level', {
-              initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择角色级别',
-                },
-              ],
-            })(
-              <Dict
-                code={'LEVEL'}
-                excludeCodes={[!currentUser.admin && 'SYSTEM']}
-                disabled={!currentUser.admin}
-              />
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          {form.getFieldValue('dataScope') === 'SCOPE_DETAIL' &&
-            form.getFieldDecorator('orgs')(
-              <Tree
-                checkable
-                defaultExpandAll
-                onCheck={handleOrgTreeCheck}
-                defaultCheckedKeys={checkedKeys}
-              >
-                {renderTreeNodes(orgTree)}
-              </Tree>
-            )}
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('remarks', {
-              initialValue: item.remarks,
-            })(<Input.TextArea rows={2} />)}
-          </FormItem>
-        </Col>
-      </Row>
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="角色编码：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('code', {
+                initialValue: item.code,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入角色编码',
+                  },
+                  {
+                    async validator(rule, value, callback) {
+                      const data = await system.isRoleCodeExists({
+                        code: value,
+                        id: item.id,
+                      });
+                      if (data.data) callback('该角色编码已存在');
+                      callback();
+                    },
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="数据范围：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('dataScope', {
+                initialValue: item.dataScope,
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择角色数据范围',
+                  },
+                ],
+              })(<Dict code={'DATA_SCOPE'} />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="角色级别：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('level', {
+                initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择角色级别',
+                  },
+                ],
+              })(
+                <Dict
+                  code={'LEVEL'}
+                  excludeCodes={[!currentUser.admin && 'SYSTEM']}
+                  disabled={!currentUser.admin}
+                />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            {form.getFieldValue('dataScope') === 'SCOPE_DETAIL' &&
+              form.getFieldDecorator('orgs')(
+                <Tree
+                  checkable
+                  defaultExpandAll
+                  onCheck={handleOrgTreeCheck}
+                  defaultCheckedKeys={checkedKeys}
+                >
+                  {renderTreeNodes(orgTree)}
+                </Tree>
+              )}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+              {form.getFieldDecorator('remarks', {
+                initialValue: item.remarks,
+              })(<Input.TextArea rows={2} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
   );
 });

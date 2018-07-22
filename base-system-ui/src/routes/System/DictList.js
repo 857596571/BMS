@@ -343,7 +343,8 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal {...modalProps}>
-      <Row>
+      <Form>
+        <Row>
         <Col span={12}>
           <FormItem label="父字典：" hasFeedback {...formItemLayout}>
             {<span>{item.parentName || '无'}</span>}
@@ -373,77 +374,78 @@ const CreateForm = Form.create()(props => {
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="字典标签：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('label', {
-              initialValue: item.label,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入字典标签',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="字典值：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('value', {
-              initialValue: item.value || form.getFieldValue('code'),
-              rules: [
-                {
-                  required: true,
-                  message: '请输入字典值',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="字典级别：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('level', {
-              initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择字典级别',
-                },
-              ],
-            })(
-              <Dict
-                code={'LEVEL'}
-                excludeCodes={[!currentUser.admin && 'SYSTEM']}
-                disabled={!currentUser.admin}
-              />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="字典排序：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('sort', {
-              initialValue: item.sort,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入字典顺序',
-                },
-              ],
-            })(<InputNumber min={0} style={{ width: '100%' }} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('remarks', {
-              initialValue: item.remarks,
-            })(<Input.TextArea rows={2} />)}
-          </FormItem>
-        </Col>
-      </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="字典标签：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('label', {
+                initialValue: item.label,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入字典标签',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="字典值：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('value', {
+                initialValue: item.value || form.getFieldValue('code'),
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入字典值',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="字典级别：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('level', {
+                initialValue: item.level || currentUser.admin ? 'SYSTEM' : 'BIZ',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择字典级别',
+                  },
+                ],
+              })(
+                <Dict
+                  code={'LEVEL'}
+                  excludeCodes={[!currentUser.admin && 'SYSTEM']}
+                  disabled={!currentUser.admin}
+                />
+              )}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="字典排序：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('sort', {
+                initialValue: item.sort,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入字典顺序',
+                  },
+                ],
+              })(<InputNumber min={0} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+              {form.getFieldDecorator('remarks', {
+                initialValue: item.remarks,
+              })(<Input.TextArea rows={2} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
   );
 });

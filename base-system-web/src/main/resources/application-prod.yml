@@ -61,7 +61,11 @@ spring:
       location: /tmp # Intermediate location of uploaded files.
       max-file-size: 5Mb # Max file size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
       max-request-size: 50Mb # Max request size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
-
+  mvc:
+    #资源映射路径为/files/**，你想在url访问的请求路径
+    static-path-pattern: /files/**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${commonYml.yml.upload.file-root-path}
 #自定义属性配置
 commonYml:
   yml:
@@ -72,8 +76,8 @@ commonYml:
         expiration: 604800 #7Days
     #上传配置
     upload:
-      #Disk upload
-      work-folder-name: /Users/dcp/files #文件存储路径
-      access-url: http://127.0.0.1:8090 #文件访问地址，可使用反向代理
+      #文件上传存储路径
+      file-root-path: /WORKSPACE/files/
     #初始密码
     initialPassword: 123456
+

@@ -121,18 +121,6 @@ export default class UserList extends PureComponent {
     });
   };
 
-  // handleResetPassword = fields => {
-  //   this.props.dispatch({
-  //     type: 'sysUser/resetPassword',
-  //     payload: {
-  //       ...fields,
-  //     },
-  //   });
-  //   this.setState({
-  //     authModalVisible: false,
-  //   });
-  // };
-
   handleResetPassword = record => {
     this.props.dispatch({
       type: 'sysUser/resetPassword',
@@ -302,14 +290,6 @@ export default class UserList extends PureComponent {
       handleModalVisible: () => this.handleModalVisible(false),
     };
 
-    const createPasswordModalProps = {
-      item,
-      visible: passwordModalVisible,
-      dispatch: this.props.dispatch,
-      handleAdd: this.handleResetPassword,
-      handleModalVisible: () => this.handlePasswordModalVisible(false),
-    };
-
     const renderTreeNodes = data => {
       return data.map(item => {
         if (item.children && item.children.length > 0) {
@@ -393,7 +373,6 @@ export default class UserList extends PureComponent {
           </Col>
         </Row>
         <CreateFormGen />
-        <CreatePasswordForm {...createPasswordModalProps} />
       </PageHeaderLayout>
     );
   }
@@ -414,7 +393,6 @@ const CreateForm = Form.create()(props => {
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      console.log(err, fieldsValue);
       if (err) return;
       form.resetFields();
       let formValues = {
@@ -451,209 +429,134 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal {...modalProps}>
-      <Row>
-        <Col span={12}>
-          <FormItem label="用户名称：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('name', {
-              initialValue: item.name,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入用户名称',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="所属机构：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('orgId', {
-              initialValue: item.orgId,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择所属机构',
-                },
-              ],
-            })(
-              <TreeSelect
-                style={{ width: '100%' }}
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={selectTreeData}
-                treeDefaultExpandAll
-              />
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="登录账号：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('loginName', {
-              initialValue: item.loginName,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入登录账号',
-                },
-                {
-                  async validator(rule, value, callback) {
-                    const data = await system.isUserExists({
-                      loginName: value,
-                      id: item.id,
-                    });
-                    if (data.data) callback('该登录账号已存在');
-                    callback();
+      <Form>
+        <Row>
+          <Col span={12}>
+            <FormItem label="用户名称：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('name', {
+                initialValue: item.name,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入用户名称',
                   },
-                },
-              ],
-            })(<Input disabled={item.id === '1'} />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="所属角色：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('rolesTemp', {
-              initialValue: defaultRoles,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择角色',
-                },
-              ],
-            })(
-              <Select style={{ width: '100%' }} mode={'multiple'}>
-                {roleList &&
-                  roleList.map(item => (
-                    <Select.Option key={item.id} vlaue={item.id}>
-                      {item.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="电子邮件：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('email', {
-              initialValue: item.email,
-              rules: [
-                {
-                  type: 'email',
-                  message: '请输入正确的电子邮件地址',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="手机号码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('mobile', {
-              initialValue: item.mobile,
-              rules: [
-                {
-                  message: '请输入手机号码',
-                },
-                {
-                  validator: (rule, value, callback) => {
-                    if (value && !/^1[123456789]\d{9}$/.test(value)) {
-                      callback('输入的手机号码有误');
-                    }
-                    callback();
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="所属机构：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('orgId', {
+                initialValue: item.orgId,
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择所属机构',
                   },
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('remarks', {
-              initialValue: item.remarks,
-            })(<Input.TextArea rows={2} />)}
-          </FormItem>
-        </Col>
-      </Row>
-    </Modal>
-  );
-});
-
-const CreatePasswordForm = Form.create()(props => {
-  const { visible, form, item, handleAdd, handleModalVisible } = props;
-
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd({
-        ...fieldsValue,
-        id: item.id,
-      });
-    });
-  };
-
-  const modalProps = {
-    title: '重置密码',
-    visible,
-    onOk: okHandle,
-    onCancel: handleModalVisible,
-  };
-
-  return (
-    <Modal {...modalProps}>
-      <Row>
-        <Col span={24}>
-          <FormItem label="原密码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('oldPassword', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入登录密码',
-                },
-              ],
-            })(<Input type={'password'} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="新密码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('newPassword', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入登录密码',
-                },
-              ],
-            })(<Input type={'password'} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="确认新密码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('resPassword', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入确认登录密码',
-                },
-                {
-                  validator: (rule, value, callback) => {
-                    if (value !== form.getFieldValue('newPassword')) {
-                      callback('两次密码不一致');
-                    }
-                    callback();
+                ],
+              })(
+                <TreeSelect
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeData={selectTreeData}
+                  treeDefaultExpandAll
+                />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="登录账号：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('loginName', {
+                initialValue: item.loginName,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入登录账号',
                   },
-                },
-              ],
-            })(<Input type={'password'} />)}
-          </FormItem>
-        </Col>
-      </Row>
+                  {
+                    async validator(rule, value, callback) {
+                      const data = await system.isUserExists({
+                        loginName: value,
+                        id: item.id,
+                      });
+                      if (data.data) callback('该登录账号已存在');
+                      callback();
+                    },
+                  },
+                ],
+              })(<Input disabled={item.id === '1'} />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="所属角色：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('rolesTemp', {
+                initialValue: defaultRoles,
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择角色',
+                  },
+                ],
+              })(
+                <Select style={{ width: '100%' }} mode={'multiple'}>
+                  {roleList &&
+                    roleList.map(item => (
+                      <Select.Option key={item.id} vlaue={item.id}>
+                        {item.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="电子邮件：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('email', {
+                initialValue: item.email,
+                rules: [
+                  {
+                    type: 'email',
+                    message: '请输入正确的电子邮件地址',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="手机号码：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('mobile', {
+                initialValue: item.mobile,
+                rules: [
+                  {
+                    message: '请输入手机号码',
+                  },
+                  {
+                    validator: (rule, value, callback) => {
+                      if (value && !/^1[123456789]\d{9}$/.test(value)) {
+                        callback('输入的手机号码有误');
+                      }
+                      callback();
+                    },
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+              {form.getFieldDecorator('remarks', {
+                initialValue: item.remarks,
+              })(<Input.TextArea rows={2} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
   );
 });

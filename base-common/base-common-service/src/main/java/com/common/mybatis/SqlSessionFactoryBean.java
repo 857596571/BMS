@@ -224,7 +224,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
     }
 
     /**
-     * Set the location of the MyBatis {@code SqlSessionFactory} config file. A typical value is
+     * Set the location of the MyBatis {@code SqlSessionFactory} base file. A typical value is
      * "WEB-INF/mybatis-configuration.xml".
      */
     public void setConfigLocation(Resource configLocation) {
@@ -235,7 +235,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
      * Set locations of MyBatis mapper files that are going to be merged into the {@code SqlSessionFactory}
      * configuration at runtime.
      *
-     * This is an alternative to specifying "&lt;sqlmapper&gt;" entries in an MyBatis config file.
+     * This is an alternative to specifying "&lt;sqlmapper&gt;" entries in an MyBatis base file.
      * This property being based on Spring's resource abstraction also allows for specifying
      * resource patterns here: e.g. "classpath*:sqlmap/*-mapper.xml".
      */
@@ -246,7 +246,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
     /**
      * Set optional properties to be passed into the SqlSession configuration, as alternative to a
      * {@code &lt;properties&gt;} tag in the configuration xml file. This will be used to
-     * resolve placeholders in the config file.
+     * resolve placeholders in the base file.
      */
     public void setConfigurationProperties(Properties sqlSessionFactoryProperties) {
         this.configurationProperties = sqlSessionFactoryProperties;
@@ -310,7 +310,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
 
     /**
      * <b>NOTE:</b> This class <em>overrides</em> any {@code Environment} you have set in the MyBatis
-     * config file. This is used only as a placeholder name. The default value is
+     * base file. This is used only as a placeholder name. The default value is
      * {@code SqlSessionFactoryBean.class.getSimpleName()}.
      *
      * @param environment the environment name
@@ -337,7 +337,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
      * {@code SqlSessionFactory} instance based on an Reader.
      *
      * @return SqlSessionFactory
-     * @throws IOException if loading the config file failed
+     * @throws IOException if loading the base file failed
      */
     protected SqlSessionFactory buildSqlSessionFactory() throws IOException {
 
@@ -430,7 +430,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
                     LOGGER.debug("Parsed configuration file: '" + this.configLocation + "'");
                 }
             } catch (Exception ex) {
-                throw new NestedIOException("Failed to parse config resource: " + this.configLocation, ex);
+                throw new NestedIOException("Failed to parse base resource: " + this.configLocation, ex);
             } finally {
                 ErrorContext.instance().reset();
             }

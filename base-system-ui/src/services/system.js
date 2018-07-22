@@ -78,7 +78,7 @@ export async function deleteDict(params) {
 }
 
 export async function getMenuList(params) {
-  return request(`/sys/menu/list`);
+  return request(`/sys/menu/list?${stringify(params)}`);
 }
 
 export async function saveMenu(params) {
@@ -188,4 +188,8 @@ export async function updateUserStates(params) {
 
 export async function deleteUser(id) {
   return request(`/sys/user/delete/${id}`);
+}
+
+export async function getLogList(params) {
+  return request(`/sys/log/list?${stringify(params)}`);
 }

@@ -8,12 +8,14 @@ import TopNavHeader from '../components/TopNavHeader';
 import styles from './Header.less';
 import Authorized from '../utils/Authorized';
 import {setting} from '../utils/config';
+import UserResetPassword from '../routes/System/UserResetPassword';
 
 const { Header } = Layout;
 
 class HeaderView extends PureComponent {
   state = {
     visible: true,
+    userPasswordEditVisible: false,
   };
   componentDidMount() {
     document.getElementById('root').addEventListener('scroll', this.handScroll);
@@ -36,24 +38,16 @@ class HeaderView extends PureComponent {
     }
   };
   handleNoticeClear = (type) => {
-    message.success(`清空了${type}`);
     this.props.dispatch({
       type: 'global/clearNotices',
       payload: type,
     });
   };
   handleMenuClick = ({ key }) => {
-    if (key === 'userCenter') {
-      this.props.dispatch(routerRedux.push('/account/center'));
-      return;
-    }
-    if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
-      return;
-    }
-    if (key === 'userinfo') {
-      this.props.dispatch(routerRedux.push('/account/settings/base'));
-      return;
+    if (key === 'userPasswordEdit') {
+      this.setState({
+        userPasswordEditVisible: true,
+      });
     }
     if (key === 'logout') {
       this.props.dispatch({
@@ -90,10 +84,41 @@ class HeaderView extends PureComponent {
       });
     }
   };
+
+  handleModalUserPasswordVisible = () => {
+    this.setState({
+      userPasswordEditVisible: false,
+    });
+  };
+
+  handleResetPassword = (fields) => {
+    this.props.dispatch({
+      type: 'sysUser/resetPassword',
+      payload: {
+        ...fields,
+        id: this.props.currentUser.id
+      },
+      callback: () => {
+        this.handleModalUserPasswordVisible();
+        this.props.dispatch({
+          type: 'sysLogin/logout',
+        });
+      }
+    });
+  };
+
   render() {
     const { isMobile, handleMenuCollapse } = this.props;
     const { silderTheme, layout, fixedHeader } = this.props.setting;
     const isTop = layout === 'topmenu';
+    const userResetPasswordProps = {
+      dispatch: this.props.dispatch,
+      visible: this.state.userPasswordEditVisible,
+      handleModalVisible: this.handleModalUserPasswordVisible,
+      handleResetPassword: this.handleResetPassword
+    };
+
+
     const HeaderDom = this.state.visible ? (
       <Header
         style={{ padding: 0, width: this.getHeadWidth() }}
@@ -119,6 +144,7 @@ class HeaderView extends PureComponent {
             {...this.props}
           />
         )}
+        <UserResetPassword {...userResetPasswordProps} />
       </Header>
     ) : null;
     return (

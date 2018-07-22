@@ -7,46 +7,10 @@
     <select id="findList" resultType="com.modules.system.entity.SysLog">
         select * from sys_log a
         WHERE a.del_flag != '1'
-        <if test="description != null and description != ''">
-            AND a.description like CONCAT('%', #{description}, '%') ,
+        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(searchKeys)">
+            AND a.description like CONCAT('%', #{searchKeys}, '%')
         </if>
-        <if test="username != null and username != ''">
-            AND a.username like CONCAT('%', #{username}, '%') ,
-        </if>
-        <if test="startTime != null and startTime != ''">
-            AND a.start_time gte #{startTime} ,
-        </if>
-        <if test="spendTime != null and spendTime != ''">
-            AND a.spend_time like CONCAT('%', #{spendTime}, '%') ,
-        </if>
-        <if test="basePath != null and basePath != ''">
-            AND a.base_path like CONCAT('%', #{basePath}, '%') ,
-        </if>
-        <if test="uri != null and uri != ''">
-            AND a.uri like CONCAT('%', #{uri}, '%') ,
-        </if>
-        <if test="url != null and url != ''">
-            AND a.url like CONCAT('%', #{url}, '%') ,
-        </if>
-        <if test="method != null and method != ''">
-            AND a.method like CONCAT('%', #{method}, '%') ,
-        </if>
-        <if test="parameter != null and parameter != ''">
-            AND a.parameter like CONCAT('%', #{parameter}, '%') ,
-        </if>
-        <if test="userAgent != null and userAgent != ''">
-            AND a.user_agent like CONCAT('%', #{userAgent}, '%') ,
-        </if>
-        <if test="ip != null and ip != ''">
-            AND a.ip like CONCAT('%', #{ip}, '%') ,
-        </if>
-        <if test="result != null and result != ''">
-            AND a.result like CONCAT('%', #{result}, '%') ,
-        </if>
-        <if test="permissions != null and permissions != ''">
-            AND a.permissions like CONCAT('%', #{permissions}, '%')
-        </if>
-        ORDER BY a.create_date
+        ORDER BY a.create_date desc
     </select>
 
     <!-- 保存日志 -->
@@ -68,8 +32,8 @@
 			result, 
 			permissions,
 			create_date,
-			create_by,
-			update_by,
+			create_user_id,
+			update_user_id,
 			update_date,
 			del_flag
 		) values (
@@ -88,8 +52,8 @@
 			#{result}, 
 			#{permissions},
 			#{createDate},
-			#{createBy},
-			#{updateBy},
+			#{createUserId},
+			#{updateUserId},
 			#{updateDate},
 			#{delFlag}
 		)
@@ -113,8 +77,8 @@
             <if test="result != null">result = #{result},</if>
             <if test="permissions != null">permissions = #{permissions}</if>
             <if test="createDate != null">create_date = #{createDate},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createUserId != null">create_user_id = #{createUserId},</if>
+            <if test="updateUserId != null">update_user_id = #{updateUserId},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
         </set>

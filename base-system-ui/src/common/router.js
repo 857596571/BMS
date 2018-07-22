@@ -87,6 +87,15 @@ export const getRouterData = app => {
     '/system/menu': {
       component: dynamicWrapper(app, ['system/menu'], () => import('../routes/System/MenuList')),
     },
+    '/system/log': {
+      component: dynamicWrapper(app, ['system/log'], () => import('../routes/System/LogList')),
+    },
+    '/quartz/quartzTaskLog': {
+      component: dynamicWrapper(app, ['quartz/quartzTaskLog'], () => import('../routes/quartz/QuartzTaskLog')),
+    },
+    '/quartz/quartzTask': {
+      component: dynamicWrapper(app, ['quartz/quartzTask'], () => import('../routes/quartz/QuartzTask')),
+    },
 
 
     '/sys': {

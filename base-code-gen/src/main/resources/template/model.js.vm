@@ -1,6 +1,6 @@
 import * as ${pathName} from '../../services/${module}/${className}';
 import {message} from 'antd';
-import { pagination } from '../../utils/config'
+import { pagination } from '../../utils/base'
 
 /**
  * ${comments}

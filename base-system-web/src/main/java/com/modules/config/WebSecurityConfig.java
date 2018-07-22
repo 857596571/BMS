@@ -17,15 +17,18 @@ public class WebSecurityConfig extends AbstractWebSecurityConfig {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/servlet/**",
-                "/**/export",
-                "/device/**",
-                "/**/download",
+        web.ignoring().antMatchers(
+                "/sys/file/**",
+                "/files/**",
                 "/webjars/**",
-                "/v2/api-docs", // swagger api json
-                "/swagger-resources/configuration/ui", // 用来获取支持的动作
-                "/swagger-resources", //用来获取api-docs的URI
-                "/swagger-resources/configuration/security", // 安全选项
+                "/v2/api-docs",
+                // swagger api json
+                "/swagger-resources/configuration/ui",
+                // 用来获取支持的动作
+                "/swagger-resources",
+                //用来获取api-docs的URI
+                "/swagger-resources/configuration/security",
+                // 安全选项
                 "/swagger-ui.html");
     }
 
@@ -33,7 +36,7 @@ public class WebSecurityConfig extends AbstractWebSecurityConfig {
     protected void configure(HttpSecurity security) throws Exception {
         security
             .authorizeRequests()
-            .antMatchers("/auth/token").permitAll();
+            .antMatchers("/auth/token", "/files/**").permitAll();
         super.configure(security);
     }
 }

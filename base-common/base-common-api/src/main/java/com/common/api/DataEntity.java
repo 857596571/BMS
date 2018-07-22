@@ -37,11 +37,11 @@ public abstract class DataEntity extends BaseEntity {
     /**
      * 创建者
      */
-    private String createBy;
+    private String createUserId;
     /**
      * 更新者
      */
-    private String updateBy;
+    private String updateUserId;
     /**
      * 备注
      */
@@ -103,20 +103,20 @@ public abstract class DataEntity extends BaseEntity {
         this.delFlag = delFlag;
     }
 
-    public String getCreateBy() {
-        return createBy;
+    public String getCreateUserId() {
+        return createUserId;
     }
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
 
-    public String getUpdateBy() {
-        return updateBy;
+    public String getUpdateUserId() {
+        return updateUserId;
     }
 
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdateUserId(String updateUserId) {
+        this.updateUserId = updateUserId;
     }
 
     public String getRemarks() {

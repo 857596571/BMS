@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 
 /**
- * The type Swagger config.
+ * The type Swagger base.
  *
  * @author dcp
  */

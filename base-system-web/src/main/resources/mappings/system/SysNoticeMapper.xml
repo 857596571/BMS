@@ -15,8 +15,8 @@
         <result property="readerTimes" column="reader_times"/>
         <result property="status" column="status"/>
         <result property="createDate" column="create_date"/>
-        <result property="createBy" column="create_by"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateUserId" column="update_user_id"/>
         <result property="updateDate" column="update_date"/>
         <result property="delFlag" column="del_flag"/>
         <result property="remarks" column="remarks"/>
@@ -95,8 +95,8 @@
 			reader_times, 
 			status, 
 			create_date, 
-			create_by, 
-			update_by, 
+			create_user_id,
+			update_user_id,
 			update_date, 
 			del_flag, 
 			remarks
@@ -113,8 +113,8 @@
 			#{readerTimes}, 
 			#{status}, 
 			#{createDate}, 
-			#{createBy}, 
-			#{updateBy}, 
+			#{createUserId},
+			#{updateUserId},
 			#{updateDate}, 
 			#{delFlag}, 
 			#{remarks}
@@ -133,8 +133,8 @@
 			<if test="readerTimes != null">reader_times = #{readerTimes}, </if>
 			<if test="status != null">status = #{status}, </if>
 			<if test="createDate != null">create_date = #{createDate}, </if>
-			<if test="createBy != null">create_by = #{createBy}, </if>
-			<if test="updateBy != null">update_by = #{updateBy}, </if>
+			<if test="createUserId != null">create_user_id = #{createUserId}, </if>
+			<if test="updateUserId != null">update_user_id = #{updateUserId}, </if>
 			<if test="updateDate != null">update_date = #{updateDate}, </if>
 			<if test="delFlag != null">del_flag = #{delFlag}, </if>
 			<if test="remarks != null">remarks = #{remarks}</if>

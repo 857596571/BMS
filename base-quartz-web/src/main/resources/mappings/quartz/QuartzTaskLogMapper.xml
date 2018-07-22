@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.modules.quartz.mapper.QuartzTaskLogMapper">
+
+    <!-- 通过ID获取单个任务调度运行日志信息 -->
+    <select id="get" resultType="com.modules.quartz.entity.QuartzTaskLog">
+        select * from quartz_task_log where id = #{value}
+    </select>
+
+    <!-- 分页查询任务调度运行日志信息 -->
+    <select id="findList" resultType="com.modules.quartz.entity.QuartzTaskLog">
+		select * from quartz_task_log t
+        WHERE 1=1
+        ORDER BY t.create_date desc
+    </select>
+
+    <!-- 保存任务调度运行日志 -->
+    <insert id="insert" parameterType="com.modules.quartz.entity.QuartzTaskLog">
+        insert into quartz_task_log (
+            id, 
+            quartz_id, 
+            bean_id, 
+            params, 
+            state, 
+            error, 
+            times, 
+            create_date
+        ) values (
+            #{id},
+            #{quartzId},
+            #{beanId},
+            #{params},
+            #{state},
+            #{error},
+            #{times},
+            #{createDate}
+        )
+    </insert>
+
+    <!-- 更新任务调度运行日志 -->
+    <update id="update" parameterType="com.modules.quartz.entity.QuartzTaskLog">
+        update quartz_task_log 
+        <set>
+            <if test="quartzId != null">quartz_id = #{quartzId},</if>
+            <if test="beanId != null">bean_id = #{beanId},</if>
+            <if test="params != null">params = #{params},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="error != null">error = #{error},</if>
+            <if test="times != null">times = #{times},</if>
+            <if test="createDate != null">create_date = #{createDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键ID删除任务调度运行日志 -->
+    <delete id="delete">
+        delete from quartz_task_log where id = #{value}
+    </delete>
+
+    <!-- 根据主键ID删除任务调度运行日志（逻辑删除） -->
+    <delete id="deleteById">
+        delete from quartz_task_log where id = #{value}
+    </delete>
+
+    <!-- 根据主键ID批量删除任务调度运行日志 -->
+    <delete id="deleteBatch">
+        delete from quartz_task_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

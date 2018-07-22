@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.modules.quartz.mapper.QuartzTaskMapper">
+
+    <!-- 通过ID获取单个任务调度资源信息 -->
+    <select id="get" resultType="com.modules.quartz.entity.QuartzTask">
+        select * from quartz_task where id = #{value}
+    </select>
+
+    <!-- 分页查询任务调度资源信息 -->
+    <select id="findList" resultType="com.modules.quartz.entity.QuartzTask">
+		select * from quartz_task t
+        WHERE 1=1
+        ORDER BY t.create_date desc
+    </select>
+
+    <!-- 保存任务调度资源 -->
+    <insert id="insert" parameterType="com.modules.quartz.entity.QuartzTask">
+        insert into quartz_task (
+            id, 
+            name, 
+            bean_id, 
+            params, 
+            cron_expression, 
+            state, 
+            remarks, 
+            create_date, 
+            update_date, 
+            create_user_id, 
+            update_user_id
+        ) values (
+            #{id},
+            #{name},
+            #{beanId},
+            #{params},
+            #{cronExpression},
+            #{state},
+            #{remarks},
+            #{createDate},
+            #{updateDate},
+            #{createUserId},
+            #{updateUserId}
+        )
+    </insert>
+
+    <!-- 更新任务调度资源 -->
+    <update id="update" parameterType="com.modules.quartz.entity.QuartzTask">
+        update quartz_task 
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="beanId != null">bean_id = #{beanId},</if>
+            <if test="params != null">params = #{params},</if>
+            <if test="cronExpression != null">cron_expression = #{cronExpression},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="createUserId != null">create_user_id = #{createUserId},</if>
+            <if test="updateUserId != null">update_user_id = #{updateUserId},</if>
+            remarks = #{remarks}
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 更新定时任务状态 -->
+    <update id="updateState">
+      update quartz_task set state = #{state}
+      <where>
+          <if test="@cn.hutool.core.util.StrUtil@isNotBlank(id)">
+              id = #{id}
+          </if>
+      </where>
+    </update>
+
+    <!-- 根据主键ID删除任务调度资源 -->
+    <delete id="delete">
+        delete from quartz_task where id = #{value}
+    </delete>
+
+    <!-- 根据主键ID删除任务调度资源（逻辑删除） -->
+    <delete id="deleteById">
+        delete from quartz_task where id = #{value}
+    </delete>
+
+    <!-- 根据主键ID批量删除任务调度资源 -->
+    <delete id="deleteBatch">
+        delete from quartz_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,4 +1,4 @@
-//package com.modules.system.controller;
+//package com.modules.quartz.controller;
 //
 //import com.alibaba.fastjson.JSON;
 //import com.common.upload.AliyunCloudStorageService;
@@ -28,12 +28,12 @@
 //    /**
 //     * 云存储配置信息
 //     */
-//    @RequestMapping("/config")
+//    @RequestMapping("/base")
 //    @PreAuthorize("hasAuthority('sys:oss:all')")
-//    public CloudStorageConfig config() {
-//        CloudStorageConfig config = sysConfigService.getConfigObject(KEY, CloudStorageConfig.class);
+//    public CloudStorageConfig base() {
+//        CloudStorageConfig base = sysConfigService.getConfigObject(KEY, CloudStorageConfig.class);
 //
-//        return config;
+//        return base;
 //    }
 //
 //    /**
@@ -41,9 +41,9 @@
 //     */
 //    @RequestMapping("/saveConfig")
 //    @PreAuthorize("hasAuthority('sys:oss:all')")
-//    public ResponseEntity saveConfig(@RequestBody CloudStorageConfig config) {
+//    public ResponseEntity saveConfig(@RequestBody CloudStorageConfig base) {
 //
-//        sysConfigService.updateValueByKey(KEY, JSON.toJSONString(config));
+//        sysConfigService.updateValueByKey(KEY, JSON.toJSONString(base));
 //
 //        return new ResponseEntity(HttpStatus.OK);
 //    }
@@ -60,16 +60,16 @@
 //        String value = sysConfigService.getValue("",
 //                null);
 //        if (StringUtils.isNotBlank(value)) {
-//            CloudStorageConfig config = JSON.parseObject(value, CloudStorageConfig.class);
+//            CloudStorageConfig base = JSON.parseObject(value, CloudStorageConfig.class);
 //            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-//            url = new AliyunCloudStorageService(config).upload(file.getBytes(),fileExtension);
+//            url = new AliyunCloudStorageService(base).upload(file.getBytes(),fileExtension);
 //        }
 //        return url;
 //    }
 //
 //
 //    public static void main(String args[]) {
-//        CloudStorageConfig config = JSON.parseObject("{\"aliyunAccessKeyId\":\"eN0UzDHYgkCM7LHG\",\"aliyunAccessKeySecret\":\"GNvB9M2yfRXCF16dSsk4m8HO79g3h8\",\"aliyunBucketName\":\"whjk-lic-test\",\"aliyunDomain\":\"http://whjk-lic-test.img-cn-hangzhou.aliyuncs.com/\",\"aliyunEndPoint\":\"http://oss-cn-hangzhou.aliyuncs.com/\",\"aliyunPrefix\":\"upload\"}", CloudStorageConfig.class);
-//        System.out.println(config.getAliyunAccessKeyId());
+//        CloudStorageConfig base = JSON.parseObject("{\"aliyunAccessKeyId\":\"eN0UzDHYgkCM7LHG\",\"aliyunAccessKeySecret\":\"GNvB9M2yfRXCF16dSsk4m8HO79g3h8\",\"aliyunBucketName\":\"whjk-lic-test\",\"aliyunDomain\":\"http://whjk-lic-test.img-cn-hangzhou.aliyuncs.com/\",\"aliyunEndPoint\":\"http://oss-cn-hangzhou.aliyuncs.com/\",\"aliyunPrefix\":\"upload\"}", CloudStorageConfig.class);
+//        System.out.println(base.getAliyunAccessKeyId());
 //    }
 //}

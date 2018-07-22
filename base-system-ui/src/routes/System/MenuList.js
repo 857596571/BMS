@@ -325,120 +325,122 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal {...modalProps}>
-      <Row>
-        <Col span={24}>
-          <FormItem label="父菜单：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('parentId', {
-              initialValue: item.parentId ? item.parentId.toString() : '1',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择父菜单',
-                },
-              ],
-            })(
-              <TreeSelect
-                style={{ width: '100%' }}
-                dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
-                treeData={selectTreeData}
-                treeDefaultExpandAll
-                disabled
-              />
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="菜单名称：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('name', {
-              initialValue: item.name,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入菜单名称',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="菜单地址：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('href', {
-              initialValue: item.href,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入菜单地址',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="菜单图标：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('icon', {
-              initialValue: item.icon,
-              rules: [
-                {
-                  message: '请输入菜单图标',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="菜单级别：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('level', {
-              initialValue: item.level || 'MENU',
-              rules: [
-                {
-                  required: true,
-                  message: '请选择菜单级别',
-                },
-              ],
-            })(<Dict code={'MENU_LEVEL'} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem label="权限编码：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('permission', {
-              initialValue: item.permission,
-              rules: [
-                {
-                  message: '请输入权限编码',
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="菜单排序：" hasFeedback {...formItemLayout}>
-            {form.getFieldDecorator('sort', {
-              initialValue: item.sort,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入菜单顺序',
-                },
-              ],
-            })(<InputNumber min={0} style={{ width: '100%' }} />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-            {form.getFieldDecorator('remarks', {
-              initialValue: item.remarks,
-            })(<Input.TextArea rows={2} />)}
-          </FormItem>
-        </Col>
-      </Row>
+      <Form>
+        <Row>
+          <Col span={24}>
+            <FormItem label="父菜单：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+              {form.getFieldDecorator('parentId', {
+                initialValue: item.parentId ? item.parentId.toString() : '1',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择父菜单',
+                  },
+                ],
+              })(
+                <TreeSelect
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+                  treeData={selectTreeData}
+                  treeDefaultExpandAll
+                  disabled
+                />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="菜单名称：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('name', {
+                initialValue: item.name,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入菜单名称',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="菜单地址：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('href', {
+                initialValue: item.href,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入菜单地址',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="菜单图标：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('icon', {
+                initialValue: item.icon,
+                rules: [
+                  {
+                    message: '请输入菜单图标',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="菜单级别：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('level', {
+                initialValue: item.level || 'MENU',
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择菜单级别',
+                  },
+                ],
+              })(<Dict code={'MENU_LEVEL'} />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem label="权限编码：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('permission', {
+                initialValue: item.permission,
+                rules: [
+                  {
+                    message: '请输入权限编码',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="菜单排序：" hasFeedback {...formItemLayout}>
+              {form.getFieldDecorator('sort', {
+                initialValue: item.sort,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入菜单顺序',
+                  },
+                ],
+              })(<InputNumber min={0} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <FormItem label="备注：" hasFeedback labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+              {form.getFieldDecorator('remarks', {
+                initialValue: item.remarks,
+              })(<Input.TextArea rows={2} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
   );
 });
