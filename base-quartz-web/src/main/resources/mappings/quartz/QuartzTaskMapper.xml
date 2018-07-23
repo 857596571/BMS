@@ -12,6 +12,9 @@
     <select id="findList" resultType="com.modules.quartz.entity.QuartzTask">
 		select * from quartz_task t
         WHERE 1=1
+        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(state)">
+            and t.state = #{state}
+        </if>
         ORDER BY t.create_date desc
     </select>
 
