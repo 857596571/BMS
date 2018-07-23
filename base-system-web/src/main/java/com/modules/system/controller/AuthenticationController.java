@@ -1,5 +1,6 @@
 package com.modules.system.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.common.security.AuthenticationTokenFilter;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
@@ -136,9 +137,12 @@ public class AuthenticationController extends BaseController {
     @DeleteMapping(value = "/token")
     public ResponseMessage deleteAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(AuthenticationTokenFilter.TOKEN_HEADER);
-        String token = tokenHeader.split(" ")[1];
+        if(StrUtil.isNotBlank(tokenHeader)) {
 
-        jwtTokenUtil.removeToken(token, request);
+            String token = tokenHeader.split(" ")[1];
+
+            jwtTokenUtil.removeToken(token, request);
+        }
 
         return Result.success();
     }
