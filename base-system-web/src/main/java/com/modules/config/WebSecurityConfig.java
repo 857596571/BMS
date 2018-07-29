@@ -18,8 +18,8 @@ public class WebSecurityConfig extends AbstractWebSecurityConfig {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
-                "/sys/file/**",
                 "/files/**",
+                "/sys/file/**",
                 "/webjars/**",
                 "/v2/api-docs",
                 // swagger api json

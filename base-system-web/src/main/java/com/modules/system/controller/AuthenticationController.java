@@ -5,10 +5,13 @@ import com.common.security.AuthenticationTokenFilter;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
-import com.modules.system.entity.SysUser;
+import com.modules.system.entity.req.LoginUserReq;
 import com.modules.system.entity.resp.AuthenticationResp;
 import com.modules.system.security.utils.TokenUtil;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -20,8 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 鉴权
@@ -60,19 +61,13 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
-    @ApiImplicitParams({
-            // Paging Param
-            @ApiImplicitParam(name = "sysUser", value = "传入JSON", paramType = "query", dataType = "SysUser", required = false),
-            @ApiImplicitParam(name = "loginName", value = "登录账号", paramType = "query", dataType = "String", required = true),
-            @ApiImplicitParam(name = "password", value = "登录密码", paramType = "query", dataType = "String", required = true)
-    })
     @PostMapping(value = "/token")
-    public ResponseMessage createAuthenticationToken(HttpServletRequest request, @RequestBody SysUser sysUser) {
+    public ResponseMessage createAuthenticationToken(@RequestBody LoginUserReq user, HttpServletRequest request) {
         AuthenticationResp resp = new AuthenticationResp();
         // Perform the securitycd
         try {
             final Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(sysUser.getLoginName(), sysUser.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getLoginName(), user.getPassword())
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -113,6 +108,14 @@ public class AuthenticationController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "刷新令牌", response = AuthenticationResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "请求已完成"),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")}
+    )
     @GetMapping(value = "/refresh")
     public ResponseMessage refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(AuthenticationTokenFilter.TOKEN_HEADER);
@@ -122,11 +125,11 @@ public class AuthenticationController extends BaseController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String refreshedToken = jwtTokenUtil.generateToken(userDetails, request);
 
-        Map<String, Object> tokenMap = new HashMap<>();
-        tokenMap.put("access_token", refreshedToken);
-        tokenMap.put("expires_in", jwtTokenUtil.getExpiration());
-        tokenMap.put("token_type", TokenUtil.TOKEN_TYPE_BEARER);
-        return Result.success(tokenMap);
+        AuthenticationResp resp = new AuthenticationResp();
+        resp.setAccess_token(refreshedToken);
+        resp.setExpires_in(jwtTokenUtil.getExpiration());
+        resp.setToken_type(TokenUtil.TOKEN_TYPE_BEARER);
+        return Result.success(resp);
     }
 
     /**
@@ -134,13 +137,19 @@ public class AuthenticationController extends BaseController {
      * @param request
      * @return
      */
-    @DeleteMapping(value = "/token")
+    @ApiOperation(value = "删除令牌", response = AuthenticationResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "请求已完成"),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")}
+    )
+    @GetMapping(value = "/token")
     public ResponseMessage deleteAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(AuthenticationTokenFilter.TOKEN_HEADER);
         if(StrUtil.isNotBlank(tokenHeader)) {
-
             String token = tokenHeader.split(" ")[1];
-
             jwtTokenUtil.removeToken(token, request);
         }
 

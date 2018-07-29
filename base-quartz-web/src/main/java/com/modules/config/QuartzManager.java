@@ -57,7 +57,7 @@ public class QuartzManager {
      */
     public void start() {
         QuartzTask queryTask = new QuartzTask();
-        queryTask.setState("OFF");
+        queryTask.setState("ON");
         //获取所有状态为启动（OFF）的任务调度数据
         List<QuartzTask> taskList = quartzTaskService.findList(queryTask);
         if(CollUtil.isNotEmpty(taskList)) {
@@ -65,7 +65,7 @@ public class QuartzManager {
                 addTask(task);
             }
         } else {
-            logger.warn("无状态为启动（OFF）状态的任务调度数据");
+            logger.warn("无状态为启动（ON）状态的任务调度数据");
         }
     }
 

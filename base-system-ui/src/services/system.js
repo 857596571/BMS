@@ -9,9 +9,7 @@ export async function userLogin(params) {
 }
 
 export async function userLogout(params) {
-  return request('/auth/token', {
-    method: 'DELETE',
-  });
+  return request('/auth/token');
 }
 
 export async function getLoginUser() {

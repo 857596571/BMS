@@ -26,7 +26,7 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * The type Swagger base.
  *
- * @author dcp
+ * @author xmh
  */
 @Configuration
 @EnableSwagger2

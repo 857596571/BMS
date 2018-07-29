@@ -11,6 +11,7 @@ import com.common.web.util.YmlConfig;
 import com.modules.system.entity.SysDict;
 import com.modules.system.entity.resp.AttachmentInfoResp;
 import com.modules.system.service.SystemService;
+import com.modules.system.utils.SysFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,30 +53,7 @@ public class SysFileController extends BaseController {
         String fileRootPath = (String) ymlConfig.getMap("upload", String.class).get("file-root-path");
         //业务类型
         String bizType = params.getParameter("bizType");
-        if (StrUtil.isBlank(bizType)) {
-            return Result.error("业务类型为null-上传文件失败");
-        }
-        String nowDate = DateUtil.format(new Date(), DatePattern.PURE_DATE_PATTERN);
-        //获取上传文件名称
-        String fileName = file.getOriginalFilename();
-        //获取上传文件名称
-        String fileNameNew = bizType + "-" + System.currentTimeMillis()
-                + "." + StrUtil.subAfter(fileName, ".", true);
-        //设置上传文件夹，采用 /根/业务类型/年月日/文件(将上传文件名称重命名为业务类型-时间戳格式文件名)
-        String uploadFileRootPath = File.separator + bizType + File.separator + nowDate + File.separator;
-        if (!FileUtil.exist((fileRootPath + uploadFileRootPath))) {
-            FileUtil.mkdir((fileRootPath + uploadFileRootPath));
-        }
-
-        try {
-            file.transferTo(new File((fileRootPath + uploadFileRootPath + fileNameNew)));
-        } catch (IOException e) {
-            logger.error("上传文件[" + fileName + "]-写入文件失败：" + e.getMessage(), e);
-            return Result.error("上传文件[" + fileName + "]-写入文件失败");
-        }
-
-        String filePath = File.separator + "files" + uploadFileRootPath + fileNameNew;
-        return Result.success(new AttachmentInfoResp(bizType, fileName, filePath));
+        return SysFileUtils.upload(fileRootPath, bizType, file);
     }
 
     /**
