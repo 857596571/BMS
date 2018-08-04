@@ -2,10 +2,10 @@ package com.modules.system.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.common.api.BaseEntity;
-import com.common.security.util.UserUtil;
+import com.common.security.util.AuthUserUtil;
+import com.google.common.collect.Lists;
 import com.modules.system.entity.SysRole;
 import com.modules.system.security.model.AuthUser;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -87,7 +87,7 @@ public class DataFilterUtils {
      */
     public static void dataScopeFilter(BaseEntity entity, String sqlMapKey, String officeWheres, String userWheres) {
 
-        AuthUser user = UserUtil.getCurrentUser();
+        AuthUser user = AuthUserUtil.getCurrentUser();
 
         // 如果是超级管理员，则不过滤数据
         if (user.isAdmin()) {

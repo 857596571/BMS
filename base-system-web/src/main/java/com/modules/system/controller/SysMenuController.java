@@ -1,11 +1,9 @@
 package com.modules.system.controller;
 
-import com.common.security.util.UserUtil;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysMenu;
-import com.modules.system.security.model.AuthUser;
 import com.modules.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

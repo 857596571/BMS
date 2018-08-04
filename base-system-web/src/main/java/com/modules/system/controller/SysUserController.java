@@ -3,7 +3,7 @@ package com.modules.system.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.common.api.Paging;
-import com.common.security.util.UserUtil;
+import com.common.security.util.AuthUserUtil;
 import com.common.utils.exception.BusinessException;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
@@ -73,7 +73,7 @@ public class SysUserController extends BaseController {
         if(StrUtil.isNotEmpty(id)) {
             user = systemService.getUserById(id);
         } else {
-            AuthUser authUser = UserUtil.getCurrentUser();
+            AuthUser authUser = AuthUserUtil.getCurrentUser();
             user.setId(authUser.getId());
             user.setPassword(authUser.getPassword());
         }

@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * 用户工具类
  */
-public final class UserUtil {
+public final class AuthUserUtil {
 
     /**
      * 获取当前登录者对象
