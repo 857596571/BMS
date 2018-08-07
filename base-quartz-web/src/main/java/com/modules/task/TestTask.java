@@ -16,8 +16,7 @@ public class TestTask extends AbstractTask {
 
 
     @Override
-    protected void executeInternal(JobExecutionContext context) {
-        QuartzTask task = (QuartzTask) context.getJobDetail().getJobDataMap().get("task");
+    protected void executeInternal(JobExecutionContext context, QuartzTask task) {
         logger.info("task="+JSONUtil.toJsonStr(task));
         logger.info("test task start execute.");
         try {

@@ -16,7 +16,7 @@ public class QuartzTaskLog extends DataEntity {
 
     /** 任务ID */
     @ApiModelProperty(value="任务ID", name="quartzId")
-    private Integer quartzId;
+    private String quartzId;
 
     /** 任务执行BEAN */
     @ApiModelProperty(value="任务执行BEAN", name="beanId")
@@ -40,20 +40,20 @@ public class QuartzTaskLog extends DataEntity {
 
     /** 耗时(单位：毫秒) */
     @ApiModelProperty(value="耗时(单位：毫秒)", name="times")
-    private Integer times;
+    private Long times;
 
 
     /**
      * 设置：任务ID
      */
-    public void setQuartzId(Integer quartzId) {
+    public void setQuartzId(String quartzId) {
         this.quartzId = quartzId;
     }
 
     /**
      * 获取：任务ID
      */
-    public Integer getQuartzId() {
+    public String getQuartzId() {
         return quartzId;
     }
 
@@ -118,14 +118,14 @@ public class QuartzTaskLog extends DataEntity {
     /**
      * 设置：耗时(单位：毫秒)
      */
-    public void setTimes(Integer times) {
+    public void setTimes(Long times) {
         this.times = times;
     }
 
     /**
      * 获取：耗时(单位：毫秒)
      */
-    public Integer getTimes() {
+    public Long getTimes() {
         return times;
     }
 
