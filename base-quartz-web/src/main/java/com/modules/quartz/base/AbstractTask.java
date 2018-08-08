@@ -42,7 +42,6 @@ public abstract class AbstractTask implements Job {
     @Override
     public void execute(JobExecutionContext context) {
         QuartzTask task = (QuartzTask) context.getJobDetail().getJobDataMap().get("task");
-        TimeInterval timer = DateUtil.timer();
         //构建日志基础信息
         QuartzTaskLog log = new QuartzTaskLog();
         log.setQuartzId(task.getId());
@@ -51,6 +50,8 @@ public abstract class AbstractTask implements Job {
 
         logger.info("开始执行任务-"+task.getName());
         try {
+            TimeInterval timer = DateUtil.timer();
+
             //执行
             executeInternal(context, task);
 
@@ -61,7 +62,7 @@ public abstract class AbstractTask implements Job {
         } catch (Exception e) {
             //保存任务日志
             log.setState("ERROR");
-            log.setTimes(timer.interval());
+            log.setTimes(0L);
             log.setError(e.getMessage());
             quartzTaskLogService.save(log);
             logger.error(e.getMessage(), e);
