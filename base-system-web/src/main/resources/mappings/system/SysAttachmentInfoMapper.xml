@@ -85,7 +85,7 @@
 
     <!-- 根据业务ID删除系统附件表 -->
     <delete id="deleteByBizId">
-        delete from sys_attachment_info where biz_id = #{value} and biz_type = #{bizType}
+        delete from sys_attachment_info where biz_id = #{bizId} and biz_type = #{bizType}
     </delete>
 
     <!-- 根据主键ID删除系统附件表（逻辑删除） -->
