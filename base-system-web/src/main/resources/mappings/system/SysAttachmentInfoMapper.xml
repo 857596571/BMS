@@ -18,7 +18,7 @@
     <!-- 查询某个业务ID系统附件表信息 -->
     <select id="getByBizId" resultType="com.modules.system.entity.SysAttachmentInfo">
 		select * from sys_attachment_info t
-        WHERE 1=1 and t.biz_id = #{bizId}
+        WHERE 1=1 and t.biz_id = #{bizId} and t.biz_type = #{bizType}
         ORDER BY t.create_date desc
     </select>
 
@@ -85,7 +85,7 @@
 
     <!-- 根据业务ID删除系统附件表 -->
     <delete id="deleteByBizId">
-        delete from sys_attachment_info where biz_id = #{value}
+        delete from sys_attachment_info where biz_id = #{value} and biz_type = #{bizType}
     </delete>
 
     <!-- 根据主键ID删除系统附件表（逻辑删除） -->
