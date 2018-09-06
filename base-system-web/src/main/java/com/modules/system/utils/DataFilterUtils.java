@@ -15,7 +15,17 @@ import java.util.List;
  */
 public class DataFilterUtils {
 
-    public static String dataScopeFilter(AuthUser user, String deptAlias, String userAlias) {
+    /**
+     * 数据范围过滤
+     * @param entity 查询bean
+     * @param sqlMapKey 过滤sql key
+     * @param orgAlias sql中机构别名
+     * @param userAlias sql中用户别名
+     * @return 过滤sql
+     */
+    public static void dataScopeFilter(BaseEntity entity, String sqlMapKey, String orgAlias, String userAlias) {
+
+        AuthUser user = AuthUserUtil.getCurrentUser();
 
         StringBuilder sqlString = new StringBuilder();
 
@@ -26,28 +36,26 @@ public class DataFilterUtils {
         if (!user.isAdmin()){
             boolean isDataScopeAll = false;
             for (SysRole r : user.getRoles()){
-                for (String oa : StrUtil.split(deptAlias, ",")){
+                for (String oa : StrUtil.split(orgAlias, ",")){
                     if (!dataScope.contains(r.getDataScope()) && StrUtil.isNotEmpty(oa)){
-                        if ("1".equals(r.getDataScope())){
+                        //全部数据
+                        if ("SCOPE_ALL".equals(r.getDataScope())){
                             isDataScopeAll = true;
                         }
-                        else if ("2".equals(r.getDataScope())){
+                        //所在机构及以下
+                        else if ("SCOPE_ORG_ALL".equals(r.getDataScope())){
+                            String sql = "select o.id from sys_org t join sys_org o on o.left_num between t.left_num and t.right_num and o.state = 'ON' and o.del_flag = '0' where t.id = "+ user.getOrgId() +" and t.state = 'ON' and t.del_flag = '0'";
+                            sqlString.append(" OR " + oa + ".id in (" + sql +")'");
+                        }
+                        //所在机构
+                        else if ("SCOPE_ORG".equals(r.getDataScope())){
                             sqlString.append(" OR " + oa + ".id = '" + user.getOrgId() + "'");
-//                            sqlString.append(" OR find_in_set(" + oa + ".id, getDeptIds(" + user.getDeptId() + ", '1'))");
-                            sqlString.append(" OR " + oa + ".parent_ids LIKE '%" + user.getOrgId() +",%'");
                         }
-                        else if ("3".equals(r.getDataScope())){
-                            sqlString.append(" OR " + oa + ".id = '" + user.getOrgId() + "'");
+                        //明细
+                        else if ("SCOPE_DETAIL".equals(r.getDataScope())){
+                            sqlString.append(" OR EXISTS (SELECT 1 FROM sys_role_org WHERE role_id = '" + r.getId() + "'");
+                            sqlString.append(" AND org_id = " + oa +".id)");
                         }
-                        else if ("5".equals(r.getDataScope())){
-//							String officeIds =  StringUtils.join(r.getOfficeIdList(), "','");
-//							if (StringUtils.isNotEmpty(officeIds)){
-//								sqlString.append(" OR " + oa + ".id IN ('" + officeIds + "')");
-//							}
-                            sqlString.append(" OR EXISTS (SELECT 1 FROM sys_role_dept WHERE role_id = '" + r.getId() + "'");
-                            sqlString.append(" AND office_id = " + oa +".id)");
-                        }
-                        //else if (SysRole.DATA_SCOPE_SELF.equals(r.getDataScope())){
                         dataScope.add(r.getDataScope().toString());
                     }
                 }
@@ -59,7 +67,7 @@ public class DataFilterUtils {
                         sqlString.append(" OR " + ua + ".id = '" + user.getId() + "'");
                     }
                 }else {
-                    for (String oa : StringUtils.split(deptAlias, ",")){
+                    for (String oa : StringUtils.split(orgAlias, ",")){
                         //sqlString.append(" OR " + oa + ".id  = " + user.getOffice().getId());
                         sqlString.append(" OR " + oa + ".id IS NULL");
                     }
@@ -70,83 +78,7 @@ public class DataFilterUtils {
             }
         }
         if (StringUtils.isNotBlank(sqlString.toString())){
-            return " AND (" + sqlString.substring(4) + ")";
+            entity.getSqlMap().put(sqlMapKey, " AND (" + sqlString.substring(4) + ")");
         }
-        return "";
-    }
-
-    /**
-     * 数据范围过滤（符合业务表字段不同的时候使用，采用exists方法）
-     * @param entity 当前过滤的实体类
-     * @param sqlMapKey sqlMap的键值，例如设置“dsf”时，调用方法：${sqlMap.sdf}
-     * @param officeWheres office表条件，组成：部门表字段=业务表的部门字段
-     * @param userWheres user表条件，组成：用户表字段=业务表的用户字段
-     * @example
-     * 		dataScopeFilter(user, "dsf", "id=a.office_id", "id=a.create_by");
-     * 		dataScopeFilter(entity, "dsf", "code=a.jgdm", "no=a.cjr"); // 适应于业务表关联不同字段时使用，如果关联的不是机构id是code。
-     */
-    public static void dataScopeFilter(BaseEntity entity, String sqlMapKey, String officeWheres, String userWheres) {
-
-        AuthUser user = AuthUserUtil.getCurrentUser();
-
-        // 如果是超级管理员，则不过滤数据
-        if (user.isAdmin()) {
-            return;
-        }
-
-        // 数据范围（1：所有数据；2：所在公司及以下数据；3：所在公司数据；4：所在部门及以下数据；5：所在部门数据；8：仅本人数据；9：按明细设置）
-        StringBuilder sqlString = new StringBuilder();
-
-        // 获取到最大的数据权限范围
-        String roleId = "";
-        int dataScopeInteger = 8;
-        for (SysRole r : user.getRoles()){
-            int ds = Integer.valueOf(r.getDataScope());
-            if (ds == 9){
-                roleId = r.getId();
-                dataScopeInteger = ds;
-                break;
-            }else if (ds < dataScopeInteger){
-                roleId = r.getId();
-                dataScopeInteger = ds;
-            }
-        }
-        String dataScopeString = String.valueOf(dataScopeInteger);
-
-        // 生成部门权限SQL语句
-        for (String where : StringUtils.split(officeWheres, ",")){
-            if ("2".equals(dataScopeString)){
-                sqlString.append(" AND EXISTS (SELECT 1 FROM SYS_DEPT");
-//                sqlString.append(" WHERE find_in_set (id, getDeptIds(" + user.getDeptId() + ",'1'))");
-                sqlString.append(" WHERE (id = '" + user.getOrgId() + "'");
-                sqlString.append(" OR parent_ids LIKE '" + user.getOrgId() +",%')");
-                sqlString.append(" AND " + where +")");
-            }
-            else if ("3".equals(dataScopeString)){
-                sqlString.append(" AND EXISTS (SELECT 1 FROM SYS_DEPT");
-                sqlString.append(" WHERE id = '" + user.getOrgId() + "'");
-                sqlString.append(" AND " + where +")");
-            }
-            else if ("5".equals(dataScopeString)){
-                sqlString.append(" AND EXISTS (SELECT 1 FROM sys_role_dept ro123456, SYS_DEPT o123456");
-                sqlString.append(" WHERE ro123456.office_id = o123456.id");
-                sqlString.append(" AND ro123456.role_id = '" + roleId + "'");
-                sqlString.append(" AND o123456." + where +")");
-            }
-        }
-        // 生成个人权限SQL语句
-        for (String where : StringUtils.split(userWheres, ",")){
-            if ("4".equals(dataScopeString)){
-                sqlString.append(" AND EXISTS (SELECT 1 FROM sys_user");
-                sqlString.append(" WHERE id='" + user.getId() + "'");
-                sqlString.append(" AND " + where + ")");
-            }
-        }
-
-//		System.out.println("dataScopeFilter: " + sqlString.toString());
-
-        // 设置到自定义SQL对象
-        entity.getSqlMap().put(sqlMapKey, sqlString.toString());
-
     }
 }

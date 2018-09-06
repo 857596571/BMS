@@ -30,6 +30,9 @@ public class SysAttachmentInfo extends DataEntity {
     @ApiModelProperty(value="文件路径", name="filePath")
     private String filePath;
 
+    public SysAttachmentInfo() {
+    }
+
     public SysAttachmentInfo(String bizId, String bizType, String fileName, String filePath) {
         this.bizId = bizId;
         this.bizType = bizType;

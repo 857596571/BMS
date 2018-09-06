@@ -46,8 +46,8 @@ public class SysFileUtils {
                 + "." + StrUtil.subAfter(fileName, ".", true);
         //设置上传文件夹，采用 /根/业务类型/年月日/文件(将上传文件名称重命名为业务类型-时间戳格式文件名)
         String uploadFileRootPath = File.separator + bizType + File.separator + nowDate + File.separator;
-        if (!FileUtil.exist((fileRootPath + uploadFileRootPath))) {
-            FileUtil.mkdir(FileUtil.file(fileRootPath + uploadFileRootPath));
+        if (!FileUtil.exist((fileRootPath + uploadFileRootPath + fileNameNew))) {
+            FileUtil.touch(fileRootPath + uploadFileRootPath + fileNameNew);
         }
 
         try {
@@ -57,7 +57,7 @@ public class SysFileUtils {
             return Result.error("上传文件[" + fileName + "]-写入文件失败");
         }
 
-        String filePath = uploadFileRootPath + fileNameNew;
+        String filePath = File.separator + "files" + uploadFileRootPath + fileNameNew;
         return Result.success(new AttachmentInfoResp(bizType, fileName, filePath));
     }
 }

@@ -71,11 +71,35 @@ public abstract class DataEntity extends BaseEntity {
     }
 
     /**
+     * 插入之前执行方法，需要手动调用
+     */
+    @Override
+    public void preInsert(String userId) {
+        // 不限制ID为UUID，调用setIsNewRecord()使用自定义ID
+//        if (this.getIsNewRecord()) {
+//            setId(RandomHelper.uuid());
+//        }
+        this.delFlag="0";
+        this.updateDate = new Date();
+        this.createDate = this.updateDate;
+        this.updateUserId = userId;
+        this.createUserId = userId;
+    }
+
+    /**
      * 更新之前执行方法，需要手动调用
      */
     @Override
     public void preUpdate() {
         this.updateDate = new Date();
+    }
+    /**
+     * 更新之前执行方法，需要手动调用
+     */
+    @Override
+    public void preUpdate(String userId) {
+        this.updateDate = new Date();
+        this.updateUserId = userId;
     }
 
     public Date getCreateDate() {
