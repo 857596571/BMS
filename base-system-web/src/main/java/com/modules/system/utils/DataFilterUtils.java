@@ -18,12 +18,11 @@ public class DataFilterUtils {
     /**
      * 数据范围过滤
      * @param entity 查询bean
-     * @param sqlMapKey 过滤sql key
      * @param orgAlias sql中机构别名
      * @param userAlias sql中用户别名
      * @return 过滤sql
      */
-    public static void dataScopeFilter(BaseEntity entity, String sqlMapKey, String orgAlias, String userAlias) {
+    public static void dataScopeFilter(BaseEntity entity, String orgAlias, String userAlias) {
 
         AuthUser user = AuthUserUtil.getCurrentUser();
 
@@ -78,7 +77,7 @@ public class DataFilterUtils {
             }
         }
         if (StringUtils.isNotBlank(sqlString.toString())){
-            entity.getSqlMap().put(sqlMapKey, " AND (" + sqlString.substring(4) + ")");
+            entity.setSqlMap(" AND (" + sqlString.substring(4) + ")");
         }
     }
 }

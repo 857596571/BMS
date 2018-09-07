@@ -29,7 +29,7 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 自定义SQL（SQL标识，SQL内容）
      */
-    protected Map<String, String> sqlMap;
+    protected String sqlMap;
 
     public BaseEntity() {
 
@@ -92,14 +92,11 @@ public abstract class BaseEntity implements Serializable {
 
     @JsonIgnore
     @XmlTransient
-    public Map<String, String> getSqlMap() {
-        if (sqlMap == null){
-            sqlMap = Maps.newHashMap();
-        }
+    public String getSqlMap() {
         return sqlMap;
     }
 
-    public void setSqlMap(Map<String, String> sqlMap) {
+    public void setSqlMap(String sqlMap) {
         this.sqlMap = sqlMap;
     }
 
