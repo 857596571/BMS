@@ -60,6 +60,10 @@ public class AuthUser extends AbstractAuthUser {
      */
     private String mobile;
     /**
+     * 类型
+     */
+    private String type;
+    /**
      * 权限
      */
     private Collection<SimpleGrantedAuthority> authorities;
@@ -207,6 +211,14 @@ public class AuthUser extends AbstractAuthUser {
 
     public void setOrgs(List<SysOrg> orgs) {
         this.orgs = orgs;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean isAdmin() {

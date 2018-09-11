@@ -35,6 +35,7 @@ public final class AuthUserFactory {
         authUser.setPhone(user.getPhone());
         authUser.setMobile(user.getMobile());
         authUser.setPassword(user.getPassword());
+        authUser.setType(user.getType());
         authUser.setState(user.getState());
         authUser.setMenus(user.getMenus());
         authUser.setOrgs(user.getOrgs());

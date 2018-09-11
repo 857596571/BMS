@@ -44,7 +44,7 @@ public class DataFilterUtils {
                         //所在机构及以下
                         else if ("SCOPE_ORG_ALL".equals(r.getDataScope())){
                             String sql = "select o.id from sys_org t join sys_org o on o.left_num between t.left_num and t.right_num and o.state = 'ON' and o.del_flag = '0' where t.id = "+ user.getOrgId() +" and t.state = 'ON' and t.del_flag = '0'";
-                            sqlString.append(" OR " + oa + ".id in (" + sql +")'");
+                            sqlString.append(" OR " + oa + ".id in (" + sql +")");
                         }
                         //所在机构
                         else if ("SCOPE_ORG".equals(r.getDataScope())){
