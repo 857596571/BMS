@@ -57,7 +57,7 @@
     </update>
 
     <!-- 新增机构 -->
-    <insert id="insert" parameterType="com.modules.system.entity.SysOrg">
+    <insert id="insert" parameterType="com.modules.system.entity.SysOrg" keyProperty="id" useGeneratedKeys="true">
 		insert into sys_org (
 			id,
 			parent_id,
