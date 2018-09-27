@@ -7,6 +7,7 @@ import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.req.LoginUserReq;
 import com.modules.system.entity.resp.AuthenticationResp;
+import com.modules.system.security.model.AuthUser;
 import com.modules.system.security.utils.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -66,6 +67,7 @@ public class AuthenticationController extends BaseController {
         AuthenticationResp resp = new AuthenticationResp();
         // Perform the securitycd
         try {
+            AuthUser.LOGIN_SYSTEM.put(user.getLoginName(), user.getLoginSystem());
             final Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getLoginName(), user.getPassword())
             );

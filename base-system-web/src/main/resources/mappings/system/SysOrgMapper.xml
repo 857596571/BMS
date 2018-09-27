@@ -23,6 +23,10 @@
         <if test="@cn.hutool.core.util.StrUtil@isNotBlank(level)">
           and a.level = #{level}
         </if>
+
+        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(type)">
+            and a.type != #{type}
+        </if>
         ORDER BY a.sort ASC
     </select>
 

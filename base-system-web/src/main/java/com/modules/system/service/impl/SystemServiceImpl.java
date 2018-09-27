@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.*;
 import com.modules.system.mapper.*;
+import com.modules.system.security.model.AuthUser;
 import com.modules.system.service.SystemService;
 import com.modules.system.utils.DictUtils;
 import com.modules.system.utils.MenuUtils;
@@ -64,8 +65,8 @@ public class SystemServiceImpl implements SystemService {
             throw new UsernameNotFoundException("1007");
         }
         user.setRoles(roleList);
-
-        List<SysMenu> menuList = getMenuListByUserId(userId);
+        String loginSystem = AuthUser.LOGIN_SYSTEM.get(loginName);
+        List<SysMenu> menuList = getMenuListByUserId(userId, loginSystem);
         if(CollUtil.isEmpty(menuList)) {
             return null;
         }
@@ -160,15 +161,16 @@ public class SystemServiceImpl implements SystemService {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    private List<SysMenu> getMenuListByUserId(String userId) {
+    private List<SysMenu> getMenuListByUserId(String userId, String href) {
         List<SysMenu> menuList;
+        SysMenu menu = new SysMenu();
+        menu.setHref(href);
+        menu.setState("ON");
         //超级管理员
         if (SysUser.ADMIN_USER_ID.equals(userId) || StrUtil.isEmpty(userId)) {
-            SysMenu menu = new SysMenu();
-            menu.setState("ON");
             menuList = sysMenuMapper.findList(menu);
         } else {
-            menuList = sysMenuMapper.findListByUserId(userId);
+            menuList = sysMenuMapper.findListByUserId(menu);
         }
         return menuList;
     }
@@ -295,6 +297,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteOrg(SysOrg org) {
+        org = sysOrgMapper.get(org.getId());
         sysOrgMapper.delete(org);
         //计算节点数量
         org.setTreeNodeNum(org.getRightNum() - org.getLeftNum() + 1);

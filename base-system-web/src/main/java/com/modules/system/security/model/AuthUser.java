@@ -1,5 +1,7 @@
 package com.modules.system.security.model;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.util.StrUtil;
 import com.common.security.model.AbstractAuthUser;
 import com.modules.system.entity.SysMenu;
@@ -16,6 +18,8 @@ import java.util.List;
  * Security User
  */
 public class AuthUser extends AbstractAuthUser {
+
+    public static Cache<String,String> LOGIN_SYSTEM = CacheUtil.newFIFOCache(100000);
 
 
     /**

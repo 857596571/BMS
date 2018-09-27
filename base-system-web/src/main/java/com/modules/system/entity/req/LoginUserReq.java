@@ -22,6 +22,12 @@ public class LoginUserReq implements Serializable {
     @ApiModelProperty(value="password", name="密码")
     private String password;
 
+    /**
+     * 登录子系统
+     */
+    @ApiModelProperty(value="loginSystem", name="登录子系统")
+    private String loginSystem;
+
 
     public LoginUserReq() {
     }
@@ -40,5 +46,13 @@ public class LoginUserReq implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLoginSystem() {
+        return loginSystem;
+    }
+
+    public void setLoginSystem(String loginSystem) {
+        this.loginSystem = loginSystem;
     }
 }

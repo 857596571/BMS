@@ -21,7 +21,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param userId
      * @return
      */
-    List<SysMenu> findListByUserId(String userId);
+    List<SysMenu> findListByUserId(SysMenu menu);
 
     /**
      * 查询左右值
