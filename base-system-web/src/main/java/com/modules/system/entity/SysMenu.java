@@ -13,6 +13,10 @@ public class SysMenu extends DataTreeEntity {
     /**
      * 名称
      */
+    private String        userId;
+    /**
+     * 名称
+     */
     private String        name;
     /**
      * 链接
@@ -163,5 +167,13 @@ public class SysMenu extends DataTreeEntity {
             this.children = new ArrayList<>();
         }
         this.children.add(node);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
