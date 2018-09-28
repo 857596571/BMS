@@ -67,9 +67,9 @@ public class SystemServiceImpl implements SystemService {
         user.setRoles(roleList);
         String loginSystem = AuthUser.LOGIN_SYSTEM.get(loginName);
         List<SysMenu> menuList = getMenuListByUserId(userId, loginSystem);
-        if(CollUtil.isEmpty(menuList)) {
-            return null;
-        }
+//        if(CollUtil.isEmpty(menuList)) {
+//            return null;
+//        }
         user.setMenus(MenuUtils.makeTree(menuList, true));
         return user;
     }
@@ -164,6 +164,7 @@ public class SystemServiceImpl implements SystemService {
     private List<SysMenu> getMenuListByUserId(String userId, String href) {
         List<SysMenu> menuList;
         SysMenu menu = new SysMenu();
+        menu.setUserId(userId);
         menu.setHref(href);
         menu.setState("ON");
         //超级管理员
