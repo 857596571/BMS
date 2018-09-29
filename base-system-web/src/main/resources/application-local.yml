@@ -72,7 +72,7 @@ commonYml:
     #上传配置
     upload:
       #文件上传存储路径
-      file-root-path: /WORKSPACE/files/
+      file-root-path: /Users/xiongmengui/uploads/
     #初始密码
     initialPassword: 123456
 

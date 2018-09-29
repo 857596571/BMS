@@ -22,9 +22,9 @@ public class SysGeneratorServiceTest {
 	@Autowired
 	private SysGeneratorService sysGeneratorService;
 	//zip输出路径
-	String zipPath = "/WORKSPACE/code.zip";
+	String zipPath = "/Users/xiongmenghui/workspace/code.zip";
 	//表名
-	String[] tableNames = new String[] {"quartz_task", "quartz_task_log"};
+	String[] tableNames = new String[] {"emergency_record"};
 	@Test
 	public void testGeneratorCode() throws IOException {
 		byte[] data = sysGeneratorService.generatorCode(tableNames);
@@ -39,7 +39,7 @@ public class SysGeneratorServiceTest {
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(zipPath));
 		ZipEntry entry;
 		while((entry = zip.getNextEntry()) != null) {
-			file = new File("/WORKSPACE/" + entry.getName());
+			file = new File("/Users/xiongmenghui/workspace/" + entry.getName());
 			if(!file.getParentFile().exists()){
 				file.getParentFile().mkdirs();
 			}

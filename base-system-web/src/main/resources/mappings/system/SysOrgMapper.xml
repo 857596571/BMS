@@ -18,16 +18,21 @@
 
     <!-- 查询机构信息 -->
     <select id="findList" resultType="com.modules.system.entity.SysOrg">
-        select a.* from sys_org a
-        WHERE a.del_flag = '0'
-        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(level)">
-          and a.level = #{level}
-        </if>
+        select distinct t.* from sys_org t, (
+            select distinct a.* from sys_org a
+            left join sys_user su on a.id = su.org_id
+            WHERE a.del_flag = '0'
+            <if test="@cn.hutool.core.util.StrUtil@isNotBlank(level)">
+                and a.level = #{level}
+            </if>
 
-        <if test="@cn.hutool.core.util.StrUtil@isNotBlank(type)">
-            and a.type not in (${type})
-        </if>
-        ORDER BY a.sort ASC
+            <if test="@cn.hutool.core.util.StrUtil@isNotBlank(type)">
+                and a.type not in (${type})
+            </if>
+            ${sqlMap}
+            ORDER BY a.sort ASC
+        ) o1 where t.del_flag = '0' and o1.left_num BETWEEN t.left_num
+        AND t.right_num
     </select>
 
     <!-- 查询左右值 -->

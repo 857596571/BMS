@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: base-quartz-web
-  profiles:
-    active: local
-
-mybatis:
-  config-location: classpath:mybatis-config.xml
-  mapper-locations: classpath:mappings/**/*.xml
