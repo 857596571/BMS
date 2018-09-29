@@ -5,6 +5,7 @@ import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysOrg;
 import com.modules.system.service.SystemService;
+import com.modules.system.utils.DataFilterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class SysOrgController extends BaseController {
      */
 	@GetMapping(value = "/list")
 	public ResponseMessage<List<SysOrg>> list(SysOrg org){
+		DataFilterUtils.dataScopeFilter(org, "a", "su");
         return Result.success(systemService.findOrgList(org));
 	}
 
