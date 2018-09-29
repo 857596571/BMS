@@ -221,7 +221,7 @@ public abstract class AbstractTokenUtil {
     }
 
     protected String getIdKey(HttpServletRequest request) {
-        return Base64.encode(IPUtils.getIpAddr(request) + request.getHeader("User-Agent"));
+        return Base64.encode(IPUtils.getIpAddr(request));
     }
 
     public String getSecret() {
