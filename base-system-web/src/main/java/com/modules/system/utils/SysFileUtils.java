@@ -3,6 +3,7 @@ package com.modules.system.utils;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
@@ -42,7 +43,7 @@ public class SysFileUtils {
         //获取上传文件名称
         String fileName = file.getOriginalFilename();
         //获取上传文件名称
-        String fileNameNew = bizType + "-" + System.currentTimeMillis()
+        String fileNameNew = bizType + "-" + RandomUtil.randomNumbers(10) + "_" + System.currentTimeMillis()
                 + "." + StrUtil.subAfter(fileName, ".", true);
         //设置上传文件夹，采用 /根/业务类型/年月日/文件(将上传文件名称重命名为业务类型-时间戳格式文件名)
         String uploadFileRootPath = File.separator + bizType + File.separator + nowDate + File.separator;
