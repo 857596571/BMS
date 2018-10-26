@@ -1,4 +1,4 @@
-package com.modules;
+package com;
 
 import com.common.web.util.SpringContextHolder;
 import com.common.web.util.YmlConfig;
@@ -10,18 +10,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * The type Web admin application.
  *
- * @author dcp
+ * @author xmh
  */
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 @EnableTransactionManagement //启用事务
-@ComponentScan(basePackages = "com.modules")
 @Import(value = {SpringContextHolder.class, YmlConfig.class})
 public class WebApplication extends SpringBootServletInitializer {
 
@@ -29,14 +27,6 @@ public class WebApplication extends SpringBootServletInitializer {
      * Logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebApplication.class);
-
-//    @Override
-//    public void onStartup(ServletContext servletContext) throws ServletException {
-//        servletContext.setInitParameter("spring.profiles.active", "dev");
-//        servletContext.setInitParameter("spring.profiles.default", "dev");
-//        servletContext.setInitParameter("spring.liveBeansView.mbeanDomain", "dev");
-//        super.onStartup(servletContext);
-//    }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
