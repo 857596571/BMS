@@ -1,6 +1,6 @@
 package com.modules.system.service;
 
-import com.common.service.BaseService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.modules.system.entity.SysAttachmentInfo;
 
 /**
@@ -10,6 +10,6 @@ import com.modules.system.entity.SysAttachmentInfo;
  * @email 
  * @date 2018-07-29 10:41:23
  */
-public interface SysAttachmentInfoService extends BaseService<SysAttachmentInfo> {
+public interface SysAttachmentInfoService extends IService<SysAttachmentInfo> {
 
 }

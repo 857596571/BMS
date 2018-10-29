@@ -1,8 +1,15 @@
 package com.common.api;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 数据TreeEntity类
  */
+@Getter
+@Setter
+@ToString
 public abstract class DataTreeEntity extends DataEntity {
 
     /**
@@ -22,35 +29,4 @@ public abstract class DataTreeEntity extends DataEntity {
      */
     private Integer treeNodeNum;
 
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public Integer getLeftNum() {
-        return leftNum;
-    }
-
-    public void setLeftNum(Integer leftNum) {
-        this.leftNum = leftNum;
-    }
-
-    public Integer getRightNum() {
-        return rightNum;
-    }
-
-    public void setRightNum(Integer rightNum) {
-        this.rightNum = rightNum;
-    }
-
-    public Integer getTreeNodeNum() {
-        return treeNodeNum;
-    }
-
-    public void setTreeNodeNum(Integer treeNodeNum) {
-        this.treeNodeNum = treeNodeNum;
-    }
 }

@@ -17,11 +17,13 @@
             <artifactId>base-common-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <!--<dependency>-->
-            <!--<groucom.cng/groupId>-->
-            <!--<artifaccngform-common-redis</artifactId>-->
-            <!--<version>${project.version}</version>-->
+        <!--<groucom.cng/groupId>-->
+        <!--<artifaccngform-common-redis</artifactId>-->
+        <!--<version>${project.version}</version>-->
         <!--</dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -33,20 +35,14 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- Sql Server Driver -->
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>sqljdbc4</artifactId>
-            <version>4.0</version>
-        </dependency>
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
         <dependency>

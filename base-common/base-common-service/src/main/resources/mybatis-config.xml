@@ -5,7 +5,10 @@
 
     <!-- 全局参数 -->
     <settings>
+
+        <!--指定当结果集中值为 null 的时候是否调用映射对象的 Setter（Map 对象时为 put）方法，通常运用于有 Map.keySet() 依赖或 null 值初始化的情况-->
         <setting name="callSettersOnNulls" value="true"/>
+
         <!-- 使全局的映射器启用或禁用缓存。 -->
         <setting name="cacheEnabled" value="true"/>
 

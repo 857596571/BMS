@@ -2,6 +2,7 @@ package com.modules.system.controller;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.api.Paging;
 import com.common.security.util.AuthUserUtil;
 import com.common.utils.exception.BusinessException;
@@ -9,7 +10,6 @@ import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.common.web.util.YmlConfig;
-import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.SysUser;
 import com.modules.system.security.model.AuthUser;
 import com.modules.system.service.SystemService;
@@ -102,7 +102,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<PageInfo<SysUser>> list(SysUser user, Paging page) {
+    public ResponseMessage<Page<SysUser>> list(SysUser user, Paging page) {
         return Result.success(systemService.findUserPage(page, user));
     }
 

@@ -12,11 +12,11 @@ import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
 import SettingDrawer from '@/components/SettingDrawer';
-import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
+import config from '@/config';
 
 const { Content } = Layout;
 
@@ -91,14 +91,11 @@ class BasicLayout extends React.PureComponent {
   state = {
     rendering: true,
     isMobile: false,
-    menuData: this.getMenuData(),
+    menuData: this.props.menuData,
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'user/fetchCurrent',
-    });
     dispatch({
       type: 'setting/getSetting',
     });
@@ -141,13 +138,6 @@ class BasicLayout extends React.PureComponent {
     };
   }
 
-  getMenuData() {
-    const {
-      route: { routes },
-    } = this.props;
-    return memoizeOneFormatter(routes);
-  }
-
   /**
    * 获取面包屑映射
    * @param {Object} menuData 菜单配置
@@ -163,7 +153,7 @@ class BasicLayout extends React.PureComponent {
         routerMap[menuItem.path] = menuItem;
       });
     };
-    mergeMenuAndRouter(this.getMenuData());
+    mergeMenuAndRouter(this.props.menuData);
     return routerMap;
   }
 
@@ -238,7 +228,7 @@ class BasicLayout extends React.PureComponent {
       <Layout>
         {isTop && !isMobile ? null : (
           <SiderMenu
-            logo={logo}
+            logo={config.logoSrc}
             Authorized={Authorized}
             theme={navTheme}
             onCollapse={this.handleMenuCollapse}
@@ -256,7 +246,7 @@ class BasicLayout extends React.PureComponent {
           <Header
             menuData={menuData}
             handleMenuCollapse={this.handleMenuCollapse}
-            logo={logo}
+            logo={config.logoSrc}
             isMobile={isMobile}
             {...this.props}
           />

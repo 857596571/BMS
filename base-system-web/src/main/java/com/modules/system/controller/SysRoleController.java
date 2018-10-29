@@ -1,10 +1,8 @@
 package com.modules.system.controller;
 
-import com.common.api.Paging;
 import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
-import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.SysRole;
 import com.modules.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;

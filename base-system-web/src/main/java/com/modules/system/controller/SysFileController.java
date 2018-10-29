@@ -1,29 +1,23 @@
 package com.modules.system.controller;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import com.common.utils.http.ResponseMessage;
-import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.common.web.util.YmlConfig;
-import com.modules.system.entity.SysDict;
 import com.modules.system.entity.resp.AttachmentInfoResp;
-import com.modules.system.service.SystemService;
 import com.modules.system.utils.SysFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 文件上传下载管理

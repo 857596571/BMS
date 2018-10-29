@@ -1,12 +1,17 @@
 package com.common.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
 /**
  * 数据Entity类
  */
+@Getter
+@Setter
+@ToString
 public abstract class DataEntity extends BaseEntity {
 
     /**
@@ -102,60 +107,4 @@ public abstract class DataEntity extends BaseEntity {
         this.updateUserId = userId;
     }
 
-    public Date getCreateDate() {
-        return createDate == null ? null : (Date) createDate.clone();
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate == null ? null : (Date) createDate.clone();
-    }
-
-    public Date getUpdateDate() {
-        return updateDate == null ? null : (Date) updateDate.clone();
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate == null ? null : (Date) updateDate.clone();
-    }
-
-    @JsonIgnore
-    public String getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public String getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public String getUpdateUserId() {
-        return updateUserId;
-    }
-
-    public void setUpdateUserId(String updateUserId) {
-        this.updateUserId = updateUserId;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public String getSearchKeys() {
-        return searchKeys;
-    }
-
-    public void setSearchKeys(String searchKeys) {
-        this.searchKeys = searchKeys;
-    }
 }

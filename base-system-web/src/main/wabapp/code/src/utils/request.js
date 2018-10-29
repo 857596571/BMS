@@ -1,8 +1,9 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
+import { message } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
+import config from '@/config';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -20,6 +21,7 @@ const codeMessage = {
   502: '网关错误。',
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
+  TypeError: '网络错误，请检查接口网络是否正常。',
 };
 
 const checkStatus = response => {
@@ -27,10 +29,14 @@ const checkStatus = response => {
     return response;
   }
   const errortext = codeMessage[response.status] || response.statusText;
-  notification.error({
-    message: `请求错误 ${response.status}: ${response.url}`,
-    description: errortext,
-  });
+  if (response.status !== 400 && response.status !== 401 && response.status !== 500) {
+    message.destroy();
+    message.error(`请求错误 ${response.status}: ${errortext}`);
+    console.error({
+      message: `请求错误 ${response.status}: ${response.url}`,
+      description: errortext,
+    });
+  }
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -60,26 +66,28 @@ const cachedSave = (response, hashcode) => {
  * Requests a URL, returning a promise.
  *
  * @param  {string} url       The URL we want to request
- * @param  {object} [option] The options we want to pass to "fetch"
+ * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(url, option) {
-  const options = {
+export default function request(
+  urlPrefix,
+  options = {
     expirys: isAntdPro(),
-    ...option,
-  };
+  }
+) {
   /**
    * Produce fingerprints based on url and parameters
    * Maybe url has the same parameters
    */
-  const fingerprint = url + (options.body ? JSON.stringify(options.body) : '');
+  const fingerprint = urlPrefix + (options.body ? JSON.stringify(options.body) : '');
   const hashcode = hash
     .sha256()
     .update(fingerprint)
     .digest('hex');
 
   const defaultOptions = {
-    credentials: 'include',
+    // credentials: 'include',
+    mode: 'cors',
   };
   const newOptions = { ...defaultOptions, ...options };
   if (
@@ -103,7 +111,23 @@ export default function request(url, option) {
     }
   }
 
-  const expirys = options.expirys && 60;
+  let url = urlPrefix;
+  if (url) {
+    url = config.baseURL + url;
+  }
+
+  const authorization = localStorage.getItem('Authorization');
+  if (authorization) {
+    const tokenObj = JSON.parse(authorization);
+    if (!newOptions.headers || !newOptions.headers.Authorization) {
+      newOptions.headers = {
+        Authorization: `${tokenObj.token_type} ${tokenObj.access_token}`,
+        ...newOptions.headers,
+      };
+    }
+  }
+
+  const expirys = options.expirys || 60;
   // options.expirys !== false, return the cache,
   if (options.expirys !== false) {
     const cached = sessionStorage.getItem(hashcode);
@@ -118,6 +142,7 @@ export default function request(url, option) {
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
   }
+
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => cachedSave(response, hashcode))
@@ -131,25 +156,27 @@ export default function request(url, option) {
     })
     .catch(e => {
       const status = e.name;
+      if (status === 'TypeError') {
+        message.destroy();
+        message.error(codeMessage[status]);
+        // if(store.location.pathname !== '/sys/login')
+        router.push('/sys/login');
+      }
       if (status === 401) {
         // @HACK
         /* eslint-disable no-underscore-dangle */
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        });
-        return;
+        router.push('/sys/login');
       }
       // environment should not be used
       if (status === 403) {
         router.push('/exception/403');
-        return;
       }
       if (status <= 504 && status >= 500) {
         router.push('/exception/500');
-        return;
       }
       if (status >= 404 && status < 422) {
         router.push('/exception/404');
       }
+      return { ok: false, message: codeMessage[status] };
     });
 }

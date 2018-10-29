@@ -9,11 +9,14 @@ import TopNavHeader from '@/components/TopNavHeader';
 import styles from './Header.less';
 import Authorized from '@/utils/Authorized';
 
+import UserResetPassword from '../pages/System/UserResetPassword';
+
 const { Header } = Layout;
 
 class HeaderView extends PureComponent {
   state = {
     visible: true,
+    userPasswordEditVisible: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -56,22 +59,14 @@ class HeaderView extends PureComponent {
   };
 
   handleMenuClick = ({ key }) => {
-    const { dispatch } = this.props;
-    if (key === 'userCenter') {
-      router.push('/account/center');
-      return;
-    }
-    if (key === 'triggerError') {
-      router.push('/exception/trigger');
-      return;
-    }
-    if (key === 'userinfo') {
-      router.push('/account/settings/base');
-      return;
+    if (key === 'userPasswordEdit') {
+      this.setState({
+        userPasswordEditVisible: true,
+      });
     }
     if (key === 'logout') {
-      dispatch({
-        type: 'login/logout',
+      this.props.dispatch({
+        type: 'sysLogin/logout',
       });
     }
   };
@@ -116,12 +111,40 @@ class HeaderView extends PureComponent {
     }
   };
 
+  handleModalUserPasswordVisible = () => {
+    this.setState({
+      userPasswordEditVisible: false,
+    });
+  };
+
+  handleResetPassword = fields => {
+    this.props.dispatch({
+      type: 'sysUser/resetPassword',
+      payload: {
+        ...fields,
+        id: this.props.currentUser.id,
+      },
+      callback: () => {
+        this.handleModalUserPasswordVisible();
+        this.props.dispatch({
+          type: 'sysLogin/logout',
+        });
+      },
+    });
+  };
+
   render() {
     const { isMobile, handleMenuCollapse, setting } = this.props;
     const { navTheme, layout, fixedHeader } = setting;
     const { visible } = this.state;
     const isTop = layout === 'topmenu';
     const width = this.getHeadWidth();
+    const userResetPasswordProps = {
+      dispatch: this.props.dispatch,
+      visible: this.state.userPasswordEditVisible,
+      handleModalVisible: this.handleModalUserPasswordVisible,
+      handleResetPassword: this.handleResetPassword,
+    };
     const HeaderDom = visible ? (
       <Header style={{ padding: 0, width }} className={fixedHeader ? styles.fixedHeader : ''}>
         {isTop && !isMobile ? (
@@ -144,6 +167,7 @@ class HeaderView extends PureComponent {
             {...this.props}
           />
         )}
+        <UserResetPassword {...userResetPasswordProps} />
       </Header>
     ) : null;
     return (
@@ -154,8 +178,8 @@ class HeaderView extends PureComponent {
   }
 }
 
-export default connect(({ user, global, setting, loading }) => ({
-  currentUser: user.currentUser,
+export default connect(({ sysUser, global, setting, loading }) => ({
+  currentUser: sysUser.currentUser,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,

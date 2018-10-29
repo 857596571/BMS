@@ -1,8 +1,7 @@
 package com.modules.system.service;
 
 
-import com.common.api.Paging;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.modules.system.entity.*;
 
 import java.util.Date;
@@ -219,7 +218,7 @@ public interface SystemService {
      * @param user 用户
      * @return 分页数据 page info
      */
-    PageInfo<SysUser> findUserPage(Paging page, SysUser user);
+    Page<SysUser> findUserPage(Page page, SysUser user);
 
     /**
      * 获取指定角色的用户列表

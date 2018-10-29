@@ -3,11 +3,12 @@ module.exports = {
   name: '基础框架',
   menuName: '基础框架',
   copyrightText: `${new Date().getFullYear()} 基础框架`,
-  logoSrc: require('../assets/logo.svg'),
+  logoSrc: require('./assets/logo.svg'),
   // baseURL: 'http://xmh.s1.natapp.cc/wisdom',
   // baseURL: 'http://127.0.0.1:8080/wisdom',
-  // baseURL: 'http://47.95.252.122:8080/wisdom',
-  baseURL: './',
+  baseURL: 'http://47.95.252.122:8080/wisdom',
+  // baseURL: './',
+  systemIndex: '/home',
   //umi框架配置
   umiConfig: {
     history: 'hash',
@@ -25,11 +26,4 @@ module.exports = {
     pageSize: 20,
     defaultPageSize: 20,
   },
-  videoConfig: {
-    ip: '10.0.0.211',
-    port: '88',
-    userName: 'admin',
-    password: 'Sjcw2018',
-  },
-  systemIndex: '/home'
 };

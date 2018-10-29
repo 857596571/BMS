@@ -44,7 +44,7 @@ export default {
           }
         }
         const systemIndex = config.systemIndex;
-        yield put(routerRedux.replace((systemIndex || '/')));
+        yield put(routerRedux.replace(systemIndex || '/'));
       } else {
         yield put({
           type: 'changeLoginStatus',
@@ -68,14 +68,7 @@ export default {
           },
         });
         reloadAuthorized();
-        yield put(
-          routerRedux.push({
-            pathname: '/',
-            search: stringify({
-              redirect: window.location.href,
-            }),
-          })
-        );
+        yield put(routerRedux.push('/sys/login'));
       }
     },
   },

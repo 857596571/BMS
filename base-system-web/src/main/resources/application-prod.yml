@@ -43,24 +43,12 @@ spring:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
       # 合并多个DruidDataSource的监控数据
       #spring.datasource.useGlobalDataSourceStat=true
-  redis:
-    database: 0
-    host: 127.0.0.1
-    #password: # Login password of the redis service.
-    port: 6379
-    timeout: 0
-    pool:
-      max-active: 8 #最大连接数
-      max-idle: 8 #最大空闲连接数
-      max-wait: -1 #最大等待时间
-      min-idle: 0 #初始化连接数
-  http:
-    multipart:
-      enabled: true # Enable support of multi-part uploads.
-      file-size-threshold: 4KB # Threshold after which files will be written to disk. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
-      location: /tmp # Intermediate location of uploaded files.
-      max-file-size: 5Mb # Max file size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
-      max-request-size: 50Mb # Max request size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
+#mybatis配置
+mybatis-plus:
+  global-config:
+    #是否开启xml自动刷新，生产环境请关闭
+    refresh: false
+
 #自定义属性配置
 commonYml:
   yml:

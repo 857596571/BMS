@@ -9,7 +9,7 @@ export default config => {
   const outFile = path.join(__dirname, '../.temp/ant-design-pro.less');
   const stylesDir = path.join(__dirname, '../src/');
 
-  config.resolve.alias.set('@', path.resolve(__dirname, './src'));
+  config.resolve.alias.set('@', path.resolve(__dirname, '../src'));
   config.resolve.alias.set('umi', path.resolve(__dirname, 'umi'));
 
   config.plugin('merge-less').use(MergeLessPlugin, [
