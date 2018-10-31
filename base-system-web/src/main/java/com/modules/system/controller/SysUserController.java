@@ -100,7 +100,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public Result<Page<SysUser>> list(SysUser user, Paging page) {
+    public Result<Page<SysUser>> list(Page page, SysUser user) {
         return Result.success(systemService.findUserPage(page, user));
     }
 

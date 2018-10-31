@@ -1,6 +1,6 @@
 package com.modules.system.mapper;
 
-import com.common.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysLog;
 import org.apache.ibatis.annotations.Mapper;
 /**

@@ -5,9 +5,6 @@ import com.common.web.mapper.JsonMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.server.ConfigurableWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -102,27 +99,4 @@ public class WebConfig implements WebMvcConfigurer {
         return processor;
     }
 
-    /**
-     * Container customizer embedded servlet container customizer.
-     *
-     * @return the embedded servlet container customizer
-     */
-    @Bean
-    @ConditionalOnProperty(prefix = "server.tomcat.accesslog", name = "debug", havingValue = "true")
-    public WebServerFactoryCustomizer<ConfigurableWebServerFactory> containerCustomizer() {
-//        return new WebServerFactoryCustomizer("logback-access.xml\") {
-//            @Override
-//            public void customize(WebServerFactory factory) {
-//
-//            }
-//        };
-
-        return new WebServerFactoryCustomizer<ConfigurableWebServerFactory>() {
-            @Override
-            public void customize(ConfigurableWebServerFactory factory) {
-                factory.set
-            }
-        };
-
-    }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 public class TxAdviceInterceptor {
 
-    private static final int TX_METHOD_TIMEOUT = 5;
+    private static final int TX_METHOD_TIMEOUT = 30;
     private static final String AOP_POINTCUT_EXPRESSION = "execution (* com.modules..service.*.*(..))";
 
     @Autowired

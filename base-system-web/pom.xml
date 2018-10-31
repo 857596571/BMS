@@ -68,20 +68,20 @@
             <artifactId>base-common-security</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.base</groupId>
-            <artifactId>base-quartz-web</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <classifier>api</classifier>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.base</groupId>-->
+            <!--<artifactId>base-quartz-web</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<type>jar</type>-->
+            <!--<classifier>api</classifier>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.base</groupId>
-            <artifactId>base-quartz-web</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.base</groupId>-->
+            <!--<artifactId>base-quartz-web</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<type>war</type>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

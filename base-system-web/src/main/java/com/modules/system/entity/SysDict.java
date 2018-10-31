@@ -95,13 +95,6 @@ public class SysDict extends DataTreeEntity {
         this.type = type;
     }
 
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
 
     public String getDescription() {
         return description;

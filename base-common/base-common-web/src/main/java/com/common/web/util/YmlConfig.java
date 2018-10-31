@@ -11,7 +11,7 @@ import java.util.Map;
  * 读取
  */
 @Component
-@ConfigurationProperties(prefix = "commonYml")
+@ConfigurationProperties(prefix = "system")
 public class YmlConfig<T> {
 
     /**

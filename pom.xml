@@ -10,8 +10,8 @@
     
     <modules>
         <module>base-common</module>
-        <module>base-code-gen</module>
-        <module>base-quartz-web</module>
+        <!--<module>base-code-gen</module>-->
+        <!--<module>base-quartz-web</module>-->
         <module>base-system-web</module>
     </modules>
     <packaging>pom</packaging>
@@ -67,7 +67,7 @@
         <ehcache-core.version>2.10.6</ehcache-core.version>
         <mybatis-starter.version>3.0.5</mybatis-starter.version>
         <mysql.version>8.0.11</mysql.version>
-        <druid.version>1.1.12</druid.version>
+        <druid.version>1.1.10</druid.version>
         <aliyun.oss.version>2.2.3</aliyun.oss.version>
         <quartz.version>2.3.0</quartz.version>
         <pagehelper.version>4.1.6</pagehelper.version>
@@ -238,7 +238,7 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
+                <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
             <dependency>

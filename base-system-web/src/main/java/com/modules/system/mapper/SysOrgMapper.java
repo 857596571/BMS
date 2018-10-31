@@ -1,10 +1,9 @@
 package com.modules.system.mapper;
 
-import com.common.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysOrg;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
 import java.util.Map;
 
 /**

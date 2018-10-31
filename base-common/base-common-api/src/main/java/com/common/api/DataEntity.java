@@ -1,5 +1,6 @@
 package com.common.api;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
 
@@ -106,6 +107,10 @@ public abstract class DataEntity extends QueryWrapper {
     public void preUpdate(String userId) {
         this.updateDate = new Date();
         this.updateBy = userId;
+    }
+
+    public boolean getIsNewRecord() {
+        return StrUtil.isBlank(id);
     }
 
 }

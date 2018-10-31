@@ -2,9 +2,8 @@ package com.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.api.DataEntity;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.*;
 import com.modules.system.mapper.*;
 import com.modules.system.security.model.AuthUser;
@@ -16,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
@@ -76,7 +78,8 @@ public class SystemServiceImpl implements SystemService {
     public List<SysDict> getListByParentCode(String code) {
         Map<String, Object> query = new HashMap<>(1);
         query.put("code", code);
-        return sysDictMapper.findList(query);
+//        return sysDictMapper.findList(query);
+    return null;
     }
 
     public Map<String, SysDict> getMapByParentCode(String parentCode) {
@@ -90,7 +93,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<SysDict> findDictList(SysDict sysDict) {
-        List<SysDict> list = sysDictMapper.findList(sysDict);
+        List<SysDict> list = null; //sysDictMapper.findList(sysDict);
         if(CollUtil.isNotEmpty(list)) {
             Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "LEVEL"});
             for (SysDict dict : list) {
@@ -127,7 +130,7 @@ public class SystemServiceImpl implements SystemService {
             }
             sysDictMapper.insert(sysDict);
         } else {
-            sysDictMapper.update(sysDict);
+//            sysDictMapper.update(sysDict);
         }
         return sysDict;
     }
@@ -167,7 +170,7 @@ public class SystemServiceImpl implements SystemService {
         menu.setState("ON");
         //超级管理员
         if (SysUser.ADMIN_USER_ID.equals(userId) || StrUtil.isEmpty(userId)) {
-            menuList = sysMenuMapper.findList(menu);
+            menuList = null;//sysMenuMapper.findList(menu);
         } else {
             menuList = sysMenuMapper.findListByUserId(menu);
         }
@@ -176,7 +179,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<SysMenu> findMenuList(SysMenu sysMenu) {
-        List<SysMenu> list = sysMenuMapper.findList(sysMenu);
+        List<SysMenu> list =  null;//sysMenuMapper.findList(sysMenu);
         //按父子顺序排列菜单列表
         if(CollUtil.isNotEmpty(list)) {
             Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "MENU_LEVEL"});
@@ -209,7 +212,7 @@ public class SystemServiceImpl implements SystemService {
             }
             sysMenuMapper.insert(menu);
         } else {
-            sysMenuMapper.update(menu);
+//            sysMenuMapper.update(menu);
         }
         return menu;
     }
@@ -238,7 +241,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<SysOrg> findOrgList(SysOrg org) {
-        List<SysOrg> list = sysOrgMapper.findList(org);
+        List<SysOrg> list =  null;//sysOrgMapper.findList(org);
         if(CollUtil.isNotEmpty(list)) {
             Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"ORG_TYPE", "ORG_LEVEL"});
             for (SysOrg sysOrg : list) {
@@ -275,7 +278,7 @@ public class SystemServiceImpl implements SystemService {
             }
             sysOrgMapper.insert(org);
         } else {
-            sysOrgMapper.update(org);
+//            sysOrgMapper.update(org);
         }
         return org;
     }
@@ -296,7 +299,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteOrg(SysOrg org) {
-        org = sysOrgMapper.get(org.getId());
+//        org = sysOrgMapper.get(org.getId());
         sysOrgMapper.delete(org);
         //计算节点数量
         org.setTreeNodeNum(org.getRightNum() - org.getLeftNum() + 1);
@@ -307,7 +310,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<SysRole> findRoleList(SysRole role) {
-        List<SysRole> list = sysRoleMapper.findList(role);
+        List<SysRole> list =  null;//sysRoleMapper.findList(role);
         if(CollUtil.isNotEmpty(list)) {
             Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "LEVEL", "DATA_SCOPE"});
             for (SysRole sysRole : list) {
@@ -333,7 +336,7 @@ public class SystemServiceImpl implements SystemService {
         } else {
             // 更新角色数据
             role.preUpdate();
-            sysRoleMapper.update(role);
+//            sysRoleMapper.update(role);
         }
         sysRoleMapper.deleteRoleOrg(role);
         if(StrUtil.equals(role.getDataScope(), "SCOPE_DETAIL")) {
@@ -383,26 +386,26 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public SysUser getUserById(String id) {
-        return sysUserMapper.get(id);
+        return null;//sysUserMapper.get(id);
     }
 
     @Override
-    public PageInfo<SysUser> findUserPage(Paging page, SysUser user) {
-        // 执行分页查询
-        PageHelper.startPage(page.getPageNum(), page.getPageSize(), page.getOrderBy());
-        List<SysUser> list = sysUserMapper.findList(user);
-        if(CollUtil.isNotEmpty(list)) {
-            Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "USER_TYPE"});
-            for (SysUser sysUser : list) {
-                if(dictMap.get(sysUser.getType()) != null) {
-                    sysUser.setTypeDesc(dictMap.get(sysUser.getType()).getLabel());
-                }
-                if(dictMap.get(sysUser.getState()) != null) {
-                    sysUser.setStateDesc(dictMap.get(sysUser.getState()).getLabel());
-                }
-            }
-        }
-        return new PageInfo<>(list);
+    public Page<SysUser> findUserPage(Page page, SysUser user) {
+//        // 执行分页查询
+//        PageHelper.startPage(page.getPageNum(), page.getPageSize(), page.getOrderBy());
+//        List<SysUser> list = sysUserMapper.findList(user);
+//        if(CollUtil.isNotEmpty(list)) {
+//            Map<String, SysDict> dictMap = sysDictMapper.findMapByParentCodes(new String[]{"STATE", "USER_TYPE"});
+//            for (SysUser sysUser : list) {
+//                if(dictMap.get(sysUser.getType()) != null) {
+//                    sysUser.setTypeDesc(dictMap.get(sysUser.getType()).getLabel());
+//                }
+//                if(dictMap.get(sysUser.getState()) != null) {
+//                    sysUser.setStateDesc(dictMap.get(sysUser.getState()).getLabel());
+//                }
+//            }
+//        }
+        return  null;//new PageInfo<>(list);
     }
 
     @Override
@@ -435,7 +438,7 @@ public class SystemServiceImpl implements SystemService {
         } else {
             // 更新用户数据
             user.preUpdate();
-            sysUserMapper.update(user);
+//            sysUserMapper.update(user);
         }
         // 更新用户与角色关联
         if (user.getRoles() != null && !user.getRoles().isEmpty()) {

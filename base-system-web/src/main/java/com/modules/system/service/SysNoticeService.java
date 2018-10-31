@@ -16,7 +16,7 @@ public interface SysNoticeService extends IService<SysNotice> {
 
     List<SysNotice> queryList(Map<String, Object> map);
 
-    Page<SysNotice> findPage(Paging page, SysNotice sysNotice);
+    Page<SysNotice> findPage(Page page, SysNotice sysNotice);
 
     /**
      * 查询通知公告表列表
@@ -25,7 +25,7 @@ public interface SysNoticeService extends IService<SysNotice> {
      * @param query 查询条件
      * @return 用户 page info
      */
-    Page<SysNotice> queryPage(Paging page, Map<String, Object> query);
+    Page<SysNotice> queryPage(Page page, Map<String, Object> query);
 
     void deleteById(String id);
 

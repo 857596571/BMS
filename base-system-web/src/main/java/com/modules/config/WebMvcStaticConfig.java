@@ -4,13 +4,13 @@ import com.common.web.util.YmlConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 静态资源映射配置
  */
 @Configuration
-public class WebMvcStaticConfig extends WebMvcConfigurerAdapter {
+public class WebMvcStaticConfig implements WebMvcConfigurer {
 
     @Autowired
     private YmlConfig ymlConfig;

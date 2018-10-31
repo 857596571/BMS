@@ -2,6 +2,7 @@ package com;
 
 import com.common.web.util.SpringContextHolder;
 import com.common.web.util.YmlConfig;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 @EnableTransactionManagement //启用事务
+@MapperScan("com")
 @Import(value = {SpringContextHolder.class, YmlConfig.class})
 public class WebApplication extends SpringBootServletInitializer {
 
