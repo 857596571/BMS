@@ -3,10 +3,8 @@ package com.modules.system.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.common.api.Paging;
 import com.common.security.util.AuthUserUtil;
 import com.common.utils.exception.BusinessException;
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.common.web.util.YmlConfig;
@@ -52,7 +50,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/info")
-    public ResponseMessage getCurrentUserInfo() {
+    public Result getCurrentUserInfo() {
         return Result.success(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
@@ -63,7 +61,7 @@ public class SysUserController extends BaseController {
      * @throws BusinessException
      */
     @PostMapping(value = "/resetPassword")
-    public ResponseMessage resetPassword(@RequestBody Dict dto) {
+    public Result resetPassword(@RequestBody Dict dto) {
         String oldPassword = dto.getStr("oldPassword");
         String newPassword = dto.getStr("newPassword");
         String type = dto.getStr("type");
@@ -102,7 +100,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<Page<SysUser>> list(SysUser user, Paging page) {
+    public Result<Page<SysUser>> list(SysUser user, Paging page) {
         return Result.success(systemService.findUserPage(page, user));
     }
 
@@ -112,7 +110,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/getUsersByRoleId")
-    public ResponseMessage getUsersByRoleId(String roleId) {
+    public Result getUsersByRoleId(String roleId) {
         return Result.success(systemService.getUsersByRoleId(roleId));
 
     }
@@ -123,7 +121,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @PostMapping(value = "/save")
-    public ResponseMessage saveUser(@Valid @RequestBody SysUser user) {
+    public Result saveUser(@Valid @RequestBody SysUser user) {
         if (user.getIsNewRecord() && StrUtil.isBlank(user.getPassword())) {
             //如果为新增用户并未设置密码则生成初始密码
             user.setPassword(passwordEncoder.encode(ymlConfig.getStr("initialPassword")));
@@ -138,7 +136,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/isExists")
-    public ResponseMessage isCodeExists(SysUser user) {
+    public Result isCodeExists(SysUser user) {
         return Result.success(systemService.isUserExists(user));
     }
 
@@ -149,7 +147,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateStates")
-    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+    public Result updateStates(@RequestBody Map<String, String> param) {
         systemService.updateUserStates(param);
         return Result.success();
     }
@@ -160,7 +158,7 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping(value = "/delete/{id}")
-    public ResponseMessage delete(@PathVariable("id") String id) {
+    public Result delete(@PathVariable("id") String id) {
         systemService.deleteUserById(id);
         return Result.success();
     }

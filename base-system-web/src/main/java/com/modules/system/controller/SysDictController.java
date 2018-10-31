@@ -1,6 +1,5 @@
 package com.modules.system.controller;
 
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysDict;
@@ -27,7 +26,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @GetMapping(value = "/getListByParentCode")
-    public ResponseMessage<List<SysDict>> listByCode(String code) {
+    public Result<List<SysDict>> listByCode(String code) {
         return Result.success(systemService.getListByParentCode(code));
     }
 
@@ -38,7 +37,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<List<SysDict>> list(SysDict sysDict) {
+    public Result<List<SysDict>> list(SysDict sysDict) {
         return Result.success(systemService.findDictList(sysDict));
     }
 
@@ -49,7 +48,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @GetMapping(value = "/isCodeExists")
-    public ResponseMessage isCodeExists(SysDict sysDict) {
+    public Result isCodeExists(SysDict sysDict) {
         return Result.success(systemService.isDictCodeExists(sysDict));
     }
 
@@ -60,7 +59,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @PostMapping(value = "/save")
-    public ResponseMessage save(@RequestBody SysDict sysDict) {
+    public Result save(@RequestBody SysDict sysDict) {
         return Result.success(systemService.saveDict(sysDict));
     }
 
@@ -71,7 +70,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateSorts")
-    public ResponseMessage updateSorts(@RequestBody List<SysDict> list) {
+    public Result updateSorts(@RequestBody List<SysDict> list) {
         systemService.updateDictSorts(list);
         return Result.success();
     }
@@ -83,7 +82,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateStates")
-    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+    public Result updateStates(@RequestBody Map<String, String> param) {
         systemService.updateDictStates(param);
         return Result.success();
     }
@@ -95,7 +94,7 @@ public class SysDictController extends BaseController {
      * @return
      */
     @GetMapping(value = "/delete")
-    public ResponseMessage delete(SysDict sysDict) {
+    public Result delete(SysDict sysDict) {
         systemService.deleteDict(sysDict);
         return Result.success();
     }

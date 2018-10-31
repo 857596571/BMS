@@ -1,13 +1,14 @@
 package com.modules.system.utils;
 
 import cn.hutool.core.util.StrUtil;
-import com.common.api.BaseEntity;
+import com.common.api.DataEntity;
 import com.common.security.util.AuthUserUtil;
 import com.google.common.collect.Lists;
 import com.modules.system.entity.SysRole;
 import com.modules.system.security.model.AuthUser;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class DataFilterUtils {
      * @param userAlias sql中用户别名
      * @return 过滤sql
      */
-    public static void dataScopeFilter(BaseEntity entity, String orgAlias, String userAlias) {
+    public static void dataScopeFilter(DataEntity entity, String orgAlias, String userAlias) {
 
         AuthUser user = AuthUserUtil.getCurrentUser();
 

@@ -3,7 +3,6 @@ package com.modules.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.common.api.DataEntity;
-import com.common.api.Paging;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.*;
@@ -16,7 +15,6 @@ import com.modules.system.utils.OrgUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 

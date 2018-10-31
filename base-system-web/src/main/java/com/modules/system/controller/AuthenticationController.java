@@ -2,7 +2,6 @@ package com.modules.system.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.common.security.AuthenticationTokenFilter;
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.req.LoginUserReq;
@@ -63,7 +62,7 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @PostMapping(value = "/token")
-    public ResponseMessage createAuthenticationToken(@RequestBody LoginUserReq user, HttpServletRequest request) {
+    public Result createAuthenticationToken(@RequestBody LoginUserReq user, HttpServletRequest request) {
         AuthenticationResp resp = new AuthenticationResp();
         // Perform the securitycd
         try {
@@ -119,7 +118,7 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @GetMapping(value = "/refresh")
-    public ResponseMessage refreshAndGetAuthenticationToken(HttpServletRequest request) {
+    public Result refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(AuthenticationTokenFilter.TOKEN_HEADER);
         String token = tokenHeader.split(" ")[1];
 
@@ -148,7 +147,7 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @GetMapping(value = "/token")
-    public ResponseMessage deleteAuthenticationToken(HttpServletRequest request) {
+    public Result deleteAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader(AuthenticationTokenFilter.TOKEN_HEADER);
         if(StrUtil.isNotBlank(tokenHeader)) {
             String token = tokenHeader.split(" ")[1];

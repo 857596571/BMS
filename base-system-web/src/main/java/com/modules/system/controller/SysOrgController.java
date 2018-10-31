@@ -1,6 +1,5 @@
 package com.modules.system.controller;
 
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysOrg;
@@ -26,7 +25,7 @@ public class SysOrgController extends BaseController {
      * @return
      */
 	@GetMapping(value = "/list")
-	public ResponseMessage<List<SysOrg>> list(SysOrg org){
+	public Result<List<SysOrg>> list(SysOrg org){
 		DataFilterUtils.dataScopeFilter(org, "a", "su");
         return Result.success(systemService.findOrgList(org));
 	}
@@ -37,7 +36,7 @@ public class SysOrgController extends BaseController {
 	 * @return
 	 */
 	@GetMapping(value = "/isCodeExists")
-	public ResponseMessage<Boolean> isCodeExists(SysOrg org){
+	public Result<Boolean> isCodeExists(SysOrg org){
 		return Result.success(systemService.isOrgCodeExists(org));
 	}
 
@@ -47,7 +46,7 @@ public class SysOrgController extends BaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/save")
-	public ResponseMessage<SysOrg> save(@RequestBody SysOrg org){
+	public Result<SysOrg> save(@RequestBody SysOrg org){
 		return Result.success(systemService.saveOrg(org));
 	}
 
@@ -57,7 +56,7 @@ public class SysOrgController extends BaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/updateSorts")
-	public ResponseMessage<SysOrg> updateSorts(@RequestBody List<SysOrg> list){
+	public Result<SysOrg> updateSorts(@RequestBody List<SysOrg> list){
 		systemService.updateOrgSorts(list);
 		return Result.success();
 	}
@@ -68,7 +67,7 @@ public class SysOrgController extends BaseController {
 	 * @return
 	 */
 	@GetMapping(value = "/delete")
-	public ResponseMessage delete(SysOrg sysOrg) {
+	public Result delete(SysOrg sysOrg) {
 		systemService.deleteOrg(sysOrg);
 		return Result.success();
 	}

@@ -1,6 +1,5 @@
 package com.modules.system.service.impl;
 
-import com.common.api.Paging;
 import com.common.service.BaseServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.SysNotice;

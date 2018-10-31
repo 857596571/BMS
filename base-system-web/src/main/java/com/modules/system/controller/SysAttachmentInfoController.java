@@ -2,11 +2,8 @@ package com.modules.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.common.api.Paging;
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
-import com.github.pagehelper.PageInfo;
 import com.modules.system.entity.SysAttachmentInfo;
 import com.modules.system.service.SysAttachmentInfoService;
 import io.swagger.annotations.*;
@@ -49,9 +46,8 @@ public class SysAttachmentInfoController extends BaseController {
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "query", dataType = "int", required = true)
     })
     @GetMapping("/list")
-    public ResponseMessage<IPage<SysAttachmentInfo>> list(Page page, SysAttachmentInfo query) {
-        IPage page1 = sysAttachmentInfoService.page(page, query);
-        return Result.success(null);
+    public Result<IPage<SysAttachmentInfo>> list(Page page, SysAttachmentInfo query) {
+        return Result.success(sysAttachmentInfoService.page(page, query));
     }
 	
 	
@@ -70,7 +66,7 @@ public class SysAttachmentInfoController extends BaseController {
             @ApiImplicitParam(name = "Integer id", value = "主键", paramType = "query", dataType = "Integer"),
     })
     @GetMapping("/info/{id}")
-    public ResponseMessage<SysAttachmentInfo> info(@PathVariable("id") String id) {
+    public Result<SysAttachmentInfo> info(@PathVariable("id") String id) {
         return Result.success(sysAttachmentInfoService.getById(id));
     }
 	
@@ -86,9 +82,9 @@ public class SysAttachmentInfoController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @PostMapping("/save")
-    public ResponseMessage<SysAttachmentInfo> save(@RequestBody SysAttachmentInfo sysAttachmentInfo) {
+    public Result<SysAttachmentInfo> save(@RequestBody SysAttachmentInfo sysAttachmentInfo) {
         sysAttachmentInfoService.save(sysAttachmentInfo);
-        return	Result.success();
+        return Result.success();
     }
 	
     /**
@@ -103,7 +99,7 @@ public class SysAttachmentInfoController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @GetMapping("/delete/{id}")
-    public ResponseMessage delete(@PathVariable("id") String id) {
+    public Result delete(@PathVariable("id") String id) {
         sysAttachmentInfoService.removeById(id);
         return Result.success();
     }

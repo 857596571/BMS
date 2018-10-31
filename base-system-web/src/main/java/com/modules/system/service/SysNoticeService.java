@@ -2,7 +2,6 @@ package com.modules.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.common.api.Paging;
 import com.modules.system.entity.SysNotice;
 
 import java.util.List;

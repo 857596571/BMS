@@ -1,7 +1,7 @@
 package com.modules.system.controller;
 
 import cn.hutool.core.io.FileUtil;
-import com.common.utils.http.ResponseMessage;
+import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.common.web.util.YmlConfig;
 import com.modules.system.entity.resp.AttachmentInfoResp;
@@ -38,7 +38,7 @@ public class SysFileController extends BaseController {
      * @return
      */
     @PostMapping(value = "/upload")
-    public ResponseMessage<AttachmentInfoResp> fileUpload(HttpServletRequest request) {
+    public Result<AttachmentInfoResp> fileUpload(HttpServletRequest request) {
         //获取上传request对象
         MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
         //获取上传文件对象

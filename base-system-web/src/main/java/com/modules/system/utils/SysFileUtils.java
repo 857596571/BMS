@@ -5,18 +5,15 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
-import com.modules.system.entity.SysDict;
 import com.modules.system.entity.resp.AttachmentInfoResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
 
 /**
  * 文件工具类
@@ -34,7 +31,7 @@ public class SysFileUtils {
      * @param file 上传文件对象
      * @param bizType 业务类型
      */
-    public static ResponseMessage<AttachmentInfoResp> upload(String fileRootPath, String bizType, MultipartFile file) {
+    public static Result<AttachmentInfoResp> upload(String fileRootPath, String bizType, MultipartFile file) {
         //业务类型
         if (StrUtil.isBlank(bizType)) {
             return Result.error("业务类型为null-上传文件失败");

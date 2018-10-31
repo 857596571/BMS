@@ -1,6 +1,5 @@
 package com.modules.system.controller;
 
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysMenu;
@@ -26,7 +25,7 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<List<SysMenu>> list(SysMenu menu) {
+    public Result<List<SysMenu>> list(SysMenu menu) {
         return Result.success(systemService.findMenuList(menu));
     }
 
@@ -36,7 +35,7 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @PostMapping(value = "/save")
-    public ResponseMessage save(@Valid @RequestBody SysMenu menu) {
+    public Result save(@Valid @RequestBody SysMenu menu) {
         SysMenu res = systemService.saveMenu(menu);
         return Result.success(res);
     }
@@ -48,7 +47,7 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateStates")
-    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+    public Result updateStates(@RequestBody Map<String, String> param) {
         systemService.updateMenuStates(param);
         return Result.success();
     }
@@ -59,7 +58,7 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @GetMapping(value = "/delete")
-    public ResponseMessage delete(SysMenu sysMenu) {
+    public Result delete(SysMenu sysMenu) {
         systemService.deleteMenu(sysMenu);
         return Result.success();
     }
@@ -70,7 +69,7 @@ public class SysMenuController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateSorts")
-    public ResponseMessage updateSorts(@RequestBody List<SysMenu> list){
+    public Result updateSorts(@RequestBody List<SysMenu> list){
         systemService.updateMenuSorts(list);
         return Result.success();
     }

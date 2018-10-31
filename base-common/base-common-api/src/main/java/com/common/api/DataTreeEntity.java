@@ -1,15 +1,11 @@
 package com.common.api;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * 数据TreeEntity类
  */
-@Getter
-@Setter
-@ToString
+@Data
 public abstract class DataTreeEntity extends DataEntity {
 
     /**

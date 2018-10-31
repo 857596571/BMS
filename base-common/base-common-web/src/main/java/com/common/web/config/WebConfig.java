@@ -5,7 +5,9 @@ import com.common.web.mapper.JsonMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,7 +16,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * WEB配置类
@@ -22,7 +24,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * @author dcp
  */
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Remote ip filter remote ip filter.
@@ -107,7 +109,20 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Bean
     @ConditionalOnProperty(prefix = "server.tomcat.accesslog", name = "debug", havingValue = "true")
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return new ContainerAccessLogCustomizer("logback-access.xml");
+    public WebServerFactoryCustomizer<ConfigurableWebServerFactory> containerCustomizer() {
+//        return new WebServerFactoryCustomizer("logback-access.xml\") {
+//            @Override
+//            public void customize(WebServerFactory factory) {
+//
+//            }
+//        };
+
+        return new WebServerFactoryCustomizer<ConfigurableWebServerFactory>() {
+            @Override
+            public void customize(ConfigurableWebServerFactory factory) {
+                factory.set
+            }
+        };
+
     }
 }

@@ -1,6 +1,5 @@
 package com.modules.system.controller;
 
-import com.common.utils.http.ResponseMessage;
 import com.common.utils.http.Result;
 import com.common.web.controller.BaseController;
 import com.modules.system.entity.SysRole;
@@ -26,7 +25,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @GetMapping(value = "/list")
-    public ResponseMessage<List<SysRole>> list(SysRole role) {
+    public Result<List<SysRole>> list(SysRole role) {
         return Result.success(systemService.findRoleList(role));
     }
 
@@ -36,7 +35,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @GetMapping(value = "/isCodeExists")
-    public ResponseMessage isCodeExists(SysRole role) {
+    public Result isCodeExists(SysRole role) {
         return Result.success(systemService.isRoleCodeExists(role));
     }
 
@@ -46,7 +45,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping(value = "/save")
-    public ResponseMessage<SysRole> saveRole(@RequestBody SysRole role) {
+    public Result<SysRole> saveRole(@RequestBody SysRole role) {
         return Result.success(systemService.saveRole(role));
     }
 
@@ -56,7 +55,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping(value = "/updateStates")
-    public ResponseMessage updateStates(@RequestBody Map<String, String> param) {
+    public Result updateStates(@RequestBody Map<String, String> param) {
         systemService.updateRoleStates(param);
         return Result.success();
     }
@@ -67,7 +66,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping(value = "/saveMenuAuth")
-    public ResponseMessage<SysRole> saveMenuAuth(@RequestBody SysRole role) {
+    public Result<SysRole> saveMenuAuth(@RequestBody SysRole role) {
         return Result.success(systemService.saveRoleMenuAuth(role));
     }
 
@@ -77,7 +76,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping(value = "/assignRole")
-    public ResponseMessage assignRole(@RequestBody SysRole role) {
+    public Result assignRole(@RequestBody SysRole role) {
         systemService.assignRole(role);
         return Result.success();
     }
@@ -88,7 +87,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @GetMapping(value = "/delete/{id}")
-    public ResponseMessage delete(@PathVariable("id") String id) {
+    public Result delete(@PathVariable("id") String id) {
         systemService.deleteRoleById(id);
         return Result.success();
     }
@@ -99,7 +98,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping(value = "/deleteRoleUser")
-    public ResponseMessage deleteRoleUser(@RequestBody SysRole role) {
+    public Result deleteRoleUser(@RequestBody SysRole role) {
         systemService.deleteRoleUser(role);
         return Result.success();
     }

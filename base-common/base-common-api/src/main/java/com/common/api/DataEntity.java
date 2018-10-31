@@ -1,18 +1,15 @@
 package com.common.api;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.Data;
 
 import java.util.Date;
 
 /**
  * 数据Entity类
  */
-@Getter
-@Setter
-@ToString
-public abstract class DataEntity extends BaseEntity {
+@Data
+public abstract class DataEntity extends QueryWrapper {
 
     /**
      * 删除标记0：正常
@@ -23,6 +20,10 @@ public abstract class DataEntity extends BaseEntity {
      */
     public static final String DEL_FLAG_DELETE = "1";
 
+    /**
+     * 主键
+     */
+    private String id;
     /**
      * 搜索
      */
@@ -42,15 +43,19 @@ public abstract class DataEntity extends BaseEntity {
     /**
      * 创建者
      */
-    private String createUserId;
+    private String createBy;
     /**
      * 更新者
      */
-    private String updateUserId;
+    private String updateBy;
     /**
      * 备注
      */
     private String remarks;
+    /**
+     * 扩展sql
+     */
+    private String sqlMap;
 
     public DataEntity() {
         super();
@@ -64,7 +69,6 @@ public abstract class DataEntity extends BaseEntity {
     /**
      * 插入之前执行方法，需要手动调用
      */
-    @Override
     public void preInsert() {
         // 不限制ID为UUID，调用setIsNewRecord()使用自定义ID
 //        if (this.getIsNewRecord()) {
@@ -78,7 +82,6 @@ public abstract class DataEntity extends BaseEntity {
     /**
      * 插入之前执行方法，需要手动调用
      */
-    @Override
     public void preInsert(String userId) {
         // 不限制ID为UUID，调用setIsNewRecord()使用自定义ID
 //        if (this.getIsNewRecord()) {
@@ -87,24 +90,22 @@ public abstract class DataEntity extends BaseEntity {
         this.delFlag="0";
         this.updateDate = new Date();
         this.createDate = this.updateDate;
-        this.updateUserId = userId;
-        this.createUserId = userId;
+        this.updateBy = userId;
+        this.createBy = userId;
     }
 
     /**
      * 更新之前执行方法，需要手动调用
      */
-    @Override
     public void preUpdate() {
         this.updateDate = new Date();
     }
     /**
      * 更新之前执行方法，需要手动调用
      */
-    @Override
     public void preUpdate(String userId) {
         this.updateDate = new Date();
-        this.updateUserId = userId;
+        this.updateBy = userId;
     }
 
 }

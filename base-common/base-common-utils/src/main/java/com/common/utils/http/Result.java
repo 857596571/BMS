@@ -1,36 +1,79 @@
 package com.common.utils.http;
 
-/**
- * 返回结果类
- */
-public class Result {
+import lombok.Data;
 
-    private static final ResponseMessage RESPONSE_MESSAGE_SUCCESS = new ResponseMessage(ResponseMessageCodeEnum.SUCCESS.getCode(), "");
+/**
+ * 响应消息模版类
+ * @param <T>
+ */
+@Data
+public class Result<T> {
+
+    private long code;
+    private String msg;
+    private T data;
+
+    public Result() {
+    }
+
+    public Result(int code) {
+        this.code = code;
+    }
+
+    public Result(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public Result(int code, T data) {
+        this.code = code;
+        this.data = data;
+    }
+
+    public Result(int code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public boolean isOk() {
+        return this.code == ResultCodeEnum.SUCCESS.getCode();
+    }
 
     /**
      * 成功方法
      * @return 消息模版
      */
-    public static ResponseMessage success() {
-        return RESPONSE_MESSAGE_SUCCESS;
+    public static Result success() {
+        return new Result(ResultCodeEnum.SUCCESS.getCode());
     }
 
     /**
-     * 成功方法，带
+     * 成功方法，带参数
      * @param t 参数
      * @param <T> 类型
      * @return 消息模版
      */
-    public static <T> ResponseMessage<T> success(T t) {
-        return new ResponseMessage(ResponseMessageCodeEnum.SUCCESS.getCode(), "", t);
+    public static <T> Result<T> success(T t) {
+        return new Result(ResultCodeEnum.SUCCESS.getCode(), t);
+    }
+
+    /**
+     * 成功方法，带消息，参数
+     * @param t 参数
+     * @param <T> 类型
+     * @return 消息模版
+     */
+    public static <T> Result<T> success(String msg, T t) {
+        return new Result(ResultCodeEnum.SUCCESS.getCode(), msg, t);
     }
 
     /**
      * 错误方法
      * @return 消息模版
      */
-    public static ResponseMessage error() {
-        return error(ResponseMessageCodeEnum.ERROR.getCode(), null);
+    public static Result error() {
+        return new Result(ResultCodeEnum.ERROR.getCode());
     }
 
     /**
@@ -38,8 +81,8 @@ public class Result {
      * @param message 消息内容
      * @return 消息模版
      */
-    public static ResponseMessage error(String message) {
-        return error(ResponseMessageCodeEnum.ERROR.getCode(), message);
+    public static Result error(String message) {
+        return new Result(ResultCodeEnum.ERROR.getCode(), message);
     }
 
     /**
@@ -48,8 +91,8 @@ public class Result {
      * @param message 消息内容
      * @return 消息模版
      */
-    public static ResponseMessage error(Object code, String message) {
-        return error(code, message, null);
+    public static Result error(int code, String message) {
+        return new Result(code, message);
     }
 
     /**
@@ -60,7 +103,7 @@ public class Result {
      * @param <T> 类型
      * @return 消息模版
      */
-    public static <T> ResponseMessage<T> error(Object code, String message, T t) {
-        return new ResponseMessage(code, message, t);
+    public static <T> Result<T> error(int code, String message, T t) {
+        return new Result(code, message, t);
     }
 }
