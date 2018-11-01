@@ -1,4 +1,5 @@
 # base
+项目架构升级中。。。
 
 #### 项目介绍
 本项目基于前后端分离方案提供了中小型管理系统的基础现实，其中包括机构管理、角色管理、人员管理、菜单管理、字典管理的基础支持，使用本项目可以快速搭建基于springboot后端+ant design pro前端的项目，并且无需关心基础功能现实快速开发的目的。
@@ -10,10 +11,10 @@ spring+springboot+mybatis+react+antdesign+es6
 1. ant design：https://ant.design/docs/react/introduce-cn；
 2. ant design pro： https://pro.ant.design/docs/getting-started-cn；
 - 后端：
-1. spring4
-2. springBoot
+1. spring5
+2. springBoot 2.0
 3. springSecurity
-4. Mybatis
+4. Mybatis-plus
 5. 工具包基于hutool开源包，推荐先找需要的工具类，如无法找到再自行扩展；文档：http://hutool.mydoc.io/；
 
 #### 安装教程
@@ -47,7 +48,7 @@ spring+springboot+mybatis+react+antdesign+es6
 > 8. base-common-msg：消息队列支持-暂未实现
 4. base-system-web：系统管理
 5. base-system-ui：系统管理界面
-6. base-quartz-web：任务调度模块-暂未实现
+6. base-quartz-web：任务调度模块
 - 如果开发新模块可以在base-common总模块中选择具体的模块依赖    
 
 #### 常见问题
