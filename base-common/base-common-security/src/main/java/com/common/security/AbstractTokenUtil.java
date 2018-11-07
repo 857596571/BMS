@@ -5,9 +5,9 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.common.redis.RedisRepository;
 import com.common.utils.IPUtils;
-import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -206,7 +206,7 @@ public abstract class AbstractTokenUtil {
     private void putUserDetails(UserDetails userDetails, String idKey) {
         String key = REDIS_PREFIX_USER + userDetails.getUsername() + ":" + idKey;
 //        redisRepository.setExpire(key, new Gson().toJson(userDetails), expiration);
-        timedCache.put(key, new Gson().toJson(userDetails), expiration);
+        timedCache.put(key, JSONUtil.toJsonStr(userDetails), expiration);
     }
 
     /**

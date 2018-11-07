@@ -50,7 +50,7 @@ mybatis-plus:
     refresh: true
 
 #自定义属性配置
-commonYml:
+system:
   yml:
     #权限配置
     security:

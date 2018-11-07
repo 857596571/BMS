@@ -65,9 +65,9 @@ spring:
     #资源映射路径为/files/**，你想在url访问的请求路径
     static-path-pattern: /files/**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${commonYml.yml.upload.file-root-path}
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${system.yml.upload.file-root-path}
 #自定义属性配置
-commonYml:
+system:
   yml:
     #权限配置
     security:

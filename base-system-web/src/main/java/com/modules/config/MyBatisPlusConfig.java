@@ -49,7 +49,7 @@ public class MyBatisPlusConfig {
     }
 
     @Bean(name = "db1")
-    @ConfigurationProperties(prefix = "spring.datasource.db1" )
+    @ConfigurationProperties(prefix = "spring.datasource.druid.db1" )
     public DataSource db1() {
         return DruidDataSourceBuilder.create().build();
     }

@@ -1,6 +1,6 @@
 package com.common.web.editor;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.beans.PropertyEditorSupport;
 

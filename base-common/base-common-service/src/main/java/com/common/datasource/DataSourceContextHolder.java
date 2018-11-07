@@ -20,6 +20,10 @@ public class DataSourceContextHolder {
         return contextHolder.get();
     }
 
+    public static ThreadLocal<String> getLocal() {
+        return contextHolder;
+    }
+
     /**
      * 清除上下文数据
      */

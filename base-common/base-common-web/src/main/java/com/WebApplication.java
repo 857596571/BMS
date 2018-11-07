@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 @EnableTransactionManagement //启用事务
-@MapperScan("com")
+@MapperScan("com.modules.*.mapper")
 @Import(value = {SpringContextHolder.class, YmlConfig.class})
 public class WebApplication extends SpringBootServletInitializer {
 
