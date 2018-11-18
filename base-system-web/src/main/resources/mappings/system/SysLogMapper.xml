@@ -52,8 +52,8 @@
 			#{result}, 
 			#{permissions},
 			#{createDate},
-			#{createUserId},
-			#{updateUserId},
+			#{createBy},
+			#{updateBy},
 			#{updateDate},
 			#{delFlag}
 		)
@@ -77,8 +77,6 @@
             <if test="result != null">result = #{result},</if>
             <if test="permissions != null">permissions = #{permissions}</if>
             <if test="createDate != null">create_date = #{createDate},</if>
-            <if test="createUserId != null">create_user_id = #{createUserId},</if>
-            <if test="updateUserId != null">update_user_id = #{updateUserId},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
         </set>

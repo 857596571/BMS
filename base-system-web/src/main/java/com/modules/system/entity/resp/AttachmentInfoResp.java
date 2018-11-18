@@ -2,12 +2,14 @@ package com.modules.system.entity.resp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
 /**
  * 附件返回对象
  */
+@Data
 @ApiModel(value = "AttachmentInfoResp", description = "附件返回对象")
 public class AttachmentInfoResp implements Serializable {
 

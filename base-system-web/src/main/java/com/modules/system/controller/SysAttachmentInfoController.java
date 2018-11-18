@@ -1,5 +1,6 @@
 package com.modules.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.utils.http.Result;
@@ -47,7 +48,7 @@ public class SysAttachmentInfoController extends BaseController {
     })
     @GetMapping("/list")
     public Result<IPage<SysAttachmentInfo>> list(Page page, SysAttachmentInfo query) {
-        return Result.success(sysAttachmentInfoService.page(page, query));
+        return Result.success(sysAttachmentInfoService.page(page, new QueryWrapper(query)));
     }
 	
 	

@@ -3,7 +3,6 @@ package com.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysUser;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import java.util.Map;
  *
  * @author dcp
  */
-@Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     /**

@@ -18,7 +18,7 @@ public class DictUtils {
      * @param sourceList 原始字典列表
      * @param parentId   父级编号
      */
-    public static void sortList(List<SysDict> list, List<SysDict> sourceList, String parentId) {
+    public static void sortList(List<SysDict> list, List<SysDict> sourceList, Long parentId) {
         sourceList.stream()
                 .filter(dict -> dict.getParentId() != null && dict.getParentId().toString().equals(parentId))
                 .forEach(dict -> {
@@ -41,7 +41,7 @@ public class DictUtils {
         Map<String, SysDict> dtoMap = new LinkedHashMap<>();
         for (SysDict node : list) {
             // 原始数据对象为Node，放入dtoMap中。
-            dtoMap.put(node.getId(), node);
+            dtoMap.put(node.getId().toString(), node);
         }
 
         List<SysDict> result = new ArrayList<>();
@@ -58,7 +58,7 @@ public class DictUtils {
             }
         }
         List<SysDict> resultSort = new ArrayList<>();
-        DictUtils.sortList(resultSort, result, "1");
+        DictUtils.sortList(resultSort, result, 1L);
         return result;
     }
 }

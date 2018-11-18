@@ -1,5 +1,6 @@
 package com.modules.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.utils.http.Result;
@@ -31,7 +32,7 @@ public class SysNoticeController extends BaseController {
 	@GetMapping("value = /list")
 	@PreAuthorize("hasAuthority('sys:notice:list')")
 	public Result<IPage<SysNotice>> list(Page page, SysNotice query){
-        return Result.success(sysNoticeService.page(page, query));
+        return Result.success(sysNoticeService.page(page, new QueryWrapper(query)));
 	}
 	
 	

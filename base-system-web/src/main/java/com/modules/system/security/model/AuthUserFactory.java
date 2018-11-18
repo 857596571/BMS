@@ -27,7 +27,7 @@ public final class AuthUserFactory {
      * @return the auth user
      */
     public static AuthUser create(SysUser user) {
-        AuthUser authUser = new AuthUser(user.getId());
+        AuthUser authUser = new AuthUser();
         authUser.setOrgId(user.getOrgId());
         authUser.setLoginName(user.getLoginName());
         authUser.setName(user.getName());

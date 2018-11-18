@@ -3,6 +3,8 @@ package com.modules.system.entity;
 import com.common.api.DataEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 系统附件表
@@ -11,6 +13,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @email 
  * @date 2018-07-29 10:41:23
  */
+@Data
+@EqualsAndHashCode(callSuper=false)
 @ApiModel(value = "SysAttachmentInfo", description = "系统附件表")
 public class SysAttachmentInfo extends DataEntity {
 
@@ -38,62 +42,6 @@ public class SysAttachmentInfo extends DataEntity {
         this.bizType = bizType;
         this.fileName = fileName;
         this.filePath = filePath;
-    }
-
-    /**
-     * 设置：业务ID
-     */
-    public void setBizId(String bizId) {
-        this.bizId = bizId;
-    }
-
-    /**
-     * 获取：业务ID
-     */
-    public String getBizId() {
-        return bizId;
-    }
-
-    /**
-     * 设置：业务类型
-     */
-    public void setBizType(String bizType) {
-        this.bizType = bizType;
-    }
-
-    /**
-     * 获取：业务类型
-     */
-    public String getBizType() {
-        return bizType;
-    }
-
-    /**
-     * 设置：文件名称
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    /**
-     * 获取：文件名称
-     */
-    public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * 设置：文件路径
-     */
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    /**
-     * 获取：文件路径
-     */
-    public String getFilePath() {
-        return filePath;
     }
 
 }

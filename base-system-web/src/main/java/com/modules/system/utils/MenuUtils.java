@@ -18,7 +18,7 @@ public class MenuUtils {
      * @param sourceList 原始菜单列表
      * @param parentId   父级编号
      */
-    public static void sortList(List<SysMenu> list, List<SysMenu> sourceList, String parentId) {
+    public static void sortList(List<SysMenu> list, List<SysMenu> sourceList, Long parentId) {
         sourceList.stream()
                 .filter(menu -> menu.getParentId() != null && menu.getParentId().toString()
                         .equals(parentId)).forEach(menu -> {
@@ -42,7 +42,7 @@ public class MenuUtils {
         Map<String, SysMenu> dtoMap = new LinkedHashMap<>();
         for (SysMenu node : list) {
             // 原始数据对象为Node，放入dtoMap中。
-            String id = node.getId();
+            String id = node.getId().toString();
             if (useLevel ? (StrUtil.isNotBlank(node.getLevel()) && !node.getLevel().equals("FUNC")) : true) {
                 dtoMap.put(id, node);
             }
@@ -62,7 +62,7 @@ public class MenuUtils {
             }
         }
         List<SysMenu> resultSort = new ArrayList<>();
-        MenuUtils.sortList(resultSort, result, "1");
+        MenuUtils.sortList(resultSort, result, 1L);
         return result;
     }
 }

@@ -56,7 +56,7 @@ export default {
     APP_TYPE: process.env.APP_TYPE || '',
   },
   history: 'hash',
-  base: '/wisdom/',
+  base: '/base/',
   publicPath: './',
   // 路由配置
   routes: pageRoutes,

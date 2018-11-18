@@ -3,7 +3,6 @@ package com.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysMenu;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.Map;
 /**
  * 菜单DAO接口
  */
-@Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     /**

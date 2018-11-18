@@ -2,6 +2,7 @@ package com.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.api.DataEntity;
 import com.modules.system.entity.*;
@@ -59,7 +60,7 @@ public class SystemServiceImpl implements SystemService {
             return null;
         }
 
-        String userId = user.getId();
+        String userId = user.getId().toString();
         List<SysRole> roleList = sysRoleMapper.findListByUserId(userId);
         if(CollUtil.isEmpty(roleList)) {
             throw new UsernameNotFoundException("1007");
@@ -149,7 +150,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteDict(SysDict sysDict) {
-        sysDictMapper.delete(sysDict);
+        sysDictMapper.delete(new QueryWrapper<>(sysDict));
         //计算节点数量
         sysDict.setTreeNodeNum(sysDict.getRightNum() - sysDict.getLeftNum() + 1);
         sysDict.setDelFlag(DataEntity.DEL_FLAG_DELETE);
@@ -231,7 +232,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteMenu(SysMenu menu) {
-        sysMenuMapper.delete(menu);
+        sysMenuMapper.delete(new QueryWrapper<>(menu));
         //计算节点数量
         menu.setTreeNodeNum(menu.getRightNum() - menu.getLeftNum() + 1);
         menu.setDelFlag(DataEntity.DEL_FLAG_DELETE);
@@ -300,7 +301,7 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public void deleteOrg(SysOrg org) {
 //        org = sysOrgMapper.get(org.getId());
-        sysOrgMapper.delete(org);
+        sysOrgMapper.delete(new QueryWrapper<>(org));
         //计算节点数量
         org.setTreeNodeNum(org.getRightNum() - org.getLeftNum() + 1);
         org.setDelFlag(DataEntity.DEL_FLAG_DELETE);
@@ -362,7 +363,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteRoleById(String roleId) {
-        SysRole role = new SysRole(roleId);
+        SysRole role = new SysRole();
         sysRoleMapper.deleteById(roleId);
         sysRoleMapper.deleteRoleMenu(role);
         sysRoleMapper.deleteRoleOrg(role);
@@ -456,13 +457,13 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void deleteUserById(String userId) {
-        sysUserMapper.deleteUserRole(new SysUser(userId));
+        sysUserMapper.deleteUserRole(new SysUser());
         sysUserMapper.deleteById(userId);
     }
 
     @Override
     public void updateUserPasswordById(String userId, String newPassword, Date lastPasswordResetDate) {
-        SysUser user = new SysUser(userId);
+        SysUser user = new SysUser();
         user.setPassword(newPassword);
         user.setLastPasswordResetDate(lastPasswordResetDate);
         sysUserMapper.updatePasswordById(user);

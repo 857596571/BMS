@@ -19,7 +19,7 @@ public class OrgUtils {
      * @param sourceList 原始菜单列表
      * @param parentId   父级编号
      */
-    public static void sortList(List<SysOrg> list, List<SysOrg> sourceList, String parentId) {
+    public static void sortList(List<SysOrg> list, List<SysOrg> sourceList, Long parentId) {
         sourceList.stream()
                 .filter(org -> org.getParentId() != null && org.getParentId().toString().equals(parentId))
                 .forEach(menu -> {
@@ -42,7 +42,7 @@ public class OrgUtils {
         Map<String, SysOrg> dtoMap = new LinkedHashMap<>();
         for (SysOrg node : list) {
             // 原始数据对象为Node，放入dtoMap中。
-            dtoMap.put(node.getId(), node);
+            dtoMap.put(node.getId().toString(), node);
         }
 
         List<SysOrg> result = new ArrayList<>();
@@ -59,7 +59,7 @@ public class OrgUtils {
             }
         }
         List<SysOrg> resultSort = new ArrayList<>();
-        OrgUtils.sortList(resultSort, result, "1");
+        OrgUtils.sortList(resultSort, result, 1L);
         return result;
     }
 }

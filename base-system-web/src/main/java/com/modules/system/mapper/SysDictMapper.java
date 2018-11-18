@@ -3,14 +3,12 @@ package com.modules.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysDict;
 import org.apache.ibatis.annotations.MapKey;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Map;
 
 /**
  * 字典管理
  */
-@Mapper
 public interface SysDictMapper extends BaseMapper<SysDict> {
 
     /**

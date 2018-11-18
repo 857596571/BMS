@@ -11,12 +11,14 @@ import com.common.datasource.MultipleDataSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 
 @Configuration
+@MapperScan("com.modules.*.mapper")
 public class MyBatisPlusConfig {
 
     /*
@@ -95,10 +98,10 @@ public class MyBatisPlusConfig {
     }
 
     @Bean("sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
+    public MybatisSqlSessionFactoryBean sqlSessionFactory() throws Exception {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(multipleDataSource(db1()));
-        //sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*/*Mapper.xml"));
+        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mappings/*/*.xml"));
 
         MybatisConfiguration configuration = new MybatisConfiguration();
         //configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
@@ -109,8 +112,7 @@ public class MyBatisPlusConfig {
         sqlSessionFactory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
                 paginationInterceptor() //添加分页功能
         });
-        //sqlSessionFactory.setGlobalConfig(globalConfiguration());
-        return sqlSessionFactory.getObject();
+        return sqlSessionFactory;
     }
 
 }

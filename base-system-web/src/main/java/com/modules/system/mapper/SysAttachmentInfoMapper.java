@@ -2,7 +2,6 @@ package com.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysAttachmentInfo;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
  * @email 
  * @date 2018-07-29 10:41:23
  */
-@Mapper
 public interface SysAttachmentInfoMapper extends BaseMapper<SysAttachmentInfo> {
 
     /**

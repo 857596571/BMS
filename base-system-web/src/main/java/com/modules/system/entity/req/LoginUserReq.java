@@ -2,12 +2,14 @@ package com.modules.system.entity.req;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
 /**
  * 用户登录请求
  */
+@Data
 @ApiModel(value = "LoginUserReq", description = "用户登录请求")
 public class LoginUserReq implements Serializable {
 

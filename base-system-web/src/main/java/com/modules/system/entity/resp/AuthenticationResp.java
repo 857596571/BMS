@@ -2,12 +2,14 @@ package com.modules.system.entity.resp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
 /**
  * 鉴权返回对象
  */
+@Data
 @ApiModel(value = "AuthenticationResp", description = "鉴权返回对象")
 public class AuthenticationResp implements Serializable {
 

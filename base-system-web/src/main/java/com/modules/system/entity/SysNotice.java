@@ -1,12 +1,16 @@
 package com.modules.system.entity;
 
-import java.util.Date;
-
 import com.common.api.DataEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * 通知公告表
  */
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class SysNotice extends DataEntity {
 
     /**
@@ -41,68 +45,4 @@ public class SysNotice extends DataEntity {
      * 发布状态
      */
     private String state;
-
-    public String getNoticeTitle() {
-        return noticeTitle;
-    }
-
-    public void setNoticeTitle(String noticeTitle) {
-        this.noticeTitle = noticeTitle;
-    }
-
-    public String getNoticeType() {
-        return noticeType;
-    }
-
-    public void setNoticeType(String noticeType) {
-        this.noticeType = noticeType;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public String getInfoSources() {
-        return infoSources;
-    }
-
-    public void setInfoSources(String infoSources) {
-        this.infoSources = infoSources;
-    }
-
-    public String getSourcesUrl() {
-        return sourcesUrl;
-    }
-
-    public void setSourcesUrl(String sourcesUrl) {
-        this.sourcesUrl = sourcesUrl;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getReaderTimes() {
-        return readerTimes;
-    }
-
-    public void setReaderTimes(Integer readerTimes) {
-        this.readerTimes = readerTimes;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }

@@ -2,14 +2,12 @@ package com.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.modules.system.entity.SysOrg;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Map;
 
 /**
  * 机构管理
  */
-@Mapper
 public interface SysOrgMapper extends BaseMapper<SysOrg> {
 
     /**

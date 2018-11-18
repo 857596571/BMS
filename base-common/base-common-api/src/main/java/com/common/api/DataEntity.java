@@ -1,8 +1,8 @@
 package com.common.api;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -10,7 +10,8 @@ import java.util.Date;
  * 数据Entity类
  */
 @Data
-public abstract class DataEntity extends QueryWrapper {
+@EqualsAndHashCode(callSuper=false)
+public abstract class DataEntity extends Model {
 
     /**
      * 删除标记0：正常
@@ -24,7 +25,7 @@ public abstract class DataEntity extends QueryWrapper {
     /**
      * 主键
      */
-    private String id;
+    private Long id;
     /**
      * 搜索
      */
@@ -63,8 +64,8 @@ public abstract class DataEntity extends QueryWrapper {
         this.delFlag = DEL_FLAG_NORMAL;
     }
 
-    public DataEntity(String id) {
-        super(id);
+    public DataEntity(Long id) {
+        this.id = id;
     }
 
     /**
@@ -110,7 +111,7 @@ public abstract class DataEntity extends QueryWrapper {
     }
 
     public boolean getIsNewRecord() {
-        return StrUtil.isBlank(id);
+        return id == null;
     }
 
 }

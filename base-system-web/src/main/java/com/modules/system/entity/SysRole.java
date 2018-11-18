@@ -2,12 +2,16 @@ package com.modules.system.entity;
 
 
 import com.common.api.DataEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 /**
  * 角色
  */
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class SysRole extends DataEntity {
 
     /**
@@ -78,175 +82,9 @@ public class SysRole extends DataEntity {
 
     public SysRole() {}
 
-    public SysRole(String id) {
+    public SysRole(Long id) {
         super(id);
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getDataScope() {
-        return dataScope;
-    }
-
-    public void setDataScope(String dataScope) {
-        this.dataScope = dataScope;
-    }
-
-    /**
-     * Getter method for property <tt>typeDesc</tt>.
-     *
-     * @return property value of typeDesc
-     */
-    public String getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Setter method for property <tt>typeDesc</tt>.
-     *
-     * @param typeDesc value to be assigned to property typeDesc
-     */
-    public void setTypeDesc(String typeDesc) {
-        this.typeDesc = typeDesc;
-    }
-
-    /**
-     * Getter method for property <tt>stateDesc</tt>.
-     *
-     * @return property value of stateDesc
-     */
-    public String getStateDesc() {
-        return stateDesc;
-    }
-
-    /**
-     * Setter method for property <tt>stateDesc</tt>.
-     *
-     * @param stateDesc value to be assigned to property stateDesc
-     */
-    public void setStateDesc(String stateDesc) {
-        this.stateDesc = stateDesc;
-    }
-
-    /**
-     * Getter method for property <tt>levelDesc</tt>.
-     *
-     * @return property value of levelDesc
-     */
-    public String getLevelDesc() {
-        return levelDesc;
-    }
-
-    /**
-     * Setter method for property <tt>levelDesc</tt>.
-     *
-     * @param levelDesc value to be assigned to property levelDesc
-     */
-    public void setLevelDesc(String levelDesc) {
-        this.levelDesc = levelDesc;
-    }
-
-    /**
-     * Getter method for property <tt>dataScopeDesc</tt>.
-     *
-     * @return property value of dataScopeDesc
-     */
-    public String getDataScopeDesc() {
-        return dataScopeDesc;
-    }
-
-    /**
-     * Setter method for property <tt>dataScopeDesc</tt>.
-     *
-     * @param dataScopeDesc value to be assigned to property dataScopeDesc
-     */
-    public void setDataScopeDesc(String dataScopeDesc) {
-        this.dataScopeDesc = dataScopeDesc;
-    }
-
-    public List<SysMenu> getMenus() {
-        return menus;
-    }
-
-    public void setMenus(List<SysMenu> menus) {
-        this.menus = menus;
-    }
-
-    public List<SysOrg> getOrgs() {
-        return orgs;
-    }
-
-    public void setOrgs(List<SysOrg> orgs) {
-        this.orgs = orgs;
-    }
-
-    public String getOrgIds() {
-        return orgIds;
-    }
-
-    public void setOrgIds(String orgIds) {
-        this.orgIds = orgIds;
-    }
-
-    public String getMenuIds() {
-        return menuIds;
-    }
-
-    public void setMenuIds(String menuIds) {
-        this.menuIds = menuIds;
-    }
-
-    public String getUserIds() {
-        return userIds;
-    }
-
-    public void setUserIds(String userIds) {
-        this.userIds = userIds;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

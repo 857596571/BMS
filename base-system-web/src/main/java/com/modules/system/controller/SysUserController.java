@@ -77,7 +77,7 @@ public class SysUserController extends BaseController {
         }
         if(StrUtil.isNotBlank(type) && type.equals("INIT")) {
             //重置为初始密码 "123456"
-            systemService.updateUserPasswordById(user.getId(),
+            systemService.updateUserPasswordById(user.getId().toString(),
                     passwordEncoder.encode(ymlConfig.getStr("initialPassword")),
                     null);
         }
@@ -86,7 +86,7 @@ public class SysUserController extends BaseController {
             if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
                 return Result.error("旧密码错误");
             }
-            systemService.updateUserPasswordById(user.getId(),
+            systemService.updateUserPasswordById(user.getId().toString(),
                     passwordEncoder.encode(newPassword),
                     new Date());
         }

@@ -8,10 +8,7 @@ import com.modules.system.entity.req.LoginUserReq;
 import com.modules.system.entity.resp.AuthenticationResp;
 import com.modules.system.security.model.AuthUser;
 import com.modules.system.security.utils.TokenUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -61,6 +58,7 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
+    @ApiImplicitParams({})
     @PostMapping(value = "/token")
     public Result createAuthenticationToken(@RequestBody LoginUserReq user, HttpServletRequest request) {
         AuthenticationResp resp = new AuthenticationResp();

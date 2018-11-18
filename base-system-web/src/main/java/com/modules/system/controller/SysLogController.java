@@ -1,5 +1,6 @@
 package com.modules.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.common.utils.http.Result;
@@ -8,6 +9,7 @@ import com.modules.system.entity.SysLog;
 import com.modules.system.service.SysLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 
 /**
  * 系统日志
@@ -23,7 +25,7 @@ public class SysLogController extends BaseController {
 	 */
 	@GetMapping(value = "/list")
 	public Result<IPage<SysLog>> list(Page page, SysLog query){
-        return Result.success(sysLogService.page(page, query));
+        return Result.success(sysLogService.page(page,  new QueryWrapper(query)));
 	}
 
 	/**
