@@ -10,14 +10,12 @@
     
     <modules>
         <module>base-common</module>
-        <!--<module>base-code-gen</module>-->
-        <!--<module>base-quartz-web</module>-->
-        <module>base-system-web</module>
+        <module>base-modules</module>
     </modules>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    <description>The parent project of base</description>
-    <inceptionYear>2017</inceptionYear>
+    <description>springboot快速开发框架</description>
+    <inceptionYear>2018</inceptionYear>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -26,29 +24,40 @@
         <relativePath/>
     </parent>
 
+    <!-- 环境配置文件，默认使用本地配置文件 -->
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <profileActive>local</profileActive>
+            </properties>
+            <!-- 默认使用本地配置文件 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profileActive>prod</profileActive>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!-- 使用aliyun镜像 -->
     <repositories>
         <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>aliyun</id>
+            <name>aliyun</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,6 +72,7 @@
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <springfox.version>2.9.2</springfox.version>
         <fastjson.version>1.2.51</fastjson.version>
+        <ttl.version>2.10.2</ttl.version>
         <ehcache-core.version>2.10.6</ehcache-core.version>
         <mybatis-starter.version>3.0.5</mybatis-starter.version>
         <mysql.version>8.0.11</mysql.version>
@@ -70,10 +80,37 @@
         <aliyun.oss.version>2.2.3</aliyun.oss.version>
         <quartz.version>2.3.0</quartz.version>
         <lombok.version>1.18.2</lombok.version>
+        <jasypt.version>2.1.0</jasypt.version>
+        <spring-security-oauth2-autoconfigure.version>2.1.0.RELEASE</spring-security-oauth2-autoconfigure.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>Brussels-SR11</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security.oauth.boot</groupId>
+                <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+                <version>${spring-security-oauth2-autoconfigure.version}</version>
+            </dependency>
+
+            <!--测试依赖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.base</groupId>
+                <artifactId>base-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.base</groupId>
                 <artifactId>base-common-web</artifactId>
@@ -167,11 +204,24 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
+            <!-- TTL -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${ttl.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache-core</artifactId>
                 <version>${ehcache-core.version}</version>
+            </dependency>
+
+            <!--配置属性加密工具-->
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt.version}</version>
             </dependency>
 
             <!-- Swagger -->
@@ -206,15 +256,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <optional>true</optional>
-                <scope>provided</scope>
                 <version>${lombok.version}</version>
             </dependency>
 
