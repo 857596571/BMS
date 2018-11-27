@@ -2,18 +2,18 @@ import { getAuthority } from './authority';
 
 describe('getAuthority should be strong', () => {
   it('empty', () => {
-    expect(getAuthority(null)).toEqual(['admin']); // default value
+    expect(getAuthority(null)).toEqual(['upms']); // default value
   });
   it('string', () => {
-    expect(getAuthority('admin')).toEqual(['admin']);
+    expect(getAuthority('upms')).toEqual(['upms']);
   });
   it('array with double quotes', () => {
-    expect(getAuthority('"admin"')).toEqual(['admin']);
+    expect(getAuthority('"upms"')).toEqual(['upms']);
   });
   it('array with single item', () => {
-    expect(getAuthority('["admin"]')).toEqual(['admin']);
+    expect(getAuthority('["upms"]')).toEqual(['upms']);
   });
   it('array with multiple items', () => {
-    expect(getAuthority('["admin", "guest"]')).toEqual(['admin', 'guest']);
+    expect(getAuthority('["upms", "guest"]')).toEqual(['upms', 'guest']);
   });
 });

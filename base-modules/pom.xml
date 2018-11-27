@@ -13,8 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>base-auth</module>
-        <module>base-admin-service</module>
+        <module>base-upms-service</module>
     </modules>
 
 </project>

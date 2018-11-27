@@ -11,7 +11,7 @@ import java.util.Map;
  * 读取
  */
 @Component
-@ConfigurationProperties(prefix = "system")
+@ConfigurationProperties(prefix = "upms")
 public class YmlConfig<T> {
 
     /**

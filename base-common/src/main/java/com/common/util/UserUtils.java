@@ -1,5 +1,6 @@
 package com.common.util;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.common.constant.CommonConstant;
@@ -40,11 +41,11 @@ public class UserUtils {
      * @param httpServletRequest
      * @return 用户ID
      */
-    public static Integer getUserId(HttpServletRequest httpServletRequest) {
+    public static Long getUserId(HttpServletRequest httpServletRequest) {
         String token = getToken(httpServletRequest);
         String key = Base64.getEncoder().encodeToString(CommonConstant.SIGN_KEY.getBytes());
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-        Integer userId = (Integer) claims.get("userId");
+        Long userId = Convert.toLong(claims.get("userId"));
         return userId;
     }
 

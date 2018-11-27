@@ -30,12 +30,12 @@ logs
 *.properties~
 *.xml~
 
-# system ignore
+# upms ignore
 .DS_Store
 Thumbs.db
 Servers
 .metadata
 upload
-base-system-web/src/main/wabapp/code/.temp/
-base-system-web/src/main/wabapp/code/src/pages/
-base-system-web/src/main/wabapp/code/yarn.lock
+base-modules/base-admin-service/src/main/wabapp/code/.temp/
+base-modules/base-admin-service/src/main/wabapp/code/src/pages/
+base-modules/base-admin-service/src/main/wabapp/code/yarn.lock

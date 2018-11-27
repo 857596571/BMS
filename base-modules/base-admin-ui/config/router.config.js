@@ -13,7 +13,7 @@ export default [
     path: '/',
     component: '../layouts/LoadingPage',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authority: ['upms', 'user'],
     routes: [
       //定时任务管理
       // {
@@ -32,30 +32,30 @@ export default [
 
       //系统管理
       {
-        path: '/system',
+        path: '/upms',
         routes: [
           {
-            path: '/system/org',
+            path: '/upms/org',
             component: './System/OrgList',
           },
           {
-            path: '/system/role',
+            path: '/upms/role',
             component: './System/RoleList',
           },
           {
-            path: '/system/user',
+            path: '/upms/user',
             component: './System/UserList',
           },
           {
-            path: '/system/dict',
+            path: '/upms/dict',
             component: './System/DictList',
           },
           {
-            path: '/system/menu',
+            path: '/upms/menu',
             component: './System/MenuList',
           },
           {
-            path: '/system/log',
+            path: '/upms/log',
             component: './System/LogList',
           },
         ],

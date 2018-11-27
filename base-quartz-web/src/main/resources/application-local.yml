@@ -2,7 +2,7 @@ spring:
   # DataSource Config
   datasource:
     write:
-      url: jdbc:mysql://127.0.0.1:3306/base-system?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
+      url: jdbc:mysql://127.0.0.1:3306/base-upms?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
       username: root
       password: root
       driver-class-name: com.mysql.jdbc.Driver
@@ -23,7 +23,7 @@ spring:
       # 合并多个DruidDataSource的监控数据
       #spring.datasource.useGlobalDataSourceStat=true
     read:
-      url: jdbc:mysql://127.0.0.1:3306/base-system?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
+      url: jdbc:mysql://127.0.0.1:3306/base-upms?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
       username: root
       password: root
       driver-class-name: com.mysql.jdbc.Driver
@@ -65,7 +65,7 @@ spring:
     #资源映射路径为/files/**，你想在url访问的请求路径
     static-path-pattern: /files/**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${system.yml.upload.file-root-path}
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${upms.yml.upload.file-root-path}
 #自定义属性配置
 system:
   yml:

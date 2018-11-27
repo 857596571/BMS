@@ -1,4 +1,4 @@
-import { queryNotices } from '@/services/system';
+import { queryNotices } from '@/services/upms';
 
 export default {
   namespace: 'global',

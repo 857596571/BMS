@@ -61,8 +61,8 @@
         </root>
     </springProfile>
 
-    <logger name="com.modules.system.mapper.SysLogMapper.*" level="ERROR"/>
-    <logger name="com.modules.system.log.aop.*" level="ERROR"/>
+    <logger name="com.modules.upms.mapper.SysLogMapper.*" level="ERROR"/>
+    <logger name="com.modules.upms.log.aop.*" level="ERROR"/>
     <logger name="com.common.datasource.DynamicPlugin" level="ERROR"/>
     <logger name="com.common.datasource.DynamicDataSourceTransactionManager" level="ERROR"/>
 

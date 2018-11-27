@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { userLogin, userLogout } from '@/services/system';
+import { userLogin, userLogout } from '@/services/upms';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -23,7 +23,7 @@ export default {
           type: 'changeLoginStatus',
           payload: {
             ...response,
-            currentAuthority: 'admin',
+            currentAuthority: 'upms',
           },
         });
         localStorage.setItem('Authorization', JSON.stringify(response.data));

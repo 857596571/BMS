@@ -1,10 +1,14 @@
 package com.common.util;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
- * 响应信息主体
+ * 响应消息模版类
+ * @param <T>
  */
+@Data
 public class R<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,8 +27,23 @@ public class R<T> implements Serializable {
 
     private T data;
 
+    public boolean isOk() {
+        return this.code == SUCCESS;
+    }
+
     public R() {
         super();
+    }
+
+    public R(int code) {
+        super();
+        this.code = code;
+    }
+
+    public R(int code, String msg) {
+        super();
+        this.code = code;
+        this.msg = msg;
     }
 
     public R(T data) {
@@ -37,6 +56,12 @@ public class R<T> implements Serializable {
         this.data = data;
         this.msg = msg;
     }
+    public R(int code, String msg, T data) {
+        super();
+        this.code = code;
+        this.data = data;
+        this.msg = msg;
+    }
 
     public R(Throwable e) {
         super();
@@ -44,27 +69,71 @@ public class R<T> implements Serializable {
         this.code = FAIL;
     }
 
-    public String getMsg() {
-        return msg;
+    /**
+     * 成功方法
+     * @return 消息模版
+     */
+    public static R success() {
+        return new R();
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    /**
+     * 成功方法，带参数
+     * @param data 参数
+     * @param <T> 类型
+     * @return 消息模版
+     */
+    public static <T> R<T> success(T data) {
+        return new R(data);
     }
 
-    public int getCode() {
-        return code;
+    /**
+     * 成功方法，带消息，参数
+     * @param data 参数
+     * @param <T> 类型
+     * @return 消息模版
+     */
+    public static <T> R<T> success(T data, String msg) {
+        return new R(data, msg);
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    /**
+     * 错误方法
+     * @return 消息模版
+     */
+    public static R error() {
+        return new R(FAIL);
     }
 
-    public T getData() {
-        return data;
+    /**
+     * 错误方法
+     * @param msg 消息内容
+     * @return 消息模版
+     */
+    public static R error(String msg) {
+        return new R(FAIL, msg);
     }
 
-    public void setData(T data) {
-        this.data = data;
+    /**
+     * 错误方法
+     * @param code 编码
+     * @param msg 消息内容
+     * @return 消息模版
+     */
+    public static R error(int code, String msg) {
+        return new R(code, msg);
     }
+
+    /**
+     * 错误方法
+     * @param code 编码
+     * @param message 消息内容
+     * @param t
+     * @param <T> 类型
+     * @return 消息模版
+     */
+    public static <T> R<T> error(int code, String message, T t) {
+        return new R(code, message, t);
+    }
+
 }

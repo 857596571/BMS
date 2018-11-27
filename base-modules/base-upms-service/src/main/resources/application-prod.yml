@@ -1,0 +1,66 @@
+spring:
+  # DataSource Config
+  datasource:
+    write:
+      url: jdbc:mysql://127.0.0.1:3306/base-upms?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
+      username: root
+      password: root
+      driver-class-name: com.mysql.jdbc.Driver
+      max-active: 20
+      initial-size: 1
+      min-idle: 3
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+      # 合并多个DruidDataSource的监控数据
+      #spring.datasource.useGlobalDataSourceStat=true
+    read:
+      url: jdbc:mysql://127.0.0.1:3306/base-upms?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
+      username: root
+      password: root
+      driver-class-name: com.mysql.jdbc.Driver
+      max-active: 20
+      initial-size: 1
+      min-idle: 3
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+      # 合并多个DruidDataSource的监控数据
+      #spring.datasource.useGlobalDataSourceStat=true
+#mybatis配置
+mybatis-plus:
+  global-config:
+    #是否开启xml自动刷新，生产环境请关闭
+    refresh: false
+
+#自定义属性配置
+system:
+  yml:
+    #权限配置
+    security:
+      jwt:
+        secret: k09BQnaF
+        expiration: 604800 #7Days
+    #上传配置
+    upload:
+      #文件上传存储路径
+      file-root-path: /WORKSPACE/files/
+    #初始密码
+    initialPassword: 123456
+

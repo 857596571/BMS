@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * The type Web admin application.
+ * The type Web upms application.
  *
  * @author xmh
  */

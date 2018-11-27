@@ -1,4 +1,4 @@
-import * as system from '@/services/system';
+import * as system from '@/services/upms';
 import {message} from 'antd';
 
 export default {

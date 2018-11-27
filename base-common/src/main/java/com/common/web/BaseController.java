@@ -29,7 +29,7 @@ public class BaseController {
      *
      * @return 用户ID
      */
-    public Integer getUserId() {
+    public Long getUserId() {
         return UserUtils.getUserId(request);
     }
 
