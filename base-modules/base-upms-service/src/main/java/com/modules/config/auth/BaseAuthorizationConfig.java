@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,8 +21,8 @@ import org.springframework.security.oauth2.provider.client.JdbcClientDetailsServ
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -46,9 +45,6 @@ public class BaseAuthorizationConfig extends AuthorizationServerConfigurerAdapte
 
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -104,9 +100,7 @@ public class BaseAuthorizationConfig extends AuthorizationServerConfigurerAdapte
      */
     @Bean
     public TokenStore redisTokenStore() {
-        RedisTokenStore tokenStore = new RedisTokenStore(redisConnectionFactory);
-        tokenStore.setPrefix(SecurityConstants.BASE_PREFIX);
-        return tokenStore;
+        return new InMemoryTokenStore();
     }
 
     /**

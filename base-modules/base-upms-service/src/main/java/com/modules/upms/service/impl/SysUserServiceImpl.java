@@ -6,7 +6,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.common.bean.interceptor.DataScope;
@@ -30,13 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +46,6 @@ import java.util.stream.Collectors;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
     private final SysMenuService sysMenuService;
-    private final RedisTemplate redisTemplate;
     private final SysUserMapper sysUserMapper;
     private final SysUserRoleService sysUserRoleService;
     private final SysDeptRelationService sysDeptRelationService;
@@ -143,7 +139,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public void saveImageCode(String randomStr, String imageCode) {
-        redisTemplate.opsForValue().set(SecurityConstants.DEFAULT_CODE_KEY + randomStr, imageCode, SecurityConstants.DEFAULT_IMAGE_EXPIRE, TimeUnit.SECONDS);
+        //redisTemplate.opsForValue().set(SecurityConstants.DEFAULT_CODE_KEY + randomStr, imageCode, SecurityConstants.DEFAULT_IMAGE_EXPIRE, TimeUnit.SECONDS);
     }
 
     /**
@@ -159,11 +155,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public R<Boolean> sendSmsCode(String mobile) {
-        Object tempCode = redisTemplate.opsForValue().get(SecurityConstants.DEFAULT_CODE_KEY + mobile);
-        if (tempCode != null) {
-            log.error("用户:{}验证码未失效{}", mobile, tempCode);
-            return new R<>(false, "验证码未失效，请失效后再次申请");
-        }
+        //Object tempCode = redisTemplate.opsForValue().get(SecurityConstants.DEFAULT_CODE_KEY + mobile);
+        //if (tempCode != null) {
+        //    log.error("用户:{}验证码未失效{}", mobile, tempCode);
+        //    return new R<>(false, "验证码未失效，请失效后再次申请");
+        //}
 
         SysUser params = new SysUser();
         params.setPhone(mobile);
