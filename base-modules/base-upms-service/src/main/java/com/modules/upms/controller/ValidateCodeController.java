@@ -28,7 +28,7 @@ public class ValidateCodeController {
     @Autowired
     private Producer producer;
     @Autowired
-    private SysUserService userService;
+    private SysUserService sysUserService;
 
     /**
      * 创建验证码
@@ -46,7 +46,7 @@ public class ValidateCodeController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-        userService.saveImageCode(randomStr, text);
+        sysUserService.saveImageCode(randomStr, text);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "JPEG", out);
         IOUtils.closeQuietly(out);
@@ -63,6 +63,6 @@ public class ValidateCodeController {
     @GetMapping(SecurityConstants.MOBILE_VALIDATE_CODE_URL_PREFIX + "/{mobile}")
     public R<Boolean> createCode(@PathVariable String mobile) {
         Assert.isBlank(mobile, "手机号不能为空");
-        return userService.sendSmsCode(mobile);
+        return sysUserService.sendSmsCode(mobile);
     }
 }

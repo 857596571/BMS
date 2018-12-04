@@ -4,23 +4,13 @@ spring:
     druid:
       # 数据库 1
       db1:
-        url: jdbc:mysql://127.0.0.1:3306/base?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
+        url: jdbc:mysql://127.0.0.1:3306/pig?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
         username: root
         password: root
         driver-class-name: com.mysql.jdbc.Driver
         initialSize: 5
         minIdle: 5
         maxActive: 20
-      # 数据库 2
-#      db2:
-#        url: jdbc:mysql://127.0.0.1:3306/base?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Hongkong
-#        username: root
-#        password: root
-#        driver-class-name: com.mysql.jdbc.Driver
-#        initialSize: 5
-#        minIdle: 5
-#        maxActive: 20
-
   messages:
     encoding: UTF-8
   http:
@@ -37,20 +27,54 @@ spring:
       loginUsername: root
       loginPassword: 123123
       resetEnable: false
-
+security:
+  encode:
+    key: '1234567887654321' #必须16位
+  validate:
+    code: true
+    preview: false
+  sessions: stateless
+  oauth2:
+    client:
+      client-id: base
+      client-secret: base
+    resource:
+      jwt:
+        key-uri: http://127.0.0.1:8080/upms/oauth/token_key #解析jwt令牌所需要密钥的地址
 #mybatis配置
 mybatis-plus:
   global-config:
     #是否开启xml自动刷新，生产环境请关闭
     refresh: true
 #自定义属性配置
+ignore:
+  urls:
+  - /authentication/**
+  - /**/*.css
+  - /social
+  - /signin
+  - /signup
+  - /info
+  - /health
+  - /metrics/**
+  - /loggers/**
+  - /mobile/token
 system:
   yml:
-    #权限配置
-    security:
-      jwt:
-        secret: k09BQnaF
-        expiration: 604800 #7Days
+    #不需要权限过滤的
+    ignore:
+      urls:
+        - /auth/**
+        - /authentication/**
+        - /**/*.css
+        - /social
+        - /signin
+        - /signup
+        - /info
+        - /health
+        - /metrics/**
+        - /loggers/**
+        - /mobile/token
     #上传配置
     upload:
       #文件上传存储路径

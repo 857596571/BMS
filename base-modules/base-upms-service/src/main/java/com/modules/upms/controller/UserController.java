@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ import java.util.Map;
 public class UserController extends BaseController {
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
     @Autowired
-    private SysUserService userService;
+    private SysUserService sysUserService;
 
 
     /**
@@ -43,7 +44,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/info")
     public R<UserInfo> user(UserVO userVo) {
-        UserInfo userInfo = userService.findUserInfo(userVo);
+        UserInfo userInfo = sysUserService.findUserInfo(userVo);
         return new R<>(userInfo);
     }
 
@@ -55,7 +56,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/{id}")
     public UserVO user(@PathVariable Integer id) {
-        return userService.selectUserVoById(id);
+        return sysUserService.selectUserVoById(id);
     }
 
     /**
@@ -68,8 +69,8 @@ public class UserController extends BaseController {
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "path")
     @DeleteMapping("/{id}")
     public R<Boolean> userDel(@PathVariable Integer id) {
-        SysUser sysUser = userService.getById(id);
-        return new R<>(userService.deleteUserById(sysUser));
+        SysUser sysUser = sysUserService.getById(id);
+        return new R<>(sysUserService.deleteUserById(sysUser));
     }
 
     /**
@@ -84,7 +85,7 @@ public class UserController extends BaseController {
         BeanUtils.copyProperties(userDto, sysUser);
         sysUser.setDelFlag(CommonConstant.STATUS_NORMAL);
         sysUser.setPassword(ENCODER.encode(userDto.getNewpassword1()));
-        userService.save(sysUser);
+        sysUserService.save(sysUser);
 
         userDto.getRole().forEach(roleId -> {
             SysUserRole userRole = new SysUserRole();
@@ -103,8 +104,8 @@ public class UserController extends BaseController {
      */
     @PutMapping
     public R<Boolean> userUpdate(@RequestBody UserDTO userDto) {
-        SysUser user = userService.getById(userDto.getUserId());
-        return new R<>(userService.updateUser(userDto, user.getUsername()));
+        SysUser user = sysUserService.getById(userDto.getUserId());
+        return new R<>(sysUserService.updateUser(userDto, user.getUsername()));
     }
 
     /**
@@ -115,7 +116,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/findUserByUsername/{username}")
     public UserVO findUserByUsername(@PathVariable String username) {
-        return userService.findUserByUsername(username);
+        return sysUserService.findUserByUsername(username);
     }
 
     /**
@@ -126,7 +127,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/findUserByMobile/{mobile}")
     public UserVO findUserByMobile(@PathVariable String mobile) {
-        return userService.findUserByMobile(mobile);
+        return sysUserService.findUserByMobile(mobile);
     }
 
     /**
@@ -137,7 +138,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/findUserByOpenId/{openId}")
     public UserVO findUserByOpenId(@PathVariable String openId) {
-        return userService.findUserByOpenId(openId);
+        return sysUserService.findUserByOpenId(openId);
     }
 
     /**
@@ -148,7 +149,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/userPage")
     public Page userPage(Page page, UserVO userVO) {
-        return userService.selectWithRolePage(page, userVO);
+        return sysUserService.selectWithRolePage(page, userVO);
     }
 
     /**
@@ -181,6 +182,6 @@ public class UserController extends BaseController {
      */
     @PutMapping("/editInfo")
     public R<Boolean> editInfo(@RequestBody UserDTO userDto, UserVO userVo) {
-        return userService.updateUserInfo(userDto, userVo.getUsername());
+        return sysUserService.updateUserInfo(userDto, userVo.getUsername());
     }
 }

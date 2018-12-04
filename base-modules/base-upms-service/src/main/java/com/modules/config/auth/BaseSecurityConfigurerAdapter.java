@@ -27,6 +27,7 @@ public class BaseSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter 
                         .loginProcessingUrl("/authentication/form")
                         .and()
                         .authorizeRequests();
+        registry.antMatchers("/oauth/token").permitAll();
         filterIgnorePropertiesConfig.getUrls().forEach(url -> registry.antMatchers(url).permitAll());
         registry.anyRequest().authenticated()
                 .and()
