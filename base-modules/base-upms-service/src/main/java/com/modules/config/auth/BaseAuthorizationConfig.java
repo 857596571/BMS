@@ -4,6 +4,7 @@ import com.common.constant.CommonConstant;
 import com.common.constant.SecurityConstants;
 import com.modules.upms.common.util.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -62,7 +63,6 @@ public class BaseAuthorizationConfig extends AuthorizationServerConfigurerAdapte
                 Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter()));
 
         endpoints
-                .tokenStore(redisTokenStore())
                 .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
                 .reuseRefreshTokens(false)
@@ -87,20 +87,6 @@ public class BaseAuthorizationConfig extends AuthorizationServerConfigurerAdapte
         BaseJwtAccessTokenConverter jwtAccessTokenConverter = new BaseJwtAccessTokenConverter();
         jwtAccessTokenConverter.setSigningKey(CommonConstant.SIGN_KEY);
         return jwtAccessTokenConverter;
-    }
-
-    /**
-     * tokenstore 定制化处理
-     *
-     * @return TokenStore
-     * 1. 如果使用的 redis-cluster 模式请使用 PigRedisTokenStore
-     * PigRedisTokenStore tokenStore = new PigRedisTokenStore();
-     * tokenStore.setRedisTemplate(redisTemplate);
-     * @return
-     */
-    @Bean
-    public TokenStore redisTokenStore() {
-        return new InMemoryTokenStore();
     }
 
     /**
